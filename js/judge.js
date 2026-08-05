@@ -55,7 +55,7 @@ const Judge = {
                 <div style="position: absolute; top: 20px; right: 20px; display: flex; align-items: flex-start; gap: 15px; text-align: center;">
                     ${p['Articulo_Cientifico'] ? `
                     <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                        <a href="${p['Articulo_Cientifico']}" target="_blank" title="Ver Artículo Científico" style="display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; color: #e11d48; text-decoration: none; transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
+                        <a href="#" onclick="event.preventDefault(); UI.showPdfViewer('${p['Articulo_Cientifico']}');" title="Ver Artículo Científico" style="display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; color: #e11d48; text-decoration: none; transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
                             <i class="fas fa-file-pdf fa-lg"></i>
                         </a>
                         <span style="font-size: 10px; color: var(--text-muted); font-weight: bold; text-transform: uppercase; line-height: 1;">Artículo</span>
@@ -116,7 +116,7 @@ const Judge = {
             let btnArticuloHtml = '';
             if (linkArticulo && linkArticulo.trim() !== '') {
                 btnArticuloHtml = `
-                    <a href="${linkArticulo}" target="_blank" class="btn" style="background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; margin-top: 10px;">
+                    <a href="#" onclick="event.preventDefault(); UI.showPdfViewer('${linkArticulo}');" class="btn" style="background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; margin-top: 10px;">
                         <i class="fas fa-file-pdf" style="color: #e11d48;"></i> Ver Artículo Científico
                     </a>
                 `;

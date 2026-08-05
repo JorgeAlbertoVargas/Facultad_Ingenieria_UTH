@@ -43,5 +43,76 @@ const UI = {
         if (view) {
             view.classList.add('active');
         }
+    },
+
+    showPdfViewer(url) {
+        if (!url) return;
+        
+        let previewUrl = url;
+        // Convert to preview URL to bypass account picker and embed nicely
+        if (url.includes('drive.google.com/open?id=')) {
+            const id = new URL(url).searchParams.get('id');
+            if (id) previewUrl = `https://drive.google.com/file/d/${id}/preview`;
+        } else if (url.includes('/view')) {
+            previewUrl = url.replace('/view', '/preview');
+        } else if (url.includes('/file/d/')) {
+            const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (match) previewUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+        }
+
+        // Create modal container
+        const modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.backgroundColor = 'rgba(0,0,0,0.85)';
+        modal.style.zIndex = '9999';
+        modal.style.display = 'flex';
+        modal.style.flexDirection = 'column';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+
+        // Create close button
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '<i class="fas fa-times"></i> Cerrar Visor';
+        closeBtn.style.position = 'absolute';
+        closeBtn.style.top = '15px';
+        closeBtn.style.right = '15px';
+        closeBtn.style.padding = '8px 16px';
+        closeBtn.style.backgroundColor = '#e11d48';
+        closeBtn.style.color = '#fff';
+        closeBtn.style.border = 'none';
+        closeBtn.style.borderRadius = '6px';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.style.fontWeight = 'bold';
+        closeBtn.style.zIndex = '10000';
+        closeBtn.onclick = () => modal.remove();
+
+        // Create warning text if it doesn't load
+        const warningText = document.createElement('div');
+        warningText.style.position = 'absolute';
+        warningText.style.color = 'white';
+        warningText.style.top = '70px';
+        warningText.style.fontSize = '12px';
+        warningText.style.textAlign = 'center';
+        warningText.style.maxWidth = '90%';
+        warningText.innerHTML = 'Si la pantalla aparece gris o pide iniciar sesión, <a href="' + url + '" target="_blank" style="color: #60a5fa; text-decoration: underline;">haz clic aquí para abrirlo externamente</a> (asegúrate de darle permiso de Lector a la carpeta en Drive).';
+        
+        // Create iframe
+        const iframe = document.createElement('iframe');
+        iframe.src = previewUrl;
+        iframe.style.width = '95%';
+        iframe.style.height = '80%';
+        iframe.style.border = 'none';
+        iframe.style.borderRadius = '8px';
+        iframe.style.backgroundColor = '#fff';
+        iframe.style.marginTop = '60px';
+
+        modal.appendChild(closeBtn);
+        modal.appendChild(warningText);
+        modal.appendChild(iframe);
+        document.body.appendChild(modal);
     }
 };
