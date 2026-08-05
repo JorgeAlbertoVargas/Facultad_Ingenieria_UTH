@@ -1,0 +1,13 @@
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs and databases
+*.log
+
+# Environment variables
+.env
+
+# MacOS
+.DS_Store
