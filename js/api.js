@@ -95,6 +95,16 @@ const API = {
                         success: true,
                         stats: { totalProjects: 35, totalEvaluations: 120, categories: 4 }
                     });
+                } else if (action === 'getQuestions') {
+                    // Mock para poder probar la generación dinámica
+                    resolve({
+                        success: true,
+                        questions: [
+                            { bloque: "I - EL GRUPO (30%)", numero: 1, titulo: "Preparación y Puntualidad", porcentaje: 6, puntos_A: 5, criterio_A: "Instalado a tiempo y funcionando.", puntos_B: 3, criterio_B: "Retrasos menores.", puntos_C: 1, criterio_C: "Tardío o incompleta." },
+                            { bloque: "I - EL GRUPO (30%)", numero: 2, titulo: "Orden y Presentación", porcentaje: 6, puntos_A: 5, criterio_A: "Stand profesional, claro.", puntos_B: 3, criterio_B: "Bien organizado.", puntos_C: 1, criterio_C: "Desorganizado." },
+                            { bloque: "II - TÉCNICO (50%)", numero: 6, titulo: "Claridad de Objetivos", porcentaje: 10, puntos_A: 10, criterio_A: "Específicos y correctos (Escala 10).", puntos_B: 5, criterio_B: "Básico correcto (Escala 5).", puntos_C: 1, criterio_C: "Vagos o débiles." }
+                        ]
+                    });
                 }
             }, 800);
         });

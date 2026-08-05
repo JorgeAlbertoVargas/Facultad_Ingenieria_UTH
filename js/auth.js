@@ -26,7 +26,6 @@ const Auth = {
                 e.preventDefault();
                 loginForm.style.display = 'none';
                 registerForm.style.display = 'block';
-                document.querySelector('.login-header p').innerText = 'Complete sus datos para registrarse';
             });
         }
 
@@ -35,7 +34,6 @@ const Auth = {
                 e.preventDefault();
                 registerForm.style.display = 'none';
                 loginForm.style.display = 'block';
-                document.querySelector('.login-header p').innerText = 'Bienvenido, inicie sesión para continuar';
             });
         }
 

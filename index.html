@@ -16,59 +16,53 @@
     <!-- Contenedor Principal de la App -->
     <div id="app">
         <!-- Pantalla de Login -->
-        <div id="login-view" class="view active">
+        <div id="login-view" class="view active dark-login">
             <div class="login-container">
-                <div class="login-image-side">
-                    <div class="overlay">
-                        <h1>Feria Facultad Ingenieria</h1>
-                        <p>Plataforma oficial de evaluación de proyectos de ingeniería.</p>
-                    </div>
-                </div>
-                <div class="login-form-side">
-                    <div class="login-card">
+                <div class="login-card">
+                    <form id="login-form">
                         <div class="login-header">
-                            <img src="https://www.uth.hn/wp-content/uploads/2026/01/logo-40-aniversario.png" alt="UTH Logo" class="login-logo">
-                            <p>Bienvenido, inicie sesión para continuar</p>
+                            <h2>Iniciar Sesión</h2>
                         </div>
-                        <form id="login-form">
-                            <div class="input-group">
-                                <label for="email">Correo Institucional</label>
-                                <input type="email" id="email" required placeholder="correo@uth.hn">
-                            </div>
-                            <div class="input-group">
-                                <label for="password">Contraseña</label>
-                                <input type="password" id="password" required placeholder="••••••••">
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-large">Iniciar Sesión</button>
-                            <p class="error-msg" id="login-error"></p>
-                            <div style="margin-top: 15px; text-align: center;">
-                                <span style="font-size: 14px; color: var(--text-muted);">¿No tienes cuenta? <a href="#" id="link-to-register" style="color: var(--primary); font-weight: 600; text-decoration: none;">Regístrate aquí</a></span>
-                            </div>
-                        </form>
-
-                        <form id="register-form" style="display: none; text-align: left;">
-                            <div class="input-group">
-                                <label for="reg-name">Nombre Completo</label>
-                                <input type="text" id="reg-name" required placeholder="Juan Pérez">
-                            </div>
-                            <div class="input-group">
-                                <label for="reg-email">Correo Institucional</label>
-                                <input type="email" id="reg-email" required placeholder="correo@uth.hn">
-                            </div>
-                            <div class="input-group">
-                                <label for="reg-password">Contraseña</label>
-                                <input type="password" id="reg-password" required placeholder="••••••••">
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-large">Crear Cuenta</button>
-                            <p class="error-msg" id="register-error"></p>
-                            <div style="margin-top: 15px; text-align: center;">
-                                <span style="font-size: 14px; color: var(--text-muted);">¿Ya tienes cuenta? <a href="#" id="link-to-login" style="color: var(--primary); font-weight: 600; text-decoration: none;">Inicia sesión</a></span>
-                            </div>
-                        </form>
-
-                        <div class="public-links">
-                            <button id="btn-public-map" class="btn btn-text">Ir al Mapa Público de Proyectos</button>
+                        <div class="input-group">
+                            <label for="email">Correo Institucional</label>
+                            <input type="email" id="email" required placeholder="correo@uth.hn">
                         </div>
+                        <div class="input-group">
+                            <label for="password">Contraseña</label>
+                            <input type="password" id="password" required placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn btn-login-submit">Iniciar Sesión</button>
+                        <p class="error-msg" id="login-error"></p>
+                        <div class="login-footer">
+                            <span>¿No tienes cuenta? <a href="#" id="link-to-register">Regístrate aquí</a></span>
+                        </div>
+                    </form>
+
+                    <form id="register-form" style="display: none;">
+                        <div class="login-header">
+                            <h2>Crear Cuenta</h2>
+                        </div>
+                        <div class="input-group">
+                            <label for="reg-name">Nombre Completo</label>
+                            <input type="text" id="reg-name" required placeholder="Juan Pérez">
+                        </div>
+                        <div class="input-group">
+                            <label for="reg-email">Correo Institucional</label>
+                            <input type="email" id="reg-email" required placeholder="correo@uth.hn">
+                        </div>
+                        <div class="input-group">
+                            <label for="reg-password">Contraseña</label>
+                            <input type="password" id="reg-password" required placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn btn-login-submit">Crear Cuenta</button>
+                        <p class="error-msg" id="register-error"></p>
+                        <div class="login-footer">
+                            <span>¿Ya tienes cuenta? <a href="#" id="link-to-login">Inicia sesión</a></span>
+                        </div>
+                    </form>
+
+                    <div class="public-links">
+                        <button id="btn-public-map" class="btn btn-text" style="width:100%">Ir al Mapa Público de Proyectos</button>
                     </div>
                 </div>
             </div>
@@ -89,7 +83,7 @@
                 </nav>
                 <div id="user-terna-info" style="font-size: 13px; color: var(--text-muted); margin: 0 20px 20px 20px; padding: 12px; background: rgba(0,0,0,0.02); border-radius: 4px; display: none;">
                     <strong style="color: var(--primary); font-size: 14px;">Terna: <span id="user-terna-name">...</span></strong><br>
-                    <div style="margin-top: 8px; font-weight: 500;">Compañeros:</div>
+                    <div style="margin-top: 8px; font-weight: 500;">Integrantes:</div>
                     <div id="user-terna-colleagues" style="margin-top: 5px;">...</div>
                 </div>
                 <div class="sidebar-footer">

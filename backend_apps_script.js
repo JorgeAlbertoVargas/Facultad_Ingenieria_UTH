@@ -30,11 +30,13 @@ function doGet(e) {
     var action = e.parameter.action;
     
     if (action === 'getProjects') {
-      return getProjects();
+      return getProjects(e.parameter.terna, e.parameter.email);
     } else if (action === 'getStats') {
       return getStats();
     } else if (action === 'getTerna') {
       return getTerna(e.parameter.email);
+    } else if (action === 'getQuestions') {
+      return getQuestions(e.parameter.categoria);
     } else {
       return output.setContent(JSON.stringify({ success: false, error: 'Acción GET no válida' }));
     }
@@ -60,31 +62,35 @@ function getTerna(email) {
   
   if (!myTerna) return ContentService.createTextOutput(JSON.stringify({ success: true, terna: null, companeros: [] })).setMimeType(ContentService.MimeType.JSON);
   
-  // Buscar compañeros de la misma terna
+  // Buscar integrantes de la misma terna
   var companeros = [];
   for (var j = 1; j < values.length; j++) {
-    if (values[j][0] === myTerna && String(values[j][2]).trim() !== String(email).trim()) {
-      companeros.push(values[j][1]); // Añadir Nombre_Evaluador del compañero (Col B)
+    if (values[j][0] === myTerna) {
+      companeros.push(values[j][1]); // Añadir Nombre_Evaluador del integrante (Col B)
     }
   }
   
   return ContentService.createTextOutput(JSON.stringify({ success: true, terna: myTerna, companeros: companeros })).setMimeType(ContentService.MimeType.JSON);
 }
 
-function getProjects() {
+function getProjects(terna, email) {
   var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheetProyectos = spreadsheet.getSheetByName('Proyectos');
   var sheetEvaluaciones = spreadsheet.getSheetByName('Evaluaciones');
   
   if (!sheetProyectos) return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña 'Proyectos' no encontrada" })).setMimeType(ContentService.MimeType.JSON);
   
-  // Obtener todos los códigos de proyectos ya evaluados
+  // Obtener todos los códigos de proyectos ya evaluados por ESTE juez
   var evaluados = {};
   if (sheetEvaluaciones) {
     var evalValues = sheetEvaluaciones.getDataRange().getValues();
     for (var j = 1; j < evalValues.length; j++) {
-      var codEval = evalValues[j][1]; // Asumiendo Col B (1) es Código Proyecto
-      if (codEval) evaluados[codEval] = true;
+      var codEval = evalValues[j][1]; // Col B (1) es Código Proyecto
+      var juezEval = evalValues[j][2]; // Col C (2) es Juez (Email)
+      var notaEval = evalValues[j][4]; // Col E (4) es Nota Total
+      if (codEval && String(juezEval).trim() === String(email).trim()) {
+        evaluados[codEval] = { evaluado: true, nota: notaEval };
+      }
     }
   }
   
@@ -93,6 +99,12 @@ function getProjects() {
   
   for (var i = 1; i < values.length; i++) {
     if (values[i][2]) { // Col C (Index 2) es ID_Proyecto
+      // Filtrar por terna si se solicita (asumiendo Col S / Index 18 para "Terna_Asignada")
+      var asignada = values[i][18] ? String(values[i][18]).trim() : '';
+      if (terna && asignada.indexOf(terna) === -1) {
+        continue;
+      }
+
       var codigo = values[i][2];
       projects.push({
         'Fecha': values[i][0],
@@ -113,7 +125,8 @@ function getProjects() {
         'Comprobante_Pago': values[i][15],
         'Fotografia_Grupal': values[i][16],
         'Articulo_Cientifico': values[i][17],
-        'evaluado': evaluados[codigo] === true
+        'evaluado': evaluados[codigo] ? true : false,
+        'nota_obtenida': evaluados[codigo] ? evaluados[codigo].nota : null
       });
     }
   }
@@ -121,22 +134,56 @@ function getProjects() {
   return ContentService.createTextOutput(JSON.stringify({ success: true, projects: projects })).setMimeType(ContentService.MimeType.JSON);
 }
 
+function getQuestions(categoria) {
+  var sheetName = "Preguntas_" + categoria;
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = spreadsheet.getSheetByName(sheetName);
+  
+  if (!sheet) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña '" + sheetName + "' no encontrada. Créala en tu Google Sheets." })).setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  var values = sheet.getDataRange().getValues();
+  var questions = [];
+  
+  // Asumimos que la fila 0 son encabezados
+  for (var i = 1; i < values.length; i++) {
+    if (values[i][0]) { // Si hay bloque
+      questions.push({
+        bloque: values[i][0],
+        numero: values[i][1],
+        titulo: values[i][2],
+        porcentaje: parseFloat(values[i][3]) || 0,
+        puntos_A: parseFloat(values[i][4]) || 5, // Col E
+        criterio_A: values[i][5] || "",          // Col F
+        puntos_B: parseFloat(values[i][6]) || 3, // Col G
+        criterio_B: values[i][7] || "",          // Col H
+        puntos_C: parseFloat(values[i][8]) || 1, // Col I
+        criterio_C: values[i][9] || ""           // Col J
+      });
+    }
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify({ success: true, questions: questions })).setMimeType(ContentService.MimeType.JSON);
+}
+
 function saveEvaluation(data) {
   var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Evaluaciones');
   if (!sheet) return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña 'Evaluaciones' no encontrada" })).setMimeType(ContentService.MimeType.JSON);
   
-  // Guardar evaluación: Fecha | Código Proyecto | Juez (Email) | Presentación | Innovación | Observaciones
+  // Guardar evaluación con el nuevo formato detallado
   var newRow = [
     new Date(),
     data.codigoProyecto,
     data.correoJuez,
-    data.presentacion,
-    data.innovacion,
-    data.observaciones
+    data.categoria, // Col D
+    data.notaTotal, // Col E
+    JSON.stringify(data.respuestas), // Col F
+    data.observaciones // Col G
   ];
   sheet.appendRow(newRow);
   
-  return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Evaluación guardada' })).setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Evaluación guardada con éxito', nota: data.notaTotal })).setMimeType(ContentService.MimeType.JSON);
 }
 
 function getStats() {

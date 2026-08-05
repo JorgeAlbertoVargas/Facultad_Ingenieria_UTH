@@ -11,7 +11,7 @@ const App = {
         });
     },
 
-    loadMainLayout() {
+    async loadMainLayout() {
         UI.navigate('main-layout');
         
         // Actualizar datos del usuario en Sidebar
@@ -22,8 +22,8 @@ const App = {
         
         // Cargar vista por defecto según el rol
         if (Auth.user.role === 'Evaluador') {
+            await this.loadTernaInfo(); // <- SE ESPERA A CONOCER LA TERNA ANTES DE CARGAR PROYECTOS
             Judge.loadDashboard();
-            this.loadTernaInfo();
         } else if (Auth.user.role === 'Administrador') {
             Admin.loadDashboard();
         }
@@ -33,9 +33,9 @@ const App = {
         try {
             const response = await API.get('getTerna', { email: Auth.user.email });
             if (response.success && response.terna) {
+                Auth.user.terna = response.terna;
                 document.getElementById('user-terna-info').style.display = 'block';
                 document.getElementById('user-terna-name').innerText = response.terna;
-                
                 if (response.companeros.length > 0) {
                     const listHtml = '<ul style="padding-left: 15px; margin-top: 0; line-height: 1.6;">' + 
                         response.companeros.map(c => `<li>${c}</li>`).join('') + 
