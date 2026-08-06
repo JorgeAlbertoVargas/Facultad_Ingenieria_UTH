@@ -425,74 +425,69 @@ function getMapUrl() {
   return ContentService.createTextOutput(JSON.stringify({ success: true, url: url })).setMimeType(ContentService.MimeType.JSON);
 }
 
-function renumerarStandsEnMapa() {
-  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  var sheet = spreadsheet.getSheetByName('Distribucion_Proyectos');
-  
-  if (!sheet) {
-    return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña 'Distribucion_Proyectos' no encontrada" })).setMimeType(ContentService.MimeType.JSON);
-  }
+// ==========================================
+// HERRAMIENTAS IA (MENÚ PERSONALIZADO)
+// ==========================================
 
+function onOpen() {
+  SpreadsheetApp.getUi()
+      .createMenu('🤖 Herramientas IA')
+      .addItem('1. Aplicar fórmula de D6 a todos los Stands', 'aplicarFormulaD6')
+      .addItem('2. Numerar 1, 2, 3... (Fila por fila)', 'numerarFilaPorFila')
+      .addToUi();
+}
+
+function aplicarFormulaD6() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   var range = sheet.getDataRange();
   var values = range.getValues();
-  var stands = [];
-
-  // 1. Encontrar todas las celdas que sean un Stand
+  
+  var cellD6 = sheet.getRange("D6");
+  var formula = cellD6.getFormula();
+  
+  if (!formula) {
+    SpreadsheetApp.getUi().alert("No se encontró ninguna fórmula en la celda D6. Por favor, asegúrate de que D6 tenga una fórmula (que empiece con =).");
+    return;
+  }
+  
+  var count = 0;
   for (var i = 0; i < values.length; i++) {
     for (var j = 0; j < values[i].length; j++) {
-      var cellValue = String(values[i][j]).trim();
-      if (cellValue.match(/^Stand_\d+$/i)) {
-        stands.push({
-          row: i,
-          col: j,
-          value: cellValue
-        });
+      var val = String(values[i][j]).trim().toLowerCase();
+      // Buscar celdas que sean Stand_ o Stant_
+      if (val.indexOf("stand_") === 0 || val.indexOf("stant_") === 0) {
+        // Evitamos copiar sobre la misma D6
+        if (i === 5 && j === 3) continue; 
+        
+        // Copiamos la fórmula simulando un Ctrl+C y Ctrl+V para que se adapte
+        cellD6.copyTo(sheet.getRange(i + 1, j + 1), SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false);
+        count++;
       }
     }
   }
+  
+  SpreadsheetApp.getUi().alert("¡Listo! La fórmula de D6 se ha copiado exitosamente a " + count + " casillas en el mapa.");
+}
 
-  // 2. Ordenar espacialmente
-  // Columna j es índice 0-based.
-  // Basado en tu diseño:
-  // - Bloque Izquierdo (Col B a E) -> col <= 4
-  // - Bloque Central (Col F a U) -> 5 <= col <= 20
-  // - Bloque Derecho (Col V en adelante) -> col >= 21
-  stands.sort(function(a, b) {
-    var getBlock = function(col) {
-      if (col <= 4) return 1; // Izquierda
-      if (col <= 20) return 2; // Centro
-      return 3; // Derecha
-    };
-    
-    var blockA = getBlock(a.col);
-    var blockB = getBlock(b.col);
-    
-    if (blockA !== blockB) {
-      return blockA - blockB; // Ordenar por bloque: Izq -> Centro -> Der
-    }
-    
-    if (blockA === 2) {
-      // Bloque central: De izquierda a derecha, fila por fila
-      if (a.row !== b.row) {
-        // Permitimos una pequeña tolerancia en las filas si no están perfectamente alineadas
-        if (Math.abs(a.row - b.row) > 2) {
-           return a.row - b.row;
-        }
+function numerarFilaPorFila() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var range = sheet.getDataRange();
+  var values = range.getValues();
+  var counter = 1;
+  var countModificados = 0;
+  
+  // Recorrer estrictamente fila por fila, de arriba abajo y de izquierda a derecha
+  for (var i = 0; i < values.length; i++) {
+    for (var j = 0; j < values[i].length; j++) {
+      var val = String(values[i][j]).trim().toLowerCase();
+      if (val.indexOf("stand_") === 0 || val.indexOf("stant_") === 0) {
+        values[i][j] = "Stand_" + counter;
+        counter++;
+        countModificados++;
       }
-      return a.col - b.col;
-    } else {
-      // Bloques laterales: De arriba hacia abajo
-      return a.row - b.row;
     }
-  });
-
-  // 3. Renumerar
-  for (var k = 0; k < stands.length; k++) {
-    var s = stands[k];
-    values[s.row][s.col] = "Stand_" + (k + 1);
   }
-
-  // 4. Guardar
+  
   range.setValues(values);
-  return ContentService.createTextOutput(JSON.stringify({ success: true, message: "Stands enumerados del 1 al " + stands.length })).setMimeType(ContentService.MimeType.JSON);
+  SpreadsheetApp.getUi().alert("¡Listo! Se han enumerado " + countModificados + " stands consecutivamente (fila por fila).");
 }
