@@ -88,8 +88,8 @@ function getProjects(terna, email) {
       var codEval = evalValues[j][1]; // Col B (1) es Código Proyecto
       var juezEval = evalValues[j][2]; // Col C (2) es Juez (Email)
       var notaEval = evalValues[j][4]; // Col E (4) es Nota Total
-      if (codEval && String(juezEval).trim() === String(email).trim()) {
-        evaluados[codEval] = { evaluado: true, nota: notaEval };
+      if (codEval && String(juezEval).indexOf(String(email).trim()) !== -1) {
+        evaluados[String(codEval).trim()] = { evaluado: true, nota: notaEval };
       }
     }
   }
@@ -125,8 +125,8 @@ function getProjects(terna, email) {
         'Comprobante_Pago': values[i][15],
         'Fotografia_Grupal': values[i][16],
         'Articulo_Cientifico': values[i][17],
-        'evaluado': evaluados[codigo] ? true : false,
-        'nota_obtenida': evaluados[codigo] ? evaluados[codigo].nota : null
+        'evaluado': evaluados[String(codigo).trim()] ? true : false,
+        'nota_obtenida': evaluados[String(codigo).trim()] ? evaluados[String(codigo).trim()].nota : null
       });
     }
   }
