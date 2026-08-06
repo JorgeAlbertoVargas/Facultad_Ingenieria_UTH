@@ -420,15 +420,8 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
 // Funciones de Mapa y Stands
 // ------------------------------------
 function getMapUrl() {
-  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  var sheet = spreadsheet.getSheetByName("Layout_Ubicaciones");
-  
-  if (!sheet) {
-    return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña 'Layout_Ubicaciones' no encontrada. Por favor, genérala desde el menú 'Herramientas IA'." })).setMimeType(ContentService.MimeType.JSON);
-  }
-  
-  var gid = sheet.getSheetId();
-  var url = "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID + "/htmlembed?gid=" + gid + "&widget=false&headers=false&chrome=false";
+  // Utilizamos directamente el ID y GID (1169813579) para cargar "Distribucion_Proyectos"
+  var url = "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID + "/htmlembed?gid=1169813579&widget=false&headers=false&chrome=false";
   return ContentService.createTextOutput(JSON.stringify({ success: true, url: url })).setMimeType(ContentService.MimeType.JSON);
 }
 
