@@ -3,11 +3,11 @@ const SPREADSHEET_ID = '1gJjPjGDhjcfP_wMxQHYCEXkNHLD-lAewLhGeb-UMtBw';
 function doPost(e) {
   var output = ContentService.createTextOutput();
   output.setMimeType(ContentService.MimeType.JSON);
-  
+
   try {
     var data = JSON.parse(e.postData.contents);
     var action = data.action;
-    
+
     if (action === 'register') {
       return registerUser(data);
     } else if (action === 'login') {
@@ -15,7 +15,7 @@ function doPost(e) {
     } else if (action === 'saveEvaluation') {
       return saveEvaluation(data);
     } else {
-       return output.setContent(JSON.stringify({ success: false, error: 'Acción no válida' }));
+      return output.setContent(JSON.stringify({ success: false, error: 'Acción no válida' }));
     }
   } catch (error) {
     return output.setContent(JSON.stringify({ success: false, error: error.toString() }));
@@ -28,7 +28,7 @@ function doGet(e) {
 
   try {
     var action = e.parameter.action;
-    
+
     if (action === 'getProjects') {
       return getProjects(e.parameter.terna, e.parameter.email);
     } else if (action === 'getStats') {
@@ -48,10 +48,10 @@ function doGet(e) {
 function getTerna(email) {
   var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Ternas');
   if (!sheet) return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña 'Ternas' no encontrada" })).setMimeType(ContentService.MimeType.JSON);
-  
+
   var values = sheet.getDataRange().getValues();
   var myTerna = null;
-  
+
   // Buscar a qué terna pertenece el email
   for (var i = 1; i < values.length; i++) {
     if (String(values[i][2]).trim() === String(email).trim()) { // Col C: Email_Evaluador
@@ -59,9 +59,9 @@ function getTerna(email) {
       break;
     }
   }
-  
+
   if (!myTerna) return ContentService.createTextOutput(JSON.stringify({ success: true, terna: null, companeros: [] })).setMimeType(ContentService.MimeType.JSON);
-  
+
   // Buscar integrantes de la misma terna
   var companeros = [];
   for (var j = 1; j < values.length; j++) {
@@ -69,7 +69,7 @@ function getTerna(email) {
       companeros.push(values[j][1]); // Añadir Nombre_Evaluador del integrante (Col B)
     }
   }
-  
+
   return ContentService.createTextOutput(JSON.stringify({ success: true, terna: myTerna, companeros: companeros })).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -77,9 +77,9 @@ function getProjects(terna, email) {
   var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheetProyectos = spreadsheet.getSheetByName('Proyectos');
   var sheetEvaluaciones = spreadsheet.getSheetByName('Evaluaciones');
-  
+
   if (!sheetProyectos) return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña 'Proyectos' no encontrada" })).setMimeType(ContentService.MimeType.JSON);
-  
+
   // Obtener todos los códigos de proyectos ya evaluados por ESTE juez
   var evaluados = {};
   if (sheetEvaluaciones) {
@@ -93,10 +93,10 @@ function getProjects(terna, email) {
       }
     }
   }
-  
+
   var values = sheetProyectos.getDataRange().getValues();
   var projects = [];
-  
+
   for (var i = 1; i < values.length; i++) {
     if (values[i][2]) { // Col C (Index 2) es ID_Proyecto
       // Filtrar por terna si se solicita (asumiendo Col S / Index 18 para "Terna_Asignada")
@@ -130,7 +130,7 @@ function getProjects(terna, email) {
       });
     }
   }
-  
+
   return ContentService.createTextOutput(JSON.stringify({ success: true, projects: projects })).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -138,14 +138,14 @@ function getQuestions(categoria) {
   var sheetName = "Preguntas_" + categoria;
   var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = spreadsheet.getSheetByName(sheetName);
-  
+
   if (!sheet) {
     return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña '" + sheetName + "' no encontrada. Créala en tu Google Sheets." })).setMimeType(ContentService.MimeType.JSON);
   }
-  
+
   var values = sheet.getDataRange().getValues();
   var questions = [];
-  
+
   // Asumimos que la fila 0 son encabezados
   for (var i = 1; i < values.length; i++) {
     if (values[i][0]) { // Si hay bloque
@@ -163,51 +163,53 @@ function getQuestions(categoria) {
       });
     }
   }
-  
+
   return ContentService.createTextOutput(JSON.stringify({ success: true, questions: questions })).setMimeType(ContentService.MimeType.JSON);
 }
 
 function saveEvaluation(data) {
   var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Evaluaciones');
   if (!sheet) return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña 'Evaluaciones' no encontrada" })).setMimeType(ContentService.MimeType.JSON);
-  
+
   // Guardar evaluación con el nuevo formato detallado
+  var notaRedondeada = Math.round(parseFloat(data.notaTotal)) || 0;
+  
   var newRow = [
     new Date(),
     data.codigoProyecto,
     data.correoJuez,
     data.categoria, // Col D
-    data.notaTotal, // Col E
+    notaRedondeada, // Col E
     JSON.stringify(data.respuestas), // Col F
     data.observaciones // Col G
   ];
   sheet.appendRow(newRow);
-  
+
   // Consolidar notas en la pestaña de la categoría
   try {
-    updateConsolidatedRanking(data.codigoProyecto, data.correoJuez, data.notaTotal, data.categoria);
-  } catch(e) {
+    updateConsolidatedRanking(data.codigoProyecto, data.correoJuez, notaRedondeada, data.categoria);
+  } catch (e) {
     // Ignoramos el error para no bloquear la respuesta principal al usuario
   }
-  
-  return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Evaluación guardada con éxito', nota: data.notaTotal })).setMimeType(ContentService.MimeType.JSON);
+
+  return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Evaluación guardada con éxito', nota: notaRedondeada })).setMimeType(ContentService.MimeType.JSON);
 }
 
 function getStats() {
   var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  
+
   var sheetProyectos = spreadsheet.getSheetByName('Proyectos');
   var totalProjects = sheetProyectos ? Math.max(0, sheetProyectos.getLastRow() - 1) : 0;
-  
+
   var sheetEvaluaciones = spreadsheet.getSheetByName('Evaluaciones');
   var totalEvaluations = sheetEvaluaciones ? Math.max(0, sheetEvaluaciones.getLastRow() - 1) : 0;
-  
+
   var stats = {
     totalProjects: totalProjects,
     totalEvaluations: totalEvaluations,
     categories: 4
   };
-  
+
   return ContentService.createTextOutput(JSON.stringify({ success: true, stats: stats })).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -219,7 +221,7 @@ function registerUser(data) {
   if (!sheet) return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña 'Usuarios' no encontrada" })).setMimeType(ContentService.MimeType.JSON);
   var values = sheet.getDataRange().getValues();
   for (var i = 1; i < values.length; i++) {
-    if (String(values[i][3]).trim() === String(data.email).trim()) { 
+    if (String(values[i][3]).trim() === String(data.email).trim()) {
       return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'El correo ya está registrado' })).setMimeType(ContentService.MimeType.JSON);
     }
   }
@@ -246,7 +248,7 @@ function loginUser(data) {
 // ------------------------------------
 function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, categoria) {
   var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  
+
   // Buscar el nombre del juez en la pestaña Usuarios
   var nombreJuez = correoJuez;
   var sheetUsuarios = spreadsheet.getSheetByName('Usuarios');
@@ -259,13 +261,13 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
       }
     }
   }
-  
+
   // Limpiar el nombre de la categoría para que sea válido como pestaña (máx 31 caracteres)
-  var cleanCat = String(categoria).replace(/[:*?\[\\]\\/]/g, '').trim().substring(0, 22);
+  var cleanCat = String(categoria).replace(/[:*?\[\]\\/]/g, '').trim().substring(0, 22);
   var sheetName = "Ranking_" + cleanCat;
-  
+
   var sheet = spreadsheet.getSheetByName(sheetName);
-  
+
   // Si la pestaña no existe, la creamos y le ponemos encabezados
   if (!sheet) {
     sheet = spreadsheet.insertSheet(sheetName);
@@ -273,10 +275,10 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
     sheet.appendRow(headers);
     sheet.getRange("A1:I1").setFontWeight("bold").setBackground("#f3f4f6");
   }
-  
+
   var data = sheet.getDataRange().getValues();
   var rowIndex = -1;
-  
+
   // Buscar si el proyecto ya existe en la fila (empezamos de 1 para saltar encabezados)
   for (var i = 1; i < data.length; i++) {
     if (String(data[i][1]).trim() === String(codigoProyecto).trim()) { // Índice 1 es ID_Proyecto
@@ -284,17 +286,17 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
       break;
     }
   }
-  
+
   if (rowIndex !== -1) {
     // El proyecto ya existe, buscar espacio para el juez o actualizar si ya existe
     var rowData = data[rowIndex - 1]; // Índice base 0
     var j1 = rowData[2]; // Evaluador_1
     var j2 = rowData[3]; // Evaluador_2
     var j3 = rowData[4]; // Evaluador_3
-    
+
     var currentDate = new Date();
     sheet.getRange(rowIndex, 1).setValue(currentDate); // Actualizar Fecha
-    
+
     // Verificamos si este juez ya evaluó (buscando su correo dentro de la celda) y actualizamos su nota
     if (String(j1).indexOf(String(correoJuez).trim()) !== -1) {
       sheet.getRange(rowIndex, 6).setValue(notaTotal); // Nota 1
@@ -315,15 +317,15 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
         sheet.getRange(rowIndex, 8).setValue(notaTotal);
       }
     }
-    
-    // Recalcular promedio con una fórmula
-    sheet.getRange(rowIndex, 9).setFormula('=AVERAGE(F' + rowIndex + ':H' + rowIndex + ')');
-    
+
+    // Recalcular promedio con una fórmula redondeada
+    sheet.getRange(rowIndex, 9).setFormula('=ROUND(AVERAGE(F' + rowIndex + ':H' + rowIndex + '), 0)');
+
   } else {
     // El proyecto no existe, insertar nueva fila
     var newRow = [new Date(), codigoProyecto, nombreJuez, "", "", notaTotal, "", "", ""];
     sheet.appendRow(newRow);
     var newRowIndex = sheet.getLastRow();
-    sheet.getRange(newRowIndex, 9).setFormula('=AVERAGE(F' + newRowIndex + ':H' + newRowIndex + ')');
+    sheet.getRange(newRowIndex, 9).setFormula('=ROUND(AVERAGE(F' + newRowIndex + ':H' + newRowIndex + '), 0)');
   }
 }
