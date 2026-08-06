@@ -426,80 +426,82 @@ function getMapUrl() {
 }
 
 // ==========================================
-// HERRAMIENTAS IA (MENÚ PERSONALIZADO)
+// HERRAMIENTAS IA
 // ==========================================
 
-function onOpen() {
-  SpreadsheetApp.getUi()
-      .createMenu('🤖 Herramientas IA')
-      .addItem('¡Crear Mapa Automático (Layout_Ubicaciones)!', 'generarLayoutUbicaciones')
-      .addToUi();
-}
-
-function generarLayoutUbicaciones() {
-  // Usar explícitamente el ID para que funcione aunque el script esté separado de la hoja
+function ubicarProyectos() {
   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  var sheetName = "Layout_Ubicaciones";
-  var sheet = ss.getSheetByName(sheetName);
   
-  if (!sheet) {
-    sheet = ss.insertSheet(sheetName);
-  } else {
-    sheet.clear(); // Limpiar si ya existe para rehacerlo
+  // 1. Leer la base de datos
+  var sheetBD = ss.getSheetByName("Base_Datos");
+  if (!sheetBD) {
+    console.log("Error: No se encontró la pestaña 'Base_Datos'.");
+    return;
   }
   
-  // Configurar anchos de columna para que parezca un mapa
-  for (var c = 1; c <= 25; c++) {
-    sheet.setColumnWidth(c, 50);
-  }
-  sheet.setColumnWidth(1, 20); // Margen Izquierdo (A)
-  sheet.setColumnWidth(5, 30); // Espacio entre bloque izq y centro (E)
-  sheet.setColumnWidth(20, 30); // Espacio entre centro y derecha (T)
+  var dataBD = sheetBD.getDataRange().getValues();
+  var proyectos = {}; 
   
-  // Título
-  sheet.getRange("F2:S2").merge().setValue("Esquemático De Distribución De Proyectos")
-       .setFontWeight("bold").setHorizontalAlignment("center").setFontSize(14);
-  
-  var currentStand = 1;
-  
-  // Helper para dibujar un stand
-  function drawStand(r, c, num, color) {
-    var headerRange = sheet.getRange(r, c, 1, 2);
-    headerRange.merge().setValue("Stand_" + num)
-               .setBackground(color)
-               .setHorizontalAlignment("center")
-               .setFontWeight("bold")
-               .setBorder(true, true, true, true, true, true);
-               
-    var dataRange = sheet.getRange(r + 1, c, 2, 2);
-    dataRange.merge().setValue("Tu Fórmula Aquí")
-             .setBackground("#d9eaf7") // Azul clarito
-             .setFontColor("#888888")
-             .setHorizontalAlignment("center")
-             .setVerticalAlignment("middle")
-             .setBorder(true, true, true, true, true, true);
-  }
-  
-  var leftColor = "#4a86e8"; // Azul
-  var centerColor = "#d9ead3"; // Verde clarito
-  var rightColor = "#00ff00"; // Verde fuerte
-  
-  // Bloque Izquierdo (Stands 1 al 6) -> Columnas C y D (índice 3 y 4)
-  for (var i = 0; i < 6; i++) {
-    drawStand(4 + (i * 4), 3, currentStand++, leftColor);
-  }
-  
-  // Bloque Central (8 filas, 7 columnas) -> Columnas F, H, J, L, N, P, R (inicia en índice 6)
-  for (var rowIdx = 0; rowIdx < 8; rowIdx++) {
-    for (var colIdx = 0; colIdx < 7; colIdx++) {
-      drawStand(4 + (rowIdx * 4), 6 + (colIdx * 2), currentStand++, centerColor);
+  // Empezamos desde la fila 1 (ignorando encabezados)
+  for (var i = 1; i < dataBD.length; i++) {
+    var id = String(dataBD[i][0]).trim(); // Columna A: ID
+    var nombre = String(dataBD[i][1]).trim(); // Columna B: Nombre
+    
+    if (id) {
+      // Extraemos los últimos números del ID (ej. "001" -> 1)
+      var match = id.match(/\d+$/);
+      if (match) {
+        var num = parseInt(match[0], 10);
+        // Guardamos el ID y el Nombre para mostrarlo en el mapa
+        proyectos[num] = id + "\n" + nombre;
+      }
     }
   }
   
-  // Bloque Derecho (Stands 63 al 68) -> Columnas U y V (índices 21 y 22)
-  for (var i = 0; i < 6; i++) {
-    drawStand(4 + (i * 4), 21, currentStand++, rightColor);
+  // 2. Ubicar en el mapa (Distribucion_Proyectos GID = 1169813579)
+  var sheetMapa = null;
+  var sheets = ss.getSheets();
+  for (var s = 0; s < sheets.length; s++) {
+    if (sheets[s].getSheetId() == 1169813579) {
+      sheetMapa = sheets[s];
+      break;
+    }
   }
   
-  console.log("¡Magia completada! Mapa 'Layout_Ubicaciones' generado exitosamente con 68 stands en perfecto orden.");
+  if (!sheetMapa) {
+    console.log("Error: No se encontró la pestaña original del mapa.");
+    return;
+  }
+  
+  var rangeMapa = sheetMapa.getDataRange();
+  var valuesMapa = rangeMapa.getValues();
+  var countUbicados = 0;
+  
+  // 3. Recorrer el mapa buscando "Stand_X" o "Stant_X"
+  for (var r = 0; r < valuesMapa.length; r++) {
+    for (var c = 0; c < valuesMapa[r].length; c++) {
+      var cellVal = String(valuesMapa[r][c]).trim().toLowerCase();
+      
+      if (cellVal.indexOf("stand_") === 0 || cellVal.indexOf("stant_") === 0) {
+        var matchStand = cellVal.match(/\d+/);
+        if (matchStand) {
+          var numStand = parseInt(matchStand[0], 10);
+          
+          // Asumimos que la celda de abajo (r+1) es donde va el contenido del proyecto
+          if (r + 1 < valuesMapa.length) {
+            if (proyectos[numStand]) {
+              valuesMapa[r+1][c] = proyectos[numStand];
+              countUbicados++;
+            } else {
+              valuesMapa[r+1][c] = "Libre / Sin Asignar";
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Guardamos los cambios
+  rangeMapa.setValues(valuesMapa);
+  console.log("¡Éxito! Se ubicaron " + countUbicados + " proyectos en el mapa basándose en sus últimos dígitos.");
 }
