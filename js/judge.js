@@ -193,9 +193,14 @@ const Judge = {
                         <div style="font-size: 13px; color: #475569; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Calificación Parcial</div>
                         <div class="score-display" id="running-score">0.00%</div>
                     </div>
-                    <button type="submit" form="eval-form" class="btn btn-primary btn-large" id="btn-submit-eval">
-                        <i class="fas fa-save"></i> Guardar Evaluación
-                    </button>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button type="button" class="btn btn-text" onclick="if(confirm('¿Estás seguro que deseas cancelar? Se perderá toda la información ingresada.')) { Judge.loadDashboard(); }" style="color: var(--danger); padding: 10px;">
+                            Cancelar
+                        </button>
+                        <button type="submit" form="eval-form" class="btn btn-primary" id="btn-submit-eval" style="padding: 10px 15px;">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                    </div>
                 </div>
             `;
 
