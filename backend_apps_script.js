@@ -444,7 +444,8 @@ function onOpen() {
 }
 
 function generarLayoutUbicaciones() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  // Usar explícitamente el ID para que funcione aunque el script esté separado de la hoja
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheetName = "Layout_Ubicaciones";
   var sheet = ss.getSheetByName(sheetName);
   
