@@ -181,6 +181,10 @@ function saveEvaluation(data) {
     data.categoria, // Col D
     notaRedondeada, // Col E
     JSON.stringify(data.respuestas), // Col F
+    data.observaciones // Col G
+  ];
+  sheet.appendRow(newRow);
+
   // Calcular sumatoria del bloque Técnico
   var notaTecnico = 0;
   if (data.respuestas && Array.isArray(data.respuestas)) {
