@@ -214,6 +214,7 @@ function saveEvaluation(data) {
   // Actualizar los encabezados en la fila 1 para reflejar los cambios
   try {
     sheet.getRange("C1").setValue("Evaluador");
+    sheet.getRange("D1").setValue("Categoria");
     sheet.getRange("E1").setValue("Total");
     
     if (numRespuestas > 0) {
