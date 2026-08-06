@@ -247,6 +247,19 @@ function loginUser(data) {
 function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, categoria) {
   var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   
+  // Buscar el nombre del juez en la pestaña Usuarios
+  var nombreJuez = correoJuez;
+  var sheetUsuarios = spreadsheet.getSheetByName('Usuarios');
+  if (sheetUsuarios) {
+    var usuarios = sheetUsuarios.getDataRange().getValues();
+    for (var u = 1; u < usuarios.length; u++) {
+      if (String(usuarios[u][3]).trim() === String(correoJuez).trim()) {
+        nombreJuez = String(usuarios[u][2]).trim() + " | " + correoJuez;
+        break;
+      }
+    }
+  }
+  
   // Limpiar el nombre de la categoría para que sea válido como pestaña (máx 31 caracteres)
   var cleanCat = String(categoria).replace(/[:*?\[\\]\\/]/g, '').trim().substring(0, 22);
   var sheetName = "Ranking_" + cleanCat;
@@ -256,9 +269,9 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
   // Si la pestaña no existe, la creamos y le ponemos encabezados
   if (!sheet) {
     sheet = spreadsheet.insertSheet(sheetName);
-    var headers = ["ID_Proyecto", "Evaluador_1", "Nota_1", "Evaluador_2", "Nota_2", "Evaluador_3", "Nota_3", "Promedio"];
+    var headers = ["Fecha", "ID_Proyecto", "Evaluador_1", "Evaluador_2", "Evaluador_3", "Nota_Evaluador_1", "Nota_Evaluador_2", "Nota_Evaluador_3", "Promedio"];
     sheet.appendRow(headers);
-    sheet.getRange("A1:H1").setFontWeight("bold").setBackground("#f3f4f6");
+    sheet.getRange("A1:I1").setFontWeight("bold").setBackground("#f3f4f6");
   }
   
   var data = sheet.getDataRange().getValues();
@@ -266,7 +279,7 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
   
   // Buscar si el proyecto ya existe en la fila (empezamos de 1 para saltar encabezados)
   for (var i = 1; i < data.length; i++) {
-    if (String(data[i][0]).trim() === String(codigoProyecto).trim()) {
+    if (String(data[i][1]).trim() === String(codigoProyecto).trim()) { // Índice 1 es ID_Proyecto
       rowIndex = i + 1; // Las filas en Sheet son base 1
       break;
     }
@@ -275,39 +288,42 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
   if (rowIndex !== -1) {
     // El proyecto ya existe, buscar espacio para el juez o actualizar si ya existe
     var rowData = data[rowIndex - 1]; // Índice base 0
-    var j1 = rowData[1], n1 = rowData[2];
-    var j2 = rowData[3], n2 = rowData[4];
-    var j3 = rowData[5], n3 = rowData[6];
+    var j1 = rowData[2]; // Evaluador_1
+    var j2 = rowData[3]; // Evaluador_2
+    var j3 = rowData[4]; // Evaluador_3
     
-    // Verificamos si este juez ya evaluó y actualizamos su nota
-    if (String(j1).trim() === String(correoJuez).trim()) {
-      sheet.getRange(rowIndex, 3).setValue(notaTotal);
-    } else if (String(j2).trim() === String(correoJuez).trim()) {
-      sheet.getRange(rowIndex, 5).setValue(notaTotal);
-    } else if (String(j3).trim() === String(correoJuez).trim()) {
-      sheet.getRange(rowIndex, 7).setValue(notaTotal);
+    var currentDate = new Date();
+    sheet.getRange(rowIndex, 1).setValue(currentDate); // Actualizar Fecha
+    
+    // Verificamos si este juez ya evaluó (buscando su correo dentro de la celda) y actualizamos su nota
+    if (String(j1).indexOf(String(correoJuez).trim()) !== -1) {
+      sheet.getRange(rowIndex, 6).setValue(notaTotal); // Nota 1
+    } else if (String(j2).indexOf(String(correoJuez).trim()) !== -1) {
+      sheet.getRange(rowIndex, 7).setValue(notaTotal); // Nota 2
+    } else if (String(j3).indexOf(String(correoJuez).trim()) !== -1) {
+      sheet.getRange(rowIndex, 8).setValue(notaTotal); // Nota 3
     } else {
       // Es un juez nuevo, buscar la primera columna vacía
       if (!j1 || String(j1).trim() === "") {
-        sheet.getRange(rowIndex, 2).setValue(correoJuez);
-        sheet.getRange(rowIndex, 3).setValue(notaTotal);
+        sheet.getRange(rowIndex, 3).setValue(nombreJuez);
+        sheet.getRange(rowIndex, 6).setValue(notaTotal);
       } else if (!j2 || String(j2).trim() === "") {
-        sheet.getRange(rowIndex, 4).setValue(correoJuez);
-        sheet.getRange(rowIndex, 5).setValue(notaTotal);
-      } else if (!j3 || String(j3).trim() === "") {
-        sheet.getRange(rowIndex, 6).setValue(correoJuez);
+        sheet.getRange(rowIndex, 4).setValue(nombreJuez);
         sheet.getRange(rowIndex, 7).setValue(notaTotal);
+      } else if (!j3 || String(j3).trim() === "") {
+        sheet.getRange(rowIndex, 5).setValue(nombreJuez);
+        sheet.getRange(rowIndex, 8).setValue(notaTotal);
       }
     }
     
     // Recalcular promedio con una fórmula
-    sheet.getRange(rowIndex, 8).setFormula('=AVERAGE(C' + rowIndex + ', E' + rowIndex + ', G' + rowIndex + ')');
+    sheet.getRange(rowIndex, 9).setFormula('=AVERAGE(F' + rowIndex + ':H' + rowIndex + ')');
     
   } else {
     // El proyecto no existe, insertar nueva fila
-    var newRow = [codigoProyecto, correoJuez, notaTotal, "", "", "", "", ""];
+    var newRow = [new Date(), codigoProyecto, nombreJuez, "", "", notaTotal, "", "", ""];
     sheet.appendRow(newRow);
     var newRowIndex = sheet.getLastRow();
-    sheet.getRange(newRowIndex, 8).setFormula('=AVERAGE(C' + newRowIndex + ', E' + newRowIndex + ', G' + newRowIndex + ')');
+    sheet.getRange(newRowIndex, 9).setFormula('=AVERAGE(F' + newRowIndex + ':H' + newRowIndex + ')');
   }
 }
