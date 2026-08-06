@@ -256,7 +256,7 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
   // Si la pestaña no existe, la creamos y le ponemos encabezados
   if (!sheet) {
     sheet = spreadsheet.insertSheet(sheetName);
-    var headers = ["ID_Proyecto", "Juez_1", "Nota_1", "Juez_2", "Nota_2", "Juez_3", "Nota_3", "Promedio"];
+    var headers = ["ID_Proyecto", "Evaluador_1", "Nota_1", "Evaluador_2", "Nota_2", "Evaluador_3", "Nota_3", "Promedio"];
     sheet.appendRow(headers);
     sheet.getRange("A1:H1").setFontWeight("bold").setBackground("#f3f4f6");
   }
