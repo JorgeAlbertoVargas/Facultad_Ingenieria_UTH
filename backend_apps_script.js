@@ -433,9 +433,9 @@ function ubicarProyectos() {
   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   
   // 1. Leer la base de datos
-  var sheetBD = ss.getSheetByName("Base_Datos");
+  var sheetBD = ss.getSheetByName("Base_Datos_Feria_Ingenieria");
   if (!sheetBD) {
-    console.log("Error: No se encontró la pestaña 'Base_Datos'.");
+    console.log("Error: No se encontró la pestaña 'Base_Datos_Feria_Ingenieria'.");
     return;
   }
   
