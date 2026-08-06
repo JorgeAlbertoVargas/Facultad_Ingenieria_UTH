@@ -183,6 +183,13 @@ function saveEvaluation(data) {
   ];
   sheet.appendRow(newRow);
   
+  // Consolidar notas en la pestaña de la categoría
+  try {
+    updateConsolidatedRanking(data.codigoProyecto, data.correoJuez, data.notaTotal, data.categoria);
+  } catch(e) {
+    // Ignoramos el error para no bloquear la respuesta principal al usuario
+  }
+  
   return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Evaluación guardada con éxito', nota: data.notaTotal })).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -232,4 +239,75 @@ function loginUser(data) {
     }
   }
   return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Credenciales inválidas' })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// ------------------------------------
+// Funciones de Consolidación y Ranking
+// ------------------------------------
+function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, categoria) {
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  
+  // Limpiar el nombre de la categoría para que sea válido como pestaña (máx 31 caracteres)
+  var cleanCat = String(categoria).replace(/[:*?\[\\]\\/]/g, '').trim().substring(0, 22);
+  var sheetName = "Ranking_" + cleanCat;
+  
+  var sheet = spreadsheet.getSheetByName(sheetName);
+  
+  // Si la pestaña no existe, la creamos y le ponemos encabezados
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(sheetName);
+    var headers = ["ID_Proyecto", "Juez_1", "Nota_1", "Juez_2", "Nota_2", "Juez_3", "Nota_3", "Promedio"];
+    sheet.appendRow(headers);
+    sheet.getRange("A1:H1").setFontWeight("bold").setBackground("#f3f4f6");
+  }
+  
+  var data = sheet.getDataRange().getValues();
+  var rowIndex = -1;
+  
+  // Buscar si el proyecto ya existe en la fila (empezamos de 1 para saltar encabezados)
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][0]).trim() === String(codigoProyecto).trim()) {
+      rowIndex = i + 1; // Las filas en Sheet son base 1
+      break;
+    }
+  }
+  
+  if (rowIndex !== -1) {
+    // El proyecto ya existe, buscar espacio para el juez o actualizar si ya existe
+    var rowData = data[rowIndex - 1]; // Índice base 0
+    var j1 = rowData[1], n1 = rowData[2];
+    var j2 = rowData[3], n2 = rowData[4];
+    var j3 = rowData[5], n3 = rowData[6];
+    
+    // Verificamos si este juez ya evaluó y actualizamos su nota
+    if (String(j1).trim() === String(correoJuez).trim()) {
+      sheet.getRange(rowIndex, 3).setValue(notaTotal);
+    } else if (String(j2).trim() === String(correoJuez).trim()) {
+      sheet.getRange(rowIndex, 5).setValue(notaTotal);
+    } else if (String(j3).trim() === String(correoJuez).trim()) {
+      sheet.getRange(rowIndex, 7).setValue(notaTotal);
+    } else {
+      // Es un juez nuevo, buscar la primera columna vacía
+      if (!j1 || String(j1).trim() === "") {
+        sheet.getRange(rowIndex, 2).setValue(correoJuez);
+        sheet.getRange(rowIndex, 3).setValue(notaTotal);
+      } else if (!j2 || String(j2).trim() === "") {
+        sheet.getRange(rowIndex, 4).setValue(correoJuez);
+        sheet.getRange(rowIndex, 5).setValue(notaTotal);
+      } else if (!j3 || String(j3).trim() === "") {
+        sheet.getRange(rowIndex, 6).setValue(correoJuez);
+        sheet.getRange(rowIndex, 7).setValue(notaTotal);
+      }
+    }
+    
+    // Recalcular promedio con una fórmula
+    sheet.getRange(rowIndex, 8).setFormula('=AVERAGE(C' + rowIndex + ', E' + rowIndex + ', G' + rowIndex + ')');
+    
+  } else {
+    // El proyecto no existe, insertar nueva fila
+    var newRow = [codigoProyecto, correoJuez, notaTotal, "", "", "", "", ""];
+    sheet.appendRow(newRow);
+    var newRowIndex = sheet.getLastRow();
+    sheet.getRange(newRowIndex, 8).setFormula('=AVERAGE(C' + newRowIndex + ', E' + newRowIndex + ', G' + newRowIndex + ')');
+  }
 }
