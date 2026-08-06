@@ -110,6 +110,11 @@ const API = {
                         success: true,
                         url: "https://docs.google.com/spreadsheets/d/1gJjPjGDhjcfP_wMxQHYCEXkNHLD-lAewLhGeb-UMtBw/htmlembed?gid=1169813579&widget=false&headers=false&chrome=false"
                     });
+                } else if (action === 'ubicarProyectos') {
+                    resolve({
+                        success: true,
+                        message: 'Proyectos ubicados (Mock)'
+                    });
                 }
             }, 800);
         });

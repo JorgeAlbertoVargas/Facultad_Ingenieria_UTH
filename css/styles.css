@@ -496,7 +496,14 @@ body {
     }
     
     .sidebar-header {
-        padding: 15px 20px;
+        padding: 10px 15px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .sidebar-logo {
+        max-width: 120px;
     }
 
     .sidebar-nav {
@@ -510,10 +517,11 @@ body {
     }
 
     .sidebar-nav li a {
-        padding: 15px 20px;
+        padding: 10px 15px;
         white-space: nowrap;
         border-right: none;
         border-bottom: 3px solid transparent;
+        font-size: 14px;
     }
 
     .sidebar-nav li a:hover, .sidebar-nav li a.active {
@@ -522,8 +530,19 @@ body {
         background: transparent;
     }
     
+    /* Make Terna Info more compact on mobile */
+    #user-terna-info {
+        margin: 5px 15px !important;
+        padding: 8px !important;
+        font-size: 11px !important;
+    }
+    
+    #user-terna-info > div {
+        margin-top: 2px !important;
+    }
+
     .sidebar-footer {
-        padding: 15px 20px;
+        padding: 10px 15px;
     }
 
     .main-content {

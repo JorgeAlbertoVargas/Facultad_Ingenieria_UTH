@@ -39,11 +39,22 @@ function doGet(e) {
       return getQuestions(e.parameter.categoria);
     } else if (action === 'getMapUrl') {
       return getMapUrl();
+    } else if (action === 'ubicarProyectos') {
+      return ejecutarUbicarProyectos();
     } else {
       return output.setContent(JSON.stringify({ success: false, error: 'Acción GET no válida' }));
     }
   } catch (error) {
     return output.setContent(JSON.stringify({ success: false, error: error.toString() }));
+  }
+}
+
+function ejecutarUbicarProyectos() {
+  try {
+    ubicarProyectos();
+    return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Proyectos ubicados correctamente' })).setMimeType(ContentService.MimeType.JSON);
+  } catch (e) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: e.toString() })).setMimeType(ContentService.MimeType.JSON);
   }
 }
 
@@ -432,7 +443,7 @@ function getMapUrl() {
 function ubicarProyectos() {
   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   
-  // 1. Buscar la pestaña de base de datos dinámicamente (cualquiera que tenga 'base' en el nombre)
+  // 1. Buscar la pestaña de base de datos dinámicamente
   var sheets = ss.getSheets();
   var sheetBD = null;
   var allNames = [];
@@ -440,39 +451,61 @@ function ubicarProyectos() {
     var name = sheets[k].getName();
     allNames.push(name);
     var lowerName = name.toLowerCase();
-    if (lowerName.indexOf("base") !== -1 || lowerName.indexOf("datos") !== -1 || lowerName.indexOf("proyectos") !== -1 && lowerName.indexOf("distribucion") === -1) {
+    // Priorizamos la hoja "Proyectos" explícitamente
+    if (lowerName === "proyectos" || (lowerName.indexOf("proyectos") !== -1 && lowerName.indexOf("distribucion") === -1)) {
       sheetBD = sheets[k];
       break;
     }
   }
   
   if (!sheetBD) {
-    console.log("Error: No se encontró la pestaña. Las pestañas que SÍ existen en este archivo son: " + allNames.join(" | "));
+    console.log("Error: No se encontró la pestaña 'Proyectos'. Las pestañas que SÍ existen en este archivo son: " + allNames.join(" | "));
     return;
   }
   
   var dataBD = sheetBD.getDataRange().getValues();
   var proyectos = {}; 
   
+  // Encontrar dinámicamente qué columna tiene el ID y el Nombre Corto en la fila 1 (índice 0)
+  var idIndex = 2; // Por defecto Col C
+  var nombreCortoIndex = 4; // Por defecto Col E
+  var nombreLargoIndex = 3; // Por defecto Col D
+  
+  if (dataBD.length > 0) {
+    for (var c = 0; c < dataBD[0].length; c++) {
+      var header = String(dataBD[0][c]).toLowerCase();
+      if (header.indexOf("id_proyecto") !== -1 || header === "id") idIndex = c;
+      if (header.indexOf("nombre_corto") !== -1) nombreCortoIndex = c;
+      if (header.indexOf("nombre_largo") !== -1) nombreLargoIndex = c;
+    }
+  }
+  
   // Empezamos desde la fila 1 (ignorando encabezados)
   for (var i = 1; i < dataBD.length; i++) {
-    var id = String(dataBD[i][0]).trim(); // Columna A: ID
-    var nombre = String(dataBD[i][1]).trim(); // Columna B: Nombre
+    var id = String(dataBD[i][idIndex]).trim();
+    var nombreCorto = String(dataBD[i][nombreCortoIndex]).trim();
+    var nombreLargo = String(dataBD[i][nombreLargoIndex]).trim();
     
-    if (id) {
-      // Extraemos los últimos números del ID (ej. "001" -> 1)
-      var match = id.match(/\d+$/);
-      if (match) {
-        var num = parseInt(match[0], 10);
-        // Guardamos el ID y el Nombre para mostrarlo en el mapa
-        proyectos[num] = id + "\n" + nombre;
+    if (id && id !== "undefined" && id !== "") {
+      // Extraemos todos los grupos de números del ID
+      var numbers = id.match(/\d+/g);
+      if (numbers) {
+        var numStr = numbers[numbers.length - 1]; // Tomar el último número (ej: 001 de FI-5UTACIFA-001)
+        var num = parseInt(numStr, 10);
+        
+        // Si no hay nombre corto, usar el largo
+        var nombreAMostrar = nombreCorto;
+        if (!nombreAMostrar || nombreAMostrar === "undefined" || nombreAMostrar === "") {
+            nombreAMostrar = nombreLargo;
+        }
+        
+        proyectos[num] = id + "\n" + nombreAMostrar;
       }
     }
   }
   
   // 2. Ubicar en el mapa (Distribucion_Proyectos GID = 1169813579)
   var sheetMapa = null;
-  var sheets = ss.getSheets();
   for (var s = 0; s < sheets.length; s++) {
     if (sheets[s].getSheetId() == 1169813579) {
       sheetMapa = sheets[s];
@@ -489,23 +522,27 @@ function ubicarProyectos() {
   var valuesMapa = rangeMapa.getValues();
   var countUbicados = 0;
   
-  // 3. Recorrer el mapa buscando "Stand_X" o "Stant_X"
+  // 3. Recorrer el mapa buscando "Stand", "Stant", "Stabd" seguido de un número
   for (var r = 0; r < valuesMapa.length; r++) {
     for (var c = 0; c < valuesMapa[r].length; c++) {
       var cellVal = String(valuesMapa[r][c]).trim().toLowerCase();
       
-      if (cellVal.indexOf("stand_") === 0 || cellVal.indexOf("stant_") === 0) {
+      // Chequeo más flexible de que contenga "stan" o "stab" y un número
+      if ((cellVal.indexOf("stan") !== -1 || cellVal.indexOf("stab") !== -1) && /\d+/.test(cellVal)) {
         var matchStand = cellVal.match(/\d+/);
         if (matchStand) {
           var numStand = parseInt(matchStand[0], 10);
           
           // Asumimos que la celda de abajo (r+1) es donde va el contenido del proyecto
-          if (r + 1 < valuesMapa.length) {
+          // También comprobamos si tal vez va 2 celdas abajo si la inmediatamente inferior está combinada u ocupada
+          var targetRow = r + 1;
+          
+          if (targetRow < valuesMapa.length) {
             if (proyectos[numStand]) {
-              valuesMapa[r+1][c] = proyectos[numStand];
+              valuesMapa[targetRow][c] = proyectos[numStand];
               countUbicados++;
             } else {
-              valuesMapa[r+1][c] = "Libre / Sin Asignar";
+              valuesMapa[targetRow][c] = "Libre / Sin Asignar";
             }
           }
         }
@@ -515,5 +552,5 @@ function ubicarProyectos() {
   
   // Guardamos los cambios
   rangeMapa.setValues(valuesMapa);
-  console.log("¡Éxito! Se ubicaron " + countUbicados + " proyectos en el mapa basándose en sus últimos dígitos.");
+  console.log("¡Éxito! Se ubicaron " + countUbicados + " proyectos en el mapa.");
 }

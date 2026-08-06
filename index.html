@@ -82,9 +82,14 @@
                     </ul>
                 </nav>
                 <div id="user-terna-info" style="font-size: 13px; color: var(--text-muted); margin: 0 20px 20px 20px; padding: 12px; background: rgba(0,0,0,0.02); border-radius: 4px; display: none;">
-                    <strong style="color: var(--primary); font-size: 14px;">Terna: <span id="user-terna-name">...</span></strong><br>
-                    <div style="margin-top: 8px; font-weight: 500;">Integrantes:</div>
-                    <div id="user-terna-colleagues" style="margin-top: 5px;">...</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="const details = document.getElementById('terna-details'); const icon = this.querySelector('i'); if(details.style.display === 'none'){ details.style.display = 'block'; icon.classList.replace('fa-chevron-down', 'fa-chevron-up'); } else { details.style.display = 'none'; icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); }">
+                        <strong style="color: var(--primary); font-size: 14px;">Terna: <span id="user-terna-name">...</span></strong>
+                        <i class="fas fa-chevron-down" style="color: var(--text-muted);"></i>
+                    </div>
+                    <div id="terna-details" style="display: none; padding-top: 5px;">
+                        <div style="margin-top: 8px; font-weight: 500;">Integrantes:</div>
+                        <div id="user-terna-colleagues" style="margin-top: 5px;">...</div>
+                    </div>
                 </div>
                 <div class="sidebar-footer">
                     <div class="user-info">
