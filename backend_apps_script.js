@@ -318,15 +318,19 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
       }
     }
 
-    // Recalcular promedio con una fórmula redondeada
-    sheet.getRange(rowIndex, 9).setFormula('=ROUND(AVERAGE(F' + rowIndex + ':H' + rowIndex + '), 0)');
-
+    // Recalcular promedio y aplicar formato de 3 decimales
+    var cell = sheet.getRange(rowIndex, 9);
+    cell.setFormula('=AVERAGE(F' + rowIndex + ':H' + rowIndex + ')');
+    cell.setNumberFormat('0.000');
+    
   } else {
     // El proyecto no existe, insertar nueva fila
     var newRow = [new Date(), codigoProyecto, nombreJuez, "", "", notaTotal, "", "", ""];
     sheet.appendRow(newRow);
     var newRowIndex = sheet.getLastRow();
-    sheet.getRange(newRowIndex, 9).setFormula('=ROUND(AVERAGE(F' + newRowIndex + ':H' + newRowIndex + '), 0)');
+    var cell = sheet.getRange(newRowIndex, 9);
+    cell.setFormula('=AVERAGE(F' + newRowIndex + ':H' + newRowIndex + ')');
+    cell.setNumberFormat('0.000');
   }
   
   // Ordenar la hoja automáticamente por la columna Promedio (Columna 9) de mayor a menor
