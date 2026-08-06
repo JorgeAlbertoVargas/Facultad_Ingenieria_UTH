@@ -328,4 +328,10 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
     var newRowIndex = sheet.getLastRow();
     sheet.getRange(newRowIndex, 9).setFormula('=ROUND(AVERAGE(F' + newRowIndex + ':H' + newRowIndex + '), 0)');
   }
+  
+  // Ordenar la hoja automáticamente por la columna Promedio (Columna 9) de mayor a menor
+  var lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    sheet.getRange(2, 1, lastRow - 1, 9).sort({column: 9, ascending: false});
+  }
 }
