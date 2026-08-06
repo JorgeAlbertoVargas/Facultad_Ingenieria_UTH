@@ -37,6 +37,8 @@ function doGet(e) {
       return getTerna(e.parameter.email);
     } else if (action === 'getQuestions') {
       return getQuestions(e.parameter.categoria);
+    } else if (action === 'getMapUrl') {
+      return getMapUrl();
     } else {
       return output.setContent(JSON.stringify({ success: false, error: 'Acción GET no válida' }));
     }
@@ -412,4 +414,42 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
       {column: 13, ascending: false} // 2da prioridad: Suma técnico más alto
     ]);
   }
+}
+
+// ------------------------------------
+// Funciones de Mapa y Stands
+// ------------------------------------
+function getMapUrl() {
+  // Utilizamos directamente el ID y GID proporcionados por el usuario para evitar problemas
+  var url = "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID + "/htmlembed?gid=1169813579&widget=false&headers=false&chrome=false";
+  return ContentService.createTextOutput(JSON.stringify({ success: true, url: url })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function renumerarStandsEnMapa() {
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = spreadsheet.getSheetByName('Distribucion_Proyectos');
+  
+  if (!sheet) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña 'Distribucion_Proyectos' no encontrada" })).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  var range = sheet.getDataRange();
+  var values = range.getValues();
+  var counter = 1;
+
+  // Recorremos por filas (de arriba hacia abajo) y luego por columnas (de izquierda a derecha)
+  for (var i = 0; i < values.length; i++) {
+    for (var j = 0; j < values[i].length; j++) {
+      var cellValue = String(values[i][j]).trim();
+      // Si la celda contiene la palabra "Stand_" seguida de un número
+      if (cellValue.match(/^Stand_\d+$/i)) {
+        values[i][j] = "Stand_" + counter;
+        counter++;
+      }
+    }
+  }
+
+  // Guardamos los valores corregidos en la hoja
+  range.setValues(values);
+  return ContentService.createTextOutput(JSON.stringify({ success: true, message: "Stands enumerados del 1 al " + (counter - 1) })).setMimeType(ContentService.MimeType.JSON);
 }

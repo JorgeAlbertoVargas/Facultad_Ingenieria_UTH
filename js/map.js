@@ -4,7 +4,7 @@
 const MapView = {
     currentZoom: 1.15,
     
-    load() {
+    async load() {
         const app = document.getElementById('app');
         app.innerHTML = `
             <div style="padding: 15px; text-align: center; height: 100vh; background: var(--bg-light); display: flex; flex-direction: column;">
@@ -31,17 +31,42 @@ const MapView = {
                     </div>
                 </div>
                 
-                <div style="flex: 1; width: 100%; border-radius: var(--radius); overflow: auto; box-shadow: var(--shadow-md); background: var(--white); position: relative;">
+                <div id="map-container" style="flex: 1; width: 100%; border-radius: var(--radius); overflow: auto; box-shadow: var(--shadow-md); background: var(--white); position: relative; display: flex; justify-content: center; align-items: center;">
+                    <p style="color: var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Cargando mapa...</p>
+                </div>
+            </div>
+        `;
+
+        try {
+            const response = await API.get('getMapUrl');
+            const container = document.getElementById('map-container');
+            
+            if (response.success && response.url) {
+                container.innerHTML = `
                     <iframe id="map-iframe"
-                        src="https://docs.google.com/spreadsheets/d/1uWdbjKJRVTTzSwlmaLFIexWViE4xGhttL_WhKduolOw/htmlembed?gid=1405650204&widget=false&headers=false&chrome=false" 
+                        src="${response.url}" 
                         width="100%" 
                         height="100%" 
                         frameborder="0"
                         style="border:0; min-height: 800px; zoom: ${this.currentZoom}; transition: zoom 0.2s;">
                     </iframe>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div style="text-align: center; color: var(--danger); padding: 20px;">
+                        <i class="fas fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>${response.error || 'No se pudo cargar el mapa. Verifica que exista la pestaña "Distribucion_Proyectos".'}</p>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            document.getElementById('map-container').innerHTML = `
+                <div style="text-align: center; color: var(--danger); padding: 20px;">
+                    <i class="fas fa-wifi" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <p>Error de conexión al obtener el mapa.</p>
                 </div>
-            </div>
-        `;
+            `;
+        }
     },
     
     onSliderChange(val) {

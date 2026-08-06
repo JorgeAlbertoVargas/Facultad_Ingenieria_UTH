@@ -105,6 +105,11 @@ const API = {
                             { bloque: "II - TÉCNICO (50%)", numero: 6, titulo: "Claridad de Objetivos", porcentaje: 10, puntos_A: 10, criterio_A: "Específicos y correctos (Escala 10).", puntos_B: 5, criterio_B: "Básico correcto (Escala 5).", puntos_C: 1, criterio_C: "Vagos o débiles." }
                         ]
                     });
+                } else if (action === 'getMapUrl') {
+                    resolve({
+                        success: true,
+                        url: "https://docs.google.com/spreadsheets/d/1gJjPjGDhjcfP_wMxQHYCEXkNHLD-lAewLhGeb-UMtBw/htmlembed?gid=1169813579&widget=false&headers=false&chrome=false"
+                    });
                 }
             }, 800);
         });
