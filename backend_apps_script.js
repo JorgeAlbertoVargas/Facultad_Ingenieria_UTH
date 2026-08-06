@@ -432,10 +432,19 @@ function getMapUrl() {
 function ubicarProyectos() {
   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   
-  // 1. Leer la base de datos
-  var sheetBD = ss.getSheetByName("Base_Datos_Feria_Ingenieria");
+  // 1. Buscar la pestaña de base de datos dinámicamente (cualquiera que tenga 'base' en el nombre)
+  var sheets = ss.getSheets();
+  var sheetBD = null;
+  for (var k = 0; k < sheets.length; k++) {
+    var name = sheets[k].getName().toLowerCase();
+    if (name.indexOf("base") !== -1 || name.indexOf("datos") !== -1) {
+      sheetBD = sheets[k];
+      break;
+    }
+  }
+  
   if (!sheetBD) {
-    console.log("Error: No se encontró la pestaña 'Base_Datos_Feria_Ingenieria'.");
+    console.log("Error: No se encontró ninguna pestaña que se llame 'Base de Datos'. Por favor verifica el nombre.");
     return;
   }
   
