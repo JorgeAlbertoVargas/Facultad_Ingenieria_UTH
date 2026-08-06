@@ -435,16 +435,19 @@ function ubicarProyectos() {
   // 1. Buscar la pestaña de base de datos dinámicamente (cualquiera que tenga 'base' en el nombre)
   var sheets = ss.getSheets();
   var sheetBD = null;
+  var allNames = [];
   for (var k = 0; k < sheets.length; k++) {
-    var name = sheets[k].getName().toLowerCase();
-    if (name.indexOf("base") !== -1 || name.indexOf("datos") !== -1) {
+    var name = sheets[k].getName();
+    allNames.push(name);
+    var lowerName = name.toLowerCase();
+    if (lowerName.indexOf("base") !== -1 || lowerName.indexOf("datos") !== -1 || lowerName.indexOf("proyectos") !== -1 && lowerName.indexOf("distribucion") === -1) {
       sheetBD = sheets[k];
       break;
     }
   }
   
   if (!sheetBD) {
-    console.log("Error: No se encontró ninguna pestaña que se llame 'Base de Datos'. Por favor verifica el nombre.");
+    console.log("Error: No se encontró la pestaña. Las pestañas que SÍ existen en este archivo son: " + allNames.join(" | "));
     return;
   }
   
