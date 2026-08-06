@@ -168,8 +168,22 @@ function getQuestions(categoria) {
 }
 
 function saveEvaluation(data) {
-  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Evaluaciones');
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = spreadsheet.getSheetByName('Evaluaciones');
   if (!sheet) return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña 'Evaluaciones' no encontrada" })).setMimeType(ContentService.MimeType.JSON);
+
+  // Buscar el nombre del juez en la pestaña Usuarios
+  var nombreJuez = data.correoJuez;
+  var sheetUsuarios = spreadsheet.getSheetByName('Usuarios');
+  if (sheetUsuarios) {
+    var usuarios = sheetUsuarios.getDataRange().getValues();
+    for (var u = 1; u < usuarios.length; u++) {
+      if (String(usuarios[u][3]).trim() === String(data.correoJuez).trim()) {
+        nombreJuez = String(usuarios[u][2]).trim() + " | " + data.correoJuez;
+        break;
+      }
+    }
+  }
 
   // Guardar evaluación con el nuevo formato detallado
   var notaRedondeada = Math.round(parseFloat(data.notaTotal)) || 0;
@@ -177,13 +191,44 @@ function saveEvaluation(data) {
   var newRow = [
     new Date(),
     data.codigoProyecto,
-    data.correoJuez,
+    nombreJuez, // Col C
     data.categoria, // Col D
-    notaRedondeada, // Col E
-    JSON.stringify(data.respuestas), // Col F
-    data.observaciones // Col G
+    notaRedondeada // Col E (Total)
   ];
+
+  // Extraer los puntos de cada respuesta en orden secuencial
+  var numRespuestas = 0;
+  if (data.respuestas && Array.isArray(data.respuestas)) {
+    data.respuestas.forEach(function(r) {
+      newRow.push(r.puntos);
+      numRespuestas++;
+    });
+  }
+
+  // Añadir observaciones y JSON al final de la fila
+  newRow.push(data.observaciones);
+  newRow.push(JSON.stringify(data.respuestas));
+
   sheet.appendRow(newRow);
+
+  // Actualizar los encabezados en la fila 1 para reflejar los cambios
+  try {
+    sheet.getRange("C1").setValue("Evaluador");
+    sheet.getRange("E1").setValue("Total");
+    
+    if (numRespuestas > 0) {
+      var headers = [];
+      for (var k = 1; k <= numRespuestas; k++) {
+        headers.push("Pregunta_" + k);
+      }
+      headers.push("Observaciones");
+      headers.push("JSON_Data");
+      sheet.getRange(1, 6, 1, headers.length).setValues([headers]);
+      sheet.getRange(1, 6, 1, headers.length).setFontWeight("bold");
+    }
+  } catch (e) {
+    // Ignorar si hay problemas escribiendo encabezados
+  }
 
   // Calcular sumatoria del bloque Técnico
   var notaTecnico = 0;
