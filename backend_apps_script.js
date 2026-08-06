@@ -435,21 +435,64 @@ function renumerarStandsEnMapa() {
 
   var range = sheet.getDataRange();
   var values = range.getValues();
-  var counter = 1;
+  var stands = [];
 
-  // Recorremos por filas (de arriba hacia abajo) y luego por columnas (de izquierda a derecha)
+  // 1. Encontrar todas las celdas que sean un Stand
   for (var i = 0; i < values.length; i++) {
     for (var j = 0; j < values[i].length; j++) {
       var cellValue = String(values[i][j]).trim();
-      // Si la celda contiene la palabra "Stand_" seguida de un número
       if (cellValue.match(/^Stand_\d+$/i)) {
-        values[i][j] = "Stand_" + counter;
-        counter++;
+        stands.push({
+          row: i,
+          col: j,
+          value: cellValue
+        });
       }
     }
   }
 
-  // Guardamos los valores corregidos en la hoja
+  // 2. Ordenar espacialmente
+  // Columna j es índice 0-based.
+  // Basado en tu diseño:
+  // - Bloque Izquierdo (Col B a E) -> col <= 4
+  // - Bloque Central (Col F a U) -> 5 <= col <= 20
+  // - Bloque Derecho (Col V en adelante) -> col >= 21
+  stands.sort(function(a, b) {
+    var getBlock = function(col) {
+      if (col <= 4) return 1; // Izquierda
+      if (col <= 20) return 2; // Centro
+      return 3; // Derecha
+    };
+    
+    var blockA = getBlock(a.col);
+    var blockB = getBlock(b.col);
+    
+    if (blockA !== blockB) {
+      return blockA - blockB; // Ordenar por bloque: Izq -> Centro -> Der
+    }
+    
+    if (blockA === 2) {
+      // Bloque central: De izquierda a derecha, fila por fila
+      if (a.row !== b.row) {
+        // Permitimos una pequeña tolerancia en las filas si no están perfectamente alineadas
+        if (Math.abs(a.row - b.row) > 2) {
+           return a.row - b.row;
+        }
+      }
+      return a.col - b.col;
+    } else {
+      // Bloques laterales: De arriba hacia abajo
+      return a.row - b.row;
+    }
+  });
+
+  // 3. Renumerar
+  for (var k = 0; k < stands.length; k++) {
+    var s = stands[k];
+    values[s.row][s.col] = "Stand_" + (k + 1);
+  }
+
+  // 4. Guardar
   range.setValues(values);
-  return ContentService.createTextOutput(JSON.stringify({ success: true, message: "Stands enumerados del 1 al " + (counter - 1) })).setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify({ success: true, message: "Stands enumerados del 1 al " + stands.length })).setMimeType(ContentService.MimeType.JSON);
 }
