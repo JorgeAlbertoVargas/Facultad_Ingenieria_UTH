@@ -108,7 +108,7 @@ const API = {
                 } else if (action === 'getMapUrl') {
                     resolve({
                         success: true,
-                        url: "https://docs.google.com/spreadsheets/d/1gJjPjGDhjcfP_wMxQHYCEXkNHLD-lAewLhGeb-UMtBw/htmlembed?gid=1169813579&widget=false&headers=false&chrome=false"
+                        url: "https://docs.google.com/spreadsheets/d/1gJjPjGDhjcfP_wMxQHYCEXkNHLD-lAewLhGeb-UMtBw/htmlembed?widget=false&headers=false&chrome=false"
                     });
                 }
             }, 800);

@@ -420,8 +420,15 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
 // Funciones de Mapa y Stands
 // ------------------------------------
 function getMapUrl() {
-  // Utilizamos directamente el ID y GID proporcionados por el usuario para evitar problemas
-  var url = "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID + "/htmlembed?gid=1169813579&widget=false&headers=false&chrome=false";
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = spreadsheet.getSheetByName("Layout_Ubicaciones");
+  
+  if (!sheet) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña 'Layout_Ubicaciones' no encontrada. Por favor, genérala desde el menú 'Herramientas IA'." })).setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  var gid = sheet.getSheetId();
+  var url = "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID + "/htmlembed?gid=" + gid + "&widget=false&headers=false&chrome=false";
   return ContentService.createTextOutput(JSON.stringify({ success: true, url: url })).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -432,62 +439,73 @@ function getMapUrl() {
 function onOpen() {
   SpreadsheetApp.getUi()
       .createMenu('🤖 Herramientas IA')
-      .addItem('1. Aplicar fórmula de D6 a todos los Stands', 'aplicarFormulaD6')
-      .addItem('2. Numerar 1, 2, 3... (Fila por fila)', 'numerarFilaPorFila')
+      .addItem('¡Crear Mapa Automático (Layout_Ubicaciones)!', 'generarLayoutUbicaciones')
       .addToUi();
 }
 
-function aplicarFormulaD6() {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var range = sheet.getDataRange();
-  var values = range.getValues();
+function generarLayoutUbicaciones() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheetName = "Layout_Ubicaciones";
+  var sheet = ss.getSheetByName(sheetName);
   
-  var cellD6 = sheet.getRange("D6");
-  var formula = cellD6.getFormula();
-  
-  if (!formula) {
-    SpreadsheetApp.getUi().alert("No se encontró ninguna fórmula en la celda D6. Por favor, asegúrate de que D6 tenga una fórmula (que empiece con =).");
-    return;
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+  } else {
+    sheet.clear(); // Limpiar si ya existe para rehacerlo
   }
   
-  var count = 0;
-  for (var i = 0; i < values.length; i++) {
-    for (var j = 0; j < values[i].length; j++) {
-      var val = String(values[i][j]).trim().toLowerCase();
-      // Buscar celdas que sean Stand_ o Stant_
-      if (val.indexOf("stand_") === 0 || val.indexOf("stant_") === 0) {
-        // Evitamos copiar sobre la misma D6
-        if (i === 5 && j === 3) continue; 
-        
-        // Copiamos la fórmula simulando un Ctrl+C y Ctrl+V para que se adapte
-        cellD6.copyTo(sheet.getRange(i + 1, j + 1), SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false);
-        count++;
-      }
+  // Configurar anchos de columna para que parezca un mapa
+  for (var c = 1; c <= 25; c++) {
+    sheet.setColumnWidth(c, 50);
+  }
+  sheet.setColumnWidth(1, 20); // Margen Izquierdo (A)
+  sheet.setColumnWidth(5, 30); // Espacio entre bloque izq y centro (E)
+  sheet.setColumnWidth(20, 30); // Espacio entre centro y derecha (T)
+  
+  // Título
+  sheet.getRange("F2:S2").merge().setValue("Esquemático De Distribución De Proyectos")
+       .setFontWeight("bold").setHorizontalAlignment("center").setFontSize(14);
+  
+  var currentStand = 1;
+  
+  // Helper para dibujar un stand
+  function drawStand(r, c, num, color) {
+    var headerRange = sheet.getRange(r, c, 1, 2);
+    headerRange.merge().setValue("Stand_" + num)
+               .setBackground(color)
+               .setHorizontalAlignment("center")
+               .setFontWeight("bold")
+               .setBorder(true, true, true, true, true, true);
+               
+    var dataRange = sheet.getRange(r + 1, c, 2, 2);
+    dataRange.merge().setValue("Tu Fórmula Aquí")
+             .setBackground("#d9eaf7") // Azul clarito
+             .setFontColor("#888888")
+             .setHorizontalAlignment("center")
+             .setVerticalAlignment("middle")
+             .setBorder(true, true, true, true, true, true);
+  }
+  
+  var leftColor = "#4a86e8"; // Azul
+  var centerColor = "#d9ead3"; // Verde clarito
+  var rightColor = "#00ff00"; // Verde fuerte
+  
+  // Bloque Izquierdo (Stands 1 al 6) -> Columnas C y D (índice 3 y 4)
+  for (var i = 0; i < 6; i++) {
+    drawStand(4 + (i * 4), 3, currentStand++, leftColor);
+  }
+  
+  // Bloque Central (8 filas, 7 columnas) -> Columnas F, H, J, L, N, P, R (inicia en índice 6)
+  for (var rowIdx = 0; rowIdx < 8; rowIdx++) {
+    for (var colIdx = 0; colIdx < 7; colIdx++) {
+      drawStand(4 + (rowIdx * 4), 6 + (colIdx * 2), currentStand++, centerColor);
     }
   }
   
-  SpreadsheetApp.getUi().alert("¡Listo! La fórmula de D6 se ha copiado exitosamente a " + count + " casillas en el mapa.");
-}
-
-function numerarFilaPorFila() {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var range = sheet.getDataRange();
-  var values = range.getValues();
-  var counter = 1;
-  var countModificados = 0;
-  
-  // Recorrer estrictamente fila por fila, de arriba abajo y de izquierda a derecha
-  for (var i = 0; i < values.length; i++) {
-    for (var j = 0; j < values[i].length; j++) {
-      var val = String(values[i][j]).trim().toLowerCase();
-      if (val.indexOf("stand_") === 0 || val.indexOf("stant_") === 0) {
-        values[i][j] = "Stand_" + counter;
-        counter++;
-        countModificados++;
-      }
-    }
+  // Bloque Derecho (Stands 63 al 68) -> Columnas U y V (índices 21 y 22)
+  for (var i = 0; i < 6; i++) {
+    drawStand(4 + (i * 4), 21, currentStand++, rightColor);
   }
   
-  range.setValues(values);
-  SpreadsheetApp.getUi().alert("¡Listo! Se han enumerado " + countModificados + " stands consecutivamente (fila por fila).");
+  SpreadsheetApp.getUi().alert("¡Magia completada! Mapa 'Layout_Ubicaciones' generado exitosamente con 68 stands en perfecto orden.");
 }
