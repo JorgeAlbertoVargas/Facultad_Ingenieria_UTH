@@ -508,5 +508,5 @@ function generarLayoutUbicaciones() {
     drawStand(4 + (i * 4), 21, currentStand++, rightColor);
   }
   
-  SpreadsheetApp.getUi().alert("¡Magia completada! Mapa 'Layout_Ubicaciones' generado exitosamente con 68 stands en perfecto orden.");
+  console.log("¡Magia completada! Mapa 'Layout_Ubicaciones' generado exitosamente con 68 stands en perfecto orden.");
 }
