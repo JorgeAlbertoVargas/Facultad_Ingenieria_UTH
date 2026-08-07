@@ -148,9 +148,9 @@ const Admin = {
                             
                             <div class="diploma-content">
                                 <div class="diploma-header-row">
-                                    <!-- Logo Izquierda (Logo UTH nuevo doble de grande) -->
+                                    <!-- Logo Izquierda (Logo UTH nuevo) -->
                                     <div class="diploma-logo-left">
-                                        <img src="img/media__1786084541662.png" alt="Logo UTH Nuevo" style="max-height: 280px; max-width: 500px;">
+                                        <img src="img/media__1786084541662.png" alt="Logo UTH Nuevo" style="max-height: 180px; max-width: 340px;">
                                     </div>
                                     
                                     <!-- Estrellas -->
@@ -160,9 +160,9 @@ const Admin = {
                                         <i class="fas fa-star"></i>
                                     </div>
                                     
-                                    <!-- Logo Derecha (Logo UTH.png) desplazado hacia abajo -->
-                                    <div class="diploma-logo-right" style="margin-top: 75px;">
-                                        <img src="img/UTH.png" alt="Logo UTH" style="max-height: 280px; max-width: 500px;" onerror="this.src='img/media__1786081543163.png'">
+                                    <!-- Logo Derecha (Logo UTH.png) desplazado hacia abajo un poco -->
+                                    <div class="diploma-logo-right" style="margin-top: 35px;">
+                                        <img src="img/UTH.png" alt="Logo UTH" style="max-height: 180px; max-width: 340px;" onerror="this.src='img/media__1786081543163.png'">
                                     </div>
                                 </div>
                                 
@@ -174,23 +174,23 @@ const Admin = {
                                 
                                 <div class="diploma-certifies">CON ESTE DIPLOMA SE RECONOCE QUE</div>
                                 
-                                <div class="diploma-project" style="display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%;">
-                                    <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
-                                        <div style="font-size: 38px; font-weight: 800; color: #222; white-space: nowrap;">Código: ${g.id}</div>
-                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(g.id)}" alt="QR Code" style="width: 80px; height: 80px; border: 2px solid #007A33; border-radius: 8px; padding: 4px; background: white;">
+                                <div class="diploma-project" style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%;">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                                        <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap;">Código: ${g.id}</div>
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(g.id)}" alt="QR Code" style="width: 60px; height: 60px; border: 2px solid #007A33; border-radius: 6px; padding: 3px; background: white;">
                                     </div>
-                                    <div style="font-size: 38px; font-weight: 800; color: #222; white-space: nowrap;">Nombre Corto Proyecto: ${g.nombre}</div>
-                                    <div style="font-size: 38px; font-weight: 800; color: #222; white-space: nowrap;">Catedrático: ${g.catedratico}</div>
+                                    <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap;">Nombre Corto Proyecto: ${g.nombre}</div>
+                                    <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap;">Catedrático: ${g.catedratico}</div>
                                 </div>
                                 
                                 <div class="diploma-footer" style="align-items: center;">
                                     <div class="diploma-signature" style="display: flex; flex-direction: column; align-items: center;">
-                                        <div style="font-family: 'Great Vibes', cursive; font-size: 68px; color: #000; line-height: 1;">Dr. Dennis Aguilar</div>
-                                        <div style="font-size: 20px; font-weight: 500; color: #000; margin-top: 5px;">Decano de Ingenierias</div>
+                                        <div style="font-family: 'Great Vibes', cursive; font-size: 50px; color: #000; line-height: 1;">Dr. Dennis Aguilar</div>
+                                        <div style="font-size: 16px; font-weight: 500; color: #000; margin-top: 2px;">Decano de Ingenierias</div>
                                     </div>
                                     <div class="diploma-date" style="display: flex; flex-direction: column; align-items: center; padding-bottom: 5px;">
-                                        <div style="font-size: 36px; font-weight: 800; color: #000; letter-spacing: 1px;">${fechaStr}</div>
-                                        <div style="font-size: 18px; color: #000;">Fecha</div>
+                                        <div style="font-size: 26px; font-weight: 800; color: #000; letter-spacing: 1px;">${fechaStr}</div>
+                                        <div style="font-size: 14px; color: #000;">Fecha</div>
                                     </div>
                                 </div>
                             </div>
