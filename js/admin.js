@@ -179,7 +179,7 @@ const Admin = {
                                     <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap;">Código: ${g.id}</div>
                                     <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap;">Nombre Corto Proyecto: ${g.nombre}</div>
                                     <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap;">Catedrático: ${g.catedratico}</div>
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(g.id)}" alt="QR Code" style="position: absolute; right: 20px; top: -20px; width: 120px; height: 120px; border: 1px solid #007A33; border-radius: 6px; padding: 4px; background: white;">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(g.id)}" alt="QR Code" style="position: absolute; right: 20px; top: -75px; width: 160px; height: 160px; border: 1px solid #007A33; border-radius: 8px; padding: 6px; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                                 </div>
                                 
                                 <div class="diploma-footer" style="align-items: center;">
