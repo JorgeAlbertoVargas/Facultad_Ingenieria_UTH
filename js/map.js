@@ -2,7 +2,7 @@
  * Módulo para el Mapa Público de Visitantes
  */
 const MapView = {
-    currentZoom: 1.15,
+    currentZoom: 0.70,
     
     async load() {
         const app = document.getElementById('app');
@@ -21,11 +21,11 @@ const MapView = {
 
                         <button class="btn btn-primary" onclick="MapView.zoomOut()" style="padding: 10px; font-size: 1rem; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-minus"></i></button>
                         
-                        <input type="range" id="zoom-slider" min="0.4" max="2.5" step="0.05" value="1.15" oninput="MapView.onSliderChange(this.value)" style="width: 150px; cursor: pointer; accent-color: var(--primary);">
+                        <input type="range" id="zoom-slider" min="0.4" max="2.5" step="0.05" value="0.70" oninput="MapView.onSliderChange(this.value)" style="width: 150px; cursor: pointer; accent-color: var(--primary);">
                         
                         <button class="btn btn-primary" onclick="MapView.zoomIn()" style="padding: 10px; font-size: 1rem; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-plus"></i></button>
                         
-                        <span style="font-weight: 600; min-width: 50px; text-align: right;" id="zoom-level">115%</span>
+                        <span style="font-weight: 600; min-width: 50px; text-align: right;" id="zoom-level">70%</span>
                     </div>
                     
                     <div>
