@@ -69,9 +69,11 @@ const Judge = {
                 fotoGrupalHtml = `<img src="${imgUrl}" alt="Foto Grupal" style="width: 90px; height: 90px; object-fit: cover; border-radius: 4px; border: 1px solid #eee; padding: 2px; background: white; margin-bottom: 5px; cursor: pointer;" onclick="UI.showPdfViewer('${originalUrl}')">`;
             }
 
-            // Extraemos el número de Stand a partir del ID (último número)
+            // Extraemos el número de Stand de la Ubicacion (del backend) o a partir del ID
             let standStr = "No asignado";
-            if (p['ID_Proyecto']) {
+            if (p['Ubicacion']) {
+                standStr = p['Ubicacion'];
+            } else if (p['ID_Proyecto']) {
                 const numbers = String(p['ID_Proyecto']).match(/\d+/g);
                 if (numbers) {
                     standStr = "Stand " + parseInt(numbers[numbers.length - 1], 10);

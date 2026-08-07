@@ -126,6 +126,36 @@ function getProjects(terna, email) {
   var values = sheetProyectos.getDataRange().getValues();
   var projects = [];
 
+  // 1. Obtener ubicaciones desde el mapa ("Distribucion_Proyectos")
+  var ubicaciones = {};
+  var sheetMapa = spreadsheet.getSheetByName("Distribucion_Proyectos");
+  if (sheetMapa) {
+    var mapValues = sheetMapa.getDataRange().getValues();
+    var idsValidos = [];
+    for (var i = 1; i < values.length; i++) {
+      if (values[i][2]) idsValidos.push(String(values[i][2]).trim());
+    }
+
+    for (var r = 1; r < mapValues.length; r++) { // Empezamos en 1 porque miramos r-1
+      for (var c = 0; c < mapValues[r].length; c++) {
+        var cellContent = String(mapValues[r][c]);
+        if (cellContent) {
+          for (var k = 0; k < idsValidos.length; k++) {
+            var idBuscado = idsValidos[k];
+            if (cellContent.indexOf(idBuscado) !== -1) {
+              var standRaw = String(mapValues[r-1][c]).trim();
+              var matchNum = standRaw.match(/\d+/);
+              if (matchNum) {
+                ubicaciones[idBuscado] = "Stand " + matchNum[0];
+              }
+              break; // Si ya lo encontró, no seguir buscando otros IDs en esta celda
+            }
+          }
+        }
+      }
+    }
+  }
+
   for (var i = 1; i < values.length; i++) {
     if (values[i][2]) { // Col C (Index 2) es ID_Proyecto
       // Filtrar por terna si se solicita (asumiendo Col S / Index 18 para "Terna_Asignada")
@@ -155,6 +185,7 @@ function getProjects(terna, email) {
         'Comprobante_Pago': values[i][15],
         'Fotografia_Grupal': values[i][16],
         'Articulo_Cientifico': values[i][17],
+        'Ubicacion': ubicaciones[codStr] || '',
         'evaluado': evaluados_por_mi[codStr] ? true : false,
         'nota_obtenida': evaluados_por_mi[codStr] ? evaluados_por_mi[codStr].nota : null,
         'num_evaluaciones': conteo_evaluaciones[codStr] || 0
@@ -469,8 +500,10 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
 // Funciones de Mapa y Stands
 // ------------------------------------
 function getMapUrl() {
-  // Utilizamos directamente el ID y GID (1169813579) para cargar "Distribucion_Proyectos"
-  var url = "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID + "/htmlembed?gid=1169813579&widget=false&headers=false&chrome=false";
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName("Distribucion_Proyectos");
+  var gid = sheet ? sheet.getSheetId() : "0";
+  var url = "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID + "/htmlembed?gid=" + gid + "&widget=false&headers=false&chrome=false";
   return ContentService.createTextOutput(JSON.stringify({ success: true, url: url })).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -542,14 +575,8 @@ function ubicarProyectos() {
     }
   }
   
-  // 2. Ubicar en el mapa (Distribucion_Proyectos GID = 1169813579)
-  var sheetMapa = null;
-  for (var s = 0; s < sheets.length; s++) {
-    if (sheets[s].getSheetId() == 1169813579) {
-      sheetMapa = sheets[s];
-      break;
-    }
-  }
+  // 2. Ubicar en el mapa (Buscamos la pestaña "Distribucion_Proyectos")
+  var sheetMapa = ss.getSheetByName("Distribucion_Proyectos");
   
   if (!sheetMapa) {
     console.log("Error: No se encontró la pestaña original del mapa.");
@@ -565,23 +592,30 @@ function ubicarProyectos() {
     for (var c = 0; c < valuesMapa[r].length; c++) {
       var cellVal = String(valuesMapa[r][c]).trim().toLowerCase();
       
-      // Chequeo más flexible de que contenga "stan" o "stab" y un número
-      if ((cellVal.indexOf("stan") !== -1 || cellVal.indexOf("stab") !== -1) && /\d+/.test(cellVal)) {
-        var matchStand = cellVal.match(/\d+/);
-        if (matchStand) {
-          var numStand = parseInt(matchStand[0], 10);
-          
-          // Asumimos que la celda de abajo (r+1) es donde va el contenido del proyecto
-          // También comprobamos si tal vez va 2 celdas abajo si la inmediatamente inferior está combinada u ocupada
-          var targetRow = r + 1;
-          
-          if (targetRow < valuesMapa.length) {
-            if (proyectos[numStand]) {
-              valuesMapa[targetRow][c] = proyectos[numStand];
-              countUbicados++;
-            } else {
-              valuesMapa[targetRow][c] = "Libre / Sin Asignar";
-            }
+      // Chequeo más flexible de que contenga "stan" o "stab"
+      if (cellVal.indexOf("stan") !== -1 || cellVal.indexOf("stab") !== -1) {
+        var numStand = null;
+        var targetRow = null;
+        
+        // Formato antiguo: "Stand 61" en la misma celda
+        if (/\d+/.test(cellVal)) {
+          var matchStand = cellVal.match(/\d+/);
+          numStand = parseInt(matchStand[0], 10);
+          targetRow = r + 1; // El proyecto va 1 celda abajo
+        } 
+        // Formato nuevo: "Stand #" arriba y el número en la celda de abajo
+        else if (r + 1 < valuesMapa.length && /\d+/.test(String(valuesMapa[r+1][c]))) {
+          var matchStand = String(valuesMapa[r+1][c]).match(/\d+/);
+          numStand = parseInt(matchStand[0], 10);
+          targetRow = r + 2; // El proyecto va 2 celdas abajo (debajo del número)
+        }
+        
+        if (numStand !== null && targetRow !== null && targetRow < valuesMapa.length) {
+          if (proyectos[numStand]) {
+            valuesMapa[targetRow][c] = proyectos[numStand];
+            countUbicados++;
+          } else {
+            valuesMapa[targetRow][c] = "Libre / Sin Asignar";
           }
         }
       }
