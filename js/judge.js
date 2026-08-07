@@ -57,13 +57,13 @@ const Judge = {
                 const originalUrl = p['Fotografia_Grupal'].trim();
                 let imgUrl = originalUrl;
                 
-                // Convertir enlaces de Google Drive a enlaces de imagen directa
+                // Convertir enlaces de Google Drive a miniaturas (thumbnail) para evitar bloqueos de seguridad en <img>
                 if (imgUrl.includes('/file/d/')) {
                     const match = imgUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-                    if (match) imgUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+                    if (match) imgUrl = `https://drive.google.com/thumbnail?id=${match[1]}&sz=w200-h200`;
                 } else if (imgUrl.includes('drive.google.com/open?id=')) {
                     const id = new URL(imgUrl).searchParams.get('id');
-                    if (id) imgUrl = `https://drive.google.com/uc?export=view&id=${id}`;
+                    if (id) imgUrl = `https://drive.google.com/thumbnail?id=${id}&sz=w200-h200`;
                 }
                 
                 fotoGrupalHtml = `<img src="${imgUrl}" alt="Foto Grupal" style="width: 90px; height: 90px; object-fit: cover; border-radius: 4px; border: 1px solid #eee; padding: 2px; background: white; margin-bottom: 5px; cursor: pointer;" onclick="UI.showPdfViewer('${originalUrl}')">`;
