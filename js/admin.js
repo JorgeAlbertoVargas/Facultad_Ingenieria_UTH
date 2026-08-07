@@ -176,10 +176,10 @@ const Admin = {
                                 <div class="diploma-certifies">CON ESTE DIPLOMA SE RECONOCE QUE</div>
                                 
                                 <div class="diploma-project" style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; position: relative;">
-                                    <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap;">Código: ${g.id}</div>
-                                    <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap;">Nombre Corto Proyecto: ${g.nombre}</div>
-                                    <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap;">Catedrático: ${g.catedratico}</div>
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(g.id)}" alt="QR Code" style="position: absolute; right: 20px; top: -75px; width: 160px; height: 160px; border: 1px solid #007A33; border-radius: 8px; padding: 6px; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                                    <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap; max-width: 80%; overflow: hidden; text-overflow: ellipsis;">Código: ${g.id}</div>
+                                    <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap; max-width: 80%; overflow: hidden; text-overflow: ellipsis;">Nombre Corto Proyecto: ${g.nombre}</div>
+                                    <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap; max-width: 80%; overflow: hidden; text-overflow: ellipsis;">Catedrático: ${g.catedratico}</div>
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(g.id)}" alt="QR Code" style="position: absolute; right: -30px; top: -85px; width: 140px; height: 140px; border: 1px solid #007A33; border-radius: 8px; padding: 6px; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                                 </div>
                                 
                                 <div class="diploma-footer" style="align-items: center;">
