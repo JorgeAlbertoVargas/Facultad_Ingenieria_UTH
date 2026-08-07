@@ -73,12 +73,9 @@ const Admin = {
                         </select>
                     </div>
                     <div style="flex: 1; min-width: 200px;">
-                        <label for="ranking-places" style="display:block; margin-bottom: 5px; font-weight: 500;">Lugares a premiar (del 1ro al...):</label>
+                        <label for="ranking-places" style="display:block; margin-bottom: 5px; font-weight: 500;">Lugares a premiar:</label>
                         <select id="ranking-places" class="input-field">
-                            <option value="3">3er lugar</option>
-                            <option value="5" selected>5to lugar</option>
-                            <option value="10">10mo lugar</option>
-                            <option value="all">Todos los evaluados</option>
+                            <option value="5" selected>Del 1ro al 5to lugar</option>
                         </select>
                     </div>
                     <div style="display: flex; align-items: flex-end;">
@@ -145,8 +142,10 @@ const Admin = {
                                 
                                 <div class="diploma-content">
                                     <div class="diploma-header-row">
-                                        <!-- Logo Izquierda (Placeholder) -->
-                                        <div class="diploma-logo-left"></div>
+                                        <!-- Logo Izquierda (Logo UTH nuevo) -->
+                                        <div class="diploma-logo-left">
+                                            <img src="img/media__1786084541662.png" alt="Logo UTH" style="max-height: 100px; max-width: 180px;">
+                                        </div>
                                         
                                         <!-- Estrellas -->
                                         <div class="diploma-stars">
@@ -155,9 +154,9 @@ const Admin = {
                                             <i class="fas fa-star"></i>
                                         </div>
                                         
-                                        <!-- Logo Derecha (Placeholder texto) -->
+                                        <!-- Logo Derecha (Logo 40 años) -->
                                         <div class="diploma-logo-right">
-                                            40 Años<br>UTH
+                                            <img src="img/media__1786081543163.png" alt="40 Años UTH" style="max-height: 80px; max-width: 140px;" onerror="this.src='img/media__1786078272811.png'">
                                         </div>
                                     </div>
                                     
@@ -169,7 +168,12 @@ const Admin = {
                                     
                                     <div class="diploma-certifies">CON ESTE DIPLOMA SE RECONOCE QUE</div>
                                     
-                                    <div class="diploma-project">${g.nombre}</div>
+                                    <div class="diploma-project">
+                                        <div style="font-size: 24px; margin-bottom: 10px;">${g.nombre}</div>
+                                        <div style="font-size: 16px; color: #333; font-weight: 600;">
+                                            ${g.id} | ${g.nombre} | ${g.catedratico}
+                                        </div>
+                                    </div>
                                     
                                     <div class="diploma-footer">
                                         <div class="diploma-signature">

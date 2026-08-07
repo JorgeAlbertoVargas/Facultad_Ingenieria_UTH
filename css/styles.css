@@ -728,7 +728,7 @@ body {
 .diploma-logo-left {
     width: 150px;
     height: 80px;
-    background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Escudo_de_la_Universidad_Tecnol%C3%B3gica_de_Honduras.png/320px-Escudo_de_la_Universidad_Tecnol%C3%B3gica_de_Honduras.png') no-repeat center;
+    
     background-size: contain;
 }
 
@@ -751,8 +751,8 @@ body {
     justify-content: center;
     font-weight: bold;
     color: #007A33;
-    border: 2px solid #007A33;
-    border-radius: 50%;
+    
+    
     font-size: 14px;
     text-align: center;
     line-height: 1.1;
