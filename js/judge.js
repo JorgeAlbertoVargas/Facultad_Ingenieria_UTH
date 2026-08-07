@@ -78,6 +78,32 @@ const Judge = {
                 }
             }
 
+            // Semáforo de evaluaciones
+            let numEvals = p.num_evaluaciones || 0;
+            let semaphoreColor = '#9ca3af'; // Gris
+            let semaphoreText = 'Sin calificar';
+            let semaphoreGlow = '';
+            
+            if (numEvals === 1) {
+                semaphoreColor = '#3b82f6'; // Azul
+                semaphoreText = '1 calificación';
+                semaphoreGlow = 'box-shadow: 0 0 10px #3b82f6aa;';
+            } else if (numEvals === 2) {
+                semaphoreColor = '#eab308'; // Amarillo
+                semaphoreText = '2 calificaciones';
+                semaphoreGlow = 'box-shadow: 0 0 10px #eab308aa;';
+            } else if (numEvals >= 3) {
+                semaphoreColor = '#22c55e'; // Verde
+                semaphoreText = 'Evaluación Completa';
+                semaphoreGlow = 'box-shadow: 0 0 10px #22c55eaa;';
+            }
+
+            const semaphoreHtml = `
+                <div title="${semaphoreText}" style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:50%; background-color:${semaphoreColor}; color:white; font-size:14px; font-weight:bold; ${semaphoreGlow} margin-left:12px; border: 2px solid white; transition: transform 0.2s; cursor: help;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
+                    ${numEvals}
+                </div>
+            `;
+
             card.innerHTML = `
                 <div style="position: absolute; top: 20px; right: 20px; display: flex; align-items: flex-start; gap: 15px; text-align: center;">
                     ${p['Articulo_Cientifico'] ? `
@@ -94,9 +120,10 @@ const Judge = {
                         ${isEvaluated && p.nota_obtenida && p.nota_obtenida.toString().trim() !== '' ? `<div style="font-size: 11px; font-weight: bold; color: var(--text-muted); text-transform: uppercase;">Calificación:</div><div style="font-size: 24px; font-weight: bold; color: var(--primary);">${p.nota_obtenida}%</div>` : ''}
                     </div>
                 </div>
-                <div class="card-header" style="padding-right: 190px;">
-                    <span class="card-code">${p['ID_Proyecto']}</span>
-                    ${isEvaluated ? '<span class="tag" style="background:var(--success); color:white;"><i class="fas fa-check"></i> Ya evaluado</span>' : ''}
+                <div class="card-header" style="padding-right: 190px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+                    <span class="card-code" style="margin: 0;">${p['ID_Proyecto']}</span>
+                    ${semaphoreHtml}
+                    ${isEvaluated ? '<span class="tag" style="background:var(--success); color:white; margin: 0;"><i class="fas fa-check"></i> Ya evaluado</span>' : ''}
                 </div>
                 <h3 class="card-title" style="margin-right: 190px;">${p['Nombre_Corto_Proyecto']}</h3>
                 <div class="card-body">

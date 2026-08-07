@@ -98,16 +98,25 @@ function getProjects(terna, email) {
 
   if (!sheetProyectos) return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña 'Proyectos' no encontrada" })).setMimeType(ContentService.MimeType.JSON);
 
-  // Obtener todos los códigos de proyectos ya evaluados por ESTE juez
-  var evaluados = {};
+  // Obtener todos los códigos de proyectos ya evaluados por ESTE juez y conteo total
+  var evaluados_por_mi = {};
+  var conteo_evaluaciones = {};
+  
   if (sheetEvaluaciones) {
     var evalValues = sheetEvaluaciones.getDataRange().getValues();
     for (var j = 1; j < evalValues.length; j++) {
       var codEval = evalValues[j][1]; // Col B (1) es Código Proyecto
       var juezEval = evalValues[j][2]; // Col C (2) es Juez (Email)
       var notaEval = evalValues[j][4]; // Col E (4) es Nota Total
-      if (codEval && String(juezEval).indexOf(String(email).trim()) !== -1) {
-        evaluados[String(codEval).trim()] = { evaluado: true, nota: notaEval };
+      
+      if (codEval) {
+        var cod = String(codEval).trim();
+        if (!conteo_evaluaciones[cod]) conteo_evaluaciones[cod] = 0;
+        conteo_evaluaciones[cod]++;
+        
+        if (String(juezEval).indexOf(String(email).trim()) !== -1) {
+          evaluados_por_mi[cod] = { evaluado: true, nota: notaEval };
+        }
       }
     }
   }
@@ -124,6 +133,7 @@ function getProjects(terna, email) {
       }
 
       var codigo = values[i][2];
+      var codStr = String(codigo).trim();
       projects.push({
         'Fecha': values[i][0],
         'E_mail_Grupo': values[i][1],
@@ -143,8 +153,9 @@ function getProjects(terna, email) {
         'Comprobante_Pago': values[i][15],
         'Fotografia_Grupal': values[i][16],
         'Articulo_Cientifico': values[i][17],
-        'evaluado': evaluados[String(codigo).trim()] ? true : false,
-        'nota_obtenida': evaluados[String(codigo).trim()] ? evaluados[String(codigo).trim()].nota : null
+        'evaluado': evaluados_por_mi[codStr] ? true : false,
+        'nota_obtenida': evaluados_por_mi[codStr] ? evaluados_por_mi[codStr].nota : null,
+        'num_evaluaciones': conteo_evaluaciones[codStr] || 0
       });
     }
   }
