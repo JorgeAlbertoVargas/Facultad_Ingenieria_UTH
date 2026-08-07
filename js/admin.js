@@ -162,7 +162,7 @@ const Admin = {
                                     
                                     <!-- Logo Derecha (Logo UTH.png) -->
                                     <div class="diploma-logo-right">
-                                        <img src="img/UTH.png" alt="Logo UTH" style="max-height: 80px; max-width: 140px;" onerror="this.src='img/media__1786081543163.png'">
+                                        <img src="img/UTH.png" alt="Logo UTH" style="max-height: 200px; max-width: 360px;" onerror="this.src='img/media__1786081543163.png'">
                                     </div>
                                 </div>
                                 
