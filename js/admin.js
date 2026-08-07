@@ -174,11 +174,13 @@ const Admin = {
                                 
                                 <div class="diploma-certifies">CON ESTE DIPLOMA SE RECONOCE QUE</div>
                                 
-                                <div class="diploma-project">
-                                    <div style="font-size: 44px; margin-bottom: 20px; font-weight: 800;">${g.nombre}</div>
-                                    <div style="font-size: 26px; color: #333; font-weight: 700;">
-                                        ${g.id} | ${g.nombre} | ${g.catedratico}
+                                <div class="diploma-project" style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                                    <div style="display: flex; align-items: center; gap: 20px;">
+                                        <div style="font-size: 38px; font-weight: 800; color: #222;">Código: ${g.id}</div>
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(g.id)}" alt="QR Code" style="width: 90px; height: 90px; border: 2px solid #007A33; border-radius: 8px; padding: 4px; background: white;">
                                     </div>
+                                    <div style="font-size: 38px; font-weight: 800; color: #222;">Nombre Corto Proyecto: ${g.nombre}</div>
+                                    <div style="font-size: 38px; font-weight: 800; color: #222;">Catedrático: ${g.catedratico}</div>
                                 </div>
                                 
                                 <div class="diploma-footer">
