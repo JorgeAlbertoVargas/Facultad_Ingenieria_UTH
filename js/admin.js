@@ -160,8 +160,8 @@ const Admin = {
                                         <i class="fas fa-star"></i>
                                     </div>
                                     
-                                    <!-- Logo Derecha (Logo UTH.png) -->
-                                    <div class="diploma-logo-right">
+                                    <!-- Logo Derecha (Logo UTH.png) desplazado hacia abajo -->
+                                    <div class="diploma-logo-right" style="margin-top: 75px;">
                                         <img src="img/UTH.png" alt="Logo UTH" style="max-height: 280px; max-width: 500px;" onerror="this.src='img/media__1786081543163.png'">
                                     </div>
                                 </div>
@@ -175,22 +175,22 @@ const Admin = {
                                 <div class="diploma-certifies">CON ESTE DIPLOMA SE RECONOCE QUE</div>
                                 
                                 <div class="diploma-project" style="display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%;">
-                                    <div style="font-size: 38px; font-weight: 800; color: #222; white-space: nowrap;">Código: ${g.id}</div>
-                                    <div>
-                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(g.id)}" alt="QR Code" style="width: 90px; height: 90px; border: 2px solid #007A33; border-radius: 8px; padding: 4px; background: white;">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+                                        <div style="font-size: 38px; font-weight: 800; color: #222; white-space: nowrap;">Código: ${g.id}</div>
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(g.id)}" alt="QR Code" style="width: 80px; height: 80px; border: 2px solid #007A33; border-radius: 8px; padding: 4px; background: white;">
                                     </div>
                                     <div style="font-size: 38px; font-weight: 800; color: #222; white-space: nowrap;">Nombre Corto Proyecto: ${g.nombre}</div>
                                     <div style="font-size: 38px; font-weight: 800; color: #222; white-space: nowrap;">Catedrático: ${g.catedratico}</div>
                                 </div>
                                 
-                                <div class="diploma-footer">
-                                    <div class="diploma-signature">
-                                        <div class="diploma-signature-name">Dr. Dennis Aguilar</div>
-                                        <div class="diploma-signature-title">Decano de Ingenierias</div>
+                                <div class="diploma-footer" style="align-items: center;">
+                                    <div class="diploma-signature" style="display: flex; flex-direction: column; align-items: center;">
+                                        <div style="font-family: 'Great Vibes', cursive; font-size: 68px; color: #000; line-height: 1;">Dr. Dennis Aguilar</div>
+                                        <div style="font-size: 20px; font-weight: 500; color: #000; margin-top: 5px;">Decano de Ingenierias</div>
                                     </div>
-                                    <div class="diploma-date">
-                                        <div class="diploma-date-value">${fechaStr}</div>
-                                        <div class="diploma-date-label">Fecha</div>
+                                    <div class="diploma-date" style="display: flex; flex-direction: column; align-items: center; padding-bottom: 5px;">
+                                        <div style="font-size: 36px; font-weight: 800; color: #000; letter-spacing: 1px;">${fechaStr}</div>
+                                        <div style="font-size: 18px; color: #000;">Fecha</div>
                                     </div>
                                 </div>
                             </div>
