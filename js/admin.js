@@ -66,10 +66,11 @@ const Admin = {
                         <label for="ranking-category" style="display:block; margin-bottom: 5px; font-weight: 500;">Categoría:</label>
                         <select id="ranking-category" class="input-field">
                             <option value="">Seleccione una categoría...</option>
-                            <option value="Basico">Básico</option>
-                            <option value="Intermedio">Intermedio</option>
+                            <option value="Junior">Junior</option>
                             <option value="Avanzado">Avanzado</option>
-                            <option value="Maestria">Maestría</option>
+                            <option value="Emprendimiento">Emprendimiento</option>
+                            <option value="Demostrativo">Demostrativo</option>
+                            <option value="Investigacion">Investigación</option>
                         </select>
                     </div>
                         <label for="ranking-places" style="display:block; margin-bottom: 5px; font-weight: 500;">Seleccionar lugar a mostrar:</label>
