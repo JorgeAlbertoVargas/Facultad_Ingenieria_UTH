@@ -45,6 +45,12 @@ const UI = {
         }
     },
 
+    updateActiveNav(activeId) {
+        document.querySelectorAll('#nav-menu a').forEach(a => a.classList.remove('active'));
+        const activeItem = document.getElementById(activeId);
+        if (activeItem) activeItem.classList.add('active');
+    },
+
     showPdfViewer(url) {
         if (!url) return;
         

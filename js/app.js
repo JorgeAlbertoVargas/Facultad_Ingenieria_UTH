@@ -80,6 +80,12 @@ const App = {
                 UI.updateActiveNav('nav-admin-ranking');
                 Admin.loadRankings();
             });
+
+            document.getElementById('nav-admin-users').addEventListener('click', (e) => {
+                e.preventDefault();
+                UI.updateActiveNav('nav-admin-users');
+                UI.showToast('Módulo de jueces en construcción...', 'info');
+            });
         }
     }
 };
