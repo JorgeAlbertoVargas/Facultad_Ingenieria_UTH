@@ -51,6 +51,11 @@ const Judge = {
             card.className = `card ${isEvaluated ? 'evaluated' : ''}`;
             card.style.position = 'relative';
             
+            // Verificar si hay fotografía grupal
+            const fotoGrupalHtml = p['Fotografia_Grupal'] && p['Fotografia_Grupal'].trim() !== '' 
+                ? `<img src="${p['Fotografia_Grupal']}" alt="Foto Grupal" style="width: 90px; height: 90px; object-fit: cover; border-radius: 4px; border: 1px solid #eee; padding: 2px; background: white; margin-bottom: 5px; cursor: pointer;" onclick="window.open('${p['Fotografia_Grupal']}', '_blank')">`
+                : '';
+
             card.innerHTML = `
                 <div style="position: absolute; top: 20px; right: 20px; display: flex; align-items: flex-start; gap: 15px; text-align: center;">
                     ${p['Articulo_Cientifico'] ? `
@@ -61,8 +66,9 @@ const Judge = {
                         <span style="font-size: 10px; color: var(--text-muted); font-weight: bold; text-transform: uppercase; line-height: 1;">Artículo</span>
                     </div>
                     ` : ''}
-                    <div>
-                        <img src="${qrUrl}" alt="QR Code" style="border-radius: 4px; border: 1px solid #eee; padding: 2px; background: white; margin-bottom: 5px;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        ${fotoGrupalHtml}
+                        <img src="${qrUrl}" alt="QR Code" style="width: 90px; height: 90px; border-radius: 4px; border: 1px solid #eee; padding: 2px; background: white; margin-bottom: 5px;">
                         ${isEvaluated && p.nota_obtenida && p.nota_obtenida.toString().trim() !== '' ? `<div style="font-size: 11px; font-weight: bold; color: var(--text-muted); text-transform: uppercase;">Calificación:</div><div style="font-size: 24px; font-weight: bold; color: var(--primary);">${p.nota_obtenida}%</div>` : ''}
                     </div>
                 </div>
