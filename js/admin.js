@@ -123,59 +123,85 @@ const Admin = {
                         return;
                     }
                     
-                    // Render preview table
-                    let tableHTML = `
-                        <div class="table-responsive">
-                            <table class="table" style="width: 100%; border-collapse: collapse;">
-                                <thead>
-                                    <tr>
-                                        <th style="padding: 10px; border-bottom: 2px solid #eee; text-align: left;">Lugar</th>
-                                        <th style="padding: 10px; border-bottom: 2px solid #eee; text-align: left;">ID / Proyecto</th>
-                                        <th style="padding: 10px; border-bottom: 2px solid #eee; text-align: left;">Detalles</th>
-                                        <th style="padding: 10px; border-bottom: 2px solid #eee; text-align: center;">Promedio</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                    `;
+                    // Obtener fecha actual
+                    const hoy = new Date();
+                    const fechaStr = `${hoy.getDate()}/${hoy.getMonth() + 1}/${hoy.getFullYear()}`;
+                    
+                    function getPlaceText(index) {
+                        const places = ["1er.", "2do.", "3er.", "4to.", "5to.", "6to.", "7mo.", "8vo.", "9no.", "10mo."];
+                        if (index < places.length) return places[index];
+                        return `${index + 1}º`;
+                    }
+                    
+                    let diplomasHTML = '<div style="display: flex; flex-direction: column; gap: 30px; align-items: center;">';
                     
                     ganadores.forEach((g, index) => {
-                        let rowBg = index === 0 ? 'background-color: #f0fdf4;' : (index === 1 ? 'background-color: #fefce8;' : (index === 2 ? 'background-color: #fdf4ff;' : ''));
-                        tableHTML += `
-                            <tr style="border-bottom: 1px solid #eee; ${rowBg}">
-                                <td style="padding: 12px 10px; font-weight: bold; font-size: 1.1em; color: var(--primary);">#${index + 1}</td>
-                                <td style="padding: 12px 10px;">
-                                    <div style="font-weight: 500;">${g.nombre}</div>
-                                    <div style="font-size: 0.85em; color: var(--text-muted);">${g.id}</div>
-                                </td>
-                                <td style="padding: 12px 10px; font-size: 0.9em;">
-                                    <div><strong>Carrera:</strong> ${g.carrera}</div>
-                                    <div><strong>Asignatura:</strong> ${g.asignatura}</div>
-                                </td>
-                                <td style="padding: 12px 10px; text-align: center; font-weight: bold;">
-                                    ${g.promedio.toFixed(3)}
-                                </td>
-                            </tr>
+                        const placeText = getPlaceText(index);
+                        
+                        diplomasHTML += `
+                            <div class="diploma-wrapper">
+                                <div class="diploma-border-top-left"></div>
+                                <div class="diploma-border-bottom-right"></div>
+                                
+                                <div class="diploma-content">
+                                    <div class="diploma-header-row">
+                                        <!-- Logo Izquierda (Placeholder) -->
+                                        <div class="diploma-logo-left"></div>
+                                        
+                                        <!-- Estrellas -->
+                                        <div class="diploma-stars">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        
+                                        <!-- Logo Derecha (Placeholder texto) -->
+                                        <div class="diploma-logo-right">
+                                            40 Años<br>UTH
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="diploma-title">Feria de Ingeniería</div>
+                                    
+                                    <div class="diploma-place">
+                                        <span class="red">${placeText} Lugar | Categoria: ${categoria}</span>
+                                    </div>
+                                    
+                                    <div class="diploma-certifies">CON ESTE DIPLOMA SE RECONOCE QUE</div>
+                                    
+                                    <div class="diploma-project">${g.nombre}</div>
+                                    
+                                    <div class="diploma-footer">
+                                        <div class="diploma-signature">
+                                            <div class="diploma-signature-name">Dr. Dennis Aguilar</div>
+                                            <div class="diploma-signature-title">Decano de Ingenierias</div>
+                                        </div>
+                                        <div class="diploma-date">
+                                            <div class="diploma-date-value">${fechaStr}</div>
+                                            <div class="diploma-date-label">Fecha</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         `;
                     });
                     
-                    tableHTML += `</tbody></table></div>`;
-                    tableHTML += `
-                        <div style="margin-top: 20px; text-align: right;">
+                    diplomasHTML += `
+                        </div>
+                        <div style="margin-top: 20px; text-align: center;" class="no-print">
                             <button id="btn-print-diplomas" class="btn btn-primary" style="background:var(--success)">
-                                <i class="fas fa-print"></i> Abrir Diplomas para Imprimir
+                                <i class="fas fa-print"></i> Imprimir Diplomas (Ctrl+P)
                             </button>
+                            <p style="margin-top: 10px; font-size: 14px; color: #666;">
+                                (Asegúrate de ajustar tu impresora a formato <strong>Horizontal (Landscape)</strong>, tamaño <strong>A4 o Carta</strong>, y activa "Gráficos de fondo".)
+                            </p>
                         </div>
                     `;
                     
-                    previewDiv.innerHTML = tableHTML;
+                    previewDiv.innerHTML = diplomasHTML;
                     
                     document.getElementById('btn-print-diplomas').addEventListener('click', () => {
-                        // Guardar ganadores en localStorage y abrir la ventana de diplomas
-                        localStorage.setItem('diplomasData', JSON.stringify({
-                            categoria: categoria,
-                            ganadores: ganadores
-                        }));
-                        window.open('diploma.html', '_blank');
+                        window.print();
                     });
                     
                 } else {
