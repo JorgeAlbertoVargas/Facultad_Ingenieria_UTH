@@ -167,7 +167,7 @@ const Admin = {
                                     </div>
                                 </div>
                                 
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(g.id)}" alt="QR Code" style="position: absolute; right: 20px; top: 290px; width: 140px; height: 140px; border: 1px solid #007A33; border-radius: 8px; padding: 6px; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); z-index: 100;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(g.id)}" alt="QR Code" style="position: absolute; right: 20px; top: 235px; width: 140px; height: 140px; border: 1px solid #007A33; border-radius: 8px; padding: 6px; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); z-index: 100;">
                                 
                                 <div class="diploma-title">Feria de Ingeniería</div>
                                 
