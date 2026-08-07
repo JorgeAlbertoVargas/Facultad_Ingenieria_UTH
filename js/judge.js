@@ -69,6 +69,15 @@ const Judge = {
                 fotoGrupalHtml = `<img src="${imgUrl}" alt="Foto Grupal" style="width: 90px; height: 90px; object-fit: cover; border-radius: 4px; border: 1px solid #eee; padding: 2px; background: white; margin-bottom: 5px; cursor: pointer;" onclick="UI.showPdfViewer('${originalUrl}')">`;
             }
 
+            // Extraemos el número de Stand a partir del ID (último número)
+            let standStr = "No asignado";
+            if (p['ID_Proyecto']) {
+                const numbers = String(p['ID_Proyecto']).match(/\d+/g);
+                if (numbers) {
+                    standStr = "Stand " + parseInt(numbers[numbers.length - 1], 10);
+                }
+            }
+
             card.innerHTML = `
                 <div style="position: absolute; top: 20px; right: 20px; display: flex; align-items: flex-start; gap: 15px; text-align: center;">
                     ${p['Articulo_Cientifico'] ? `
@@ -91,6 +100,8 @@ const Judge = {
                 </div>
                 <h3 class="card-title" style="margin-right: 190px;">${p['Nombre_Corto_Proyecto']}</h3>
                 <div class="card-body">
+                    <p><strong>Ubicación:</strong> ${standStr}</p>
+                    <p><strong>Asignatura:</strong> ${p['Asignatura'] || 'No especificada'}</p>
                     <p><strong>Carrera:</strong> ${p['Carrera']}</p>
                     <p><strong>Campus:</strong> ${p['Campus']}</p>
                     <p><strong>Categoría:</strong> ${p['Categoria_Ingresada']}</p>
