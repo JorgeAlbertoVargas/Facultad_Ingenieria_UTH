@@ -72,12 +72,14 @@ const Admin = {
                             <option value="Maestria">Maestría</option>
                         </select>
                     </div>
-                    <div style="flex: 1; min-width: 200px;">
-                        <label for="ranking-places" style="display:block; margin-bottom: 5px; font-weight: 500;">Lugares a premiar:</label>
+                        <label for="ranking-places" style="display:block; margin-bottom: 5px; font-weight: 500;">Seleccionar lugar a mostrar:</label>
                         <select id="ranking-places" class="input-field">
-                            <option value="5" selected>Del 1ro al 5to lugar</option>
+                            <option value="5">5to lugar</option>
+                            <option value="4">4to lugar</option>
+                            <option value="3">3er lugar</option>
+                            <option value="2">2do lugar</option>
+                            <option value="1">1er lugar</option>
                         </select>
-                    </div>
                     <div style="display: flex; align-items: flex-end;">
                         <button id="btn-generate-diplomas" class="btn btn-primary" style="height: 42px; margin-top: auto;">
                             <i class="fas fa-certificate"></i> Generar Diplomas
@@ -111,84 +113,87 @@ const Admin = {
                 
                 if (response.success) {
                     let ranking = response.ranking;
-                    let maxPlaces = places === 'all' ? ranking.length : parseInt(places, 10);
-                    
-                    const ganadores = ranking.slice(0, maxPlaces);
-                    
-                    if (ganadores.length === 0) {
+                    if (ranking.length === 0) {
                         previewDiv.innerHTML = '<p style="color:var(--text-muted); font-style:italic;">No hay proyectos evaluados en esta categoría todavía.</p>';
                         return;
                     }
+                    
+                    const placeIndex = parseInt(places, 10) - 1;
+                    
+                    if (placeIndex >= ranking.length) {
+                        previewDiv.innerHTML = `<p style="color:var(--text-muted); font-style:italic;">Solo hay ${ranking.length} proyecto(s) evaluado(s). No hay un ganador para el lugar ${places}.</p>`;
+                        return;
+                    }
+                    
+                    const g = ranking[placeIndex];
                     
                     // Obtener fecha actual
                     const hoy = new Date();
                     const fechaStr = `${hoy.getDate()}/${hoy.getMonth() + 1}/${hoy.getFullYear()}`;
                     
                     function getPlaceText(index) {
-                        const places = ["1er.", "2do.", "3er.", "4to.", "5to.", "6to.", "7mo.", "8vo.", "9no.", "10mo."];
-                        if (index < places.length) return places[index];
+                        const placesArr = ["1er.", "2do.", "3er.", "4to.", "5to.", "6to.", "7mo.", "8vo.", "9no.", "10mo."];
+                        if (index < placesArr.length) return placesArr[index];
                         return `${index + 1}º`;
                     }
                     
+                    const placeText = getPlaceText(placeIndex);
+                    
                     let diplomasHTML = '<div style="display: flex; flex-direction: column; gap: 30px; align-items: center;">';
                     
-                    ganadores.forEach((g, index) => {
-                        const placeText = getPlaceText(index);
-                        
-                        diplomasHTML += `
-                            <div class="diploma-wrapper">
-                                <div class="diploma-border-top-left"></div>
-                                <div class="diploma-border-bottom-right"></div>
+                    diplomasHTML += `
+                        <div class="diploma-wrapper">
+                            <div class="diploma-border-top-left"></div>
+                            <div class="diploma-border-bottom-right"></div>
+                            
+                            <div class="diploma-content">
+                                <div class="diploma-header-row">
+                                    <!-- Logo Izquierda (Logo UTH nuevo doble de grande) -->
+                                    <div class="diploma-logo-left">
+                                        <img src="img/media__1786084541662.png" alt="Logo UTH Nuevo" style="max-height: 200px; max-width: 360px;">
+                                    </div>
+                                    
+                                    <!-- Estrellas -->
+                                    <div class="diploma-stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    
+                                    <!-- Logo Derecha (Logo UTH.png) -->
+                                    <div class="diploma-logo-right">
+                                        <img src="img/UTH.png" alt="Logo UTH" style="max-height: 80px; max-width: 140px;" onerror="this.src='img/media__1786081543163.png'">
+                                    </div>
+                                </div>
                                 
-                                <div class="diploma-content">
-                                    <div class="diploma-header-row">
-                                        <!-- Logo Izquierda (Logo UTH nuevo) -->
-                                        <div class="diploma-logo-left">
-                                            <img src="img/media__1786084541662.png" alt="Logo UTH" style="max-height: 100px; max-width: 180px;">
-                                        </div>
-                                        
-                                        <!-- Estrellas -->
-                                        <div class="diploma-stars">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </div>
-                                        
-                                        <!-- Logo Derecha (Logo 40 años) -->
-                                        <div class="diploma-logo-right">
-                                            <img src="img/media__1786081543163.png" alt="40 Años UTH" style="max-height: 80px; max-width: 140px;" onerror="this.src='img/media__1786078272811.png'">
-                                        </div>
+                                <div class="diploma-title">Feria de Ingeniería</div>
+                                
+                                <div class="diploma-place">
+                                    <span class="red">${placeText} Lugar | Categoria: ${categoria}</span>
+                                </div>
+                                
+                                <div class="diploma-certifies">CON ESTE DIPLOMA SE RECONOCE QUE</div>
+                                
+                                <div class="diploma-project">
+                                    <div style="font-size: 44px; margin-bottom: 20px; font-weight: 800;">${g.nombre}</div>
+                                    <div style="font-size: 26px; color: #333; font-weight: 700;">
+                                        ${g.id} | ${g.nombre} | ${g.catedratico}
                                     </div>
-                                    
-                                    <div class="diploma-title">Feria de Ingeniería</div>
-                                    
-                                    <div class="diploma-place">
-                                        <span class="red">${placeText} Lugar | Categoria: ${categoria}</span>
+                                </div>
+                                
+                                <div class="diploma-footer">
+                                    <div class="diploma-signature">
+                                        <div class="diploma-signature-name">Dr. Dennis Aguilar</div>
+                                        <div class="diploma-signature-title">Decano de Ingenierias</div>
                                     </div>
-                                    
-                                    <div class="diploma-certifies">CON ESTE DIPLOMA SE RECONOCE QUE</div>
-                                    
-                                    <div class="diploma-project">
-                                        <div style="font-size: 24px; margin-bottom: 10px;">${g.nombre}</div>
-                                        <div style="font-size: 16px; color: #333; font-weight: 600;">
-                                            ${g.id} | ${g.nombre} | ${g.catedratico}
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="diploma-footer">
-                                        <div class="diploma-signature">
-                                            <div class="diploma-signature-name">Dr. Dennis Aguilar</div>
-                                            <div class="diploma-signature-title">Decano de Ingenierias</div>
-                                        </div>
-                                        <div class="diploma-date">
-                                            <div class="diploma-date-value">${fechaStr}</div>
-                                            <div class="diploma-date-label">Fecha</div>
-                                        </div>
+                                    <div class="diploma-date">
+                                        <div class="diploma-date-value">${fechaStr}</div>
+                                        <div class="diploma-date-label">Fecha</div>
                                     </div>
                                 </div>
                             </div>
-                        `;
-                    });
+                        </div>
+                    `;
                     
                     diplomasHTML += `
                         </div>
