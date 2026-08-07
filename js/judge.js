@@ -163,7 +163,7 @@ const Judge = {
                                 <strong>${q.numero}. ${q.titulo}</strong>
                                 <span class="tag" style="background:#e2e8f0; color:#475569;">Valor: ${q.porcentaje}%</span>
                             </div>
-                            <div class="eval-options" data-index="${q.globalIndex}" data-percent="${q.porcentaje}" data-max-pts="${q.puntos_A}">
+                            <div class="eval-options" data-index="${q.globalIndex}" data-percent="${q.porcentaje}" data-max-pts="${q.puntos_A}" data-bloque="${blockName}">
                                 <label class="eval-option">
                                     <input type="radio" name="q_${q.globalIndex}" value="${q.puntos_A}" required>
                                     <div>
@@ -310,6 +310,7 @@ const Judge = {
                         
                         respuestas.push({
                             index: optGroup.dataset.index,
+                            bloque: optGroup.dataset.bloque,
                             puntos: val,
                             porcentajeGanado: earnedPercent
                         });
