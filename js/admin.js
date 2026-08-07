@@ -175,13 +175,11 @@ const Admin = {
                                 
                                 <div class="diploma-certifies">CON ESTE DIPLOMA SE RECONOCE QUE</div>
                                 
-                                <div class="diploma-project" style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%;">
-                                    <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-                                        <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap;">Código: ${g.id}</div>
-                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(g.id)}" alt="QR Code" style="width: 60px; height: 60px; border: 2px solid #007A33; border-radius: 6px; padding: 3px; background: white;">
-                                    </div>
+                                <div class="diploma-project" style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; position: relative;">
+                                    <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap;">Código: ${g.id}</div>
                                     <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap;">Nombre Corto Proyecto: ${g.nombre}</div>
                                     <div style="font-size: 24px; font-weight: 800; color: #222; white-space: nowrap;">Catedrático: ${g.catedratico}</div>
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(g.id)}" alt="QR Code" style="position: absolute; right: 20px; top: -20px; width: 120px; height: 120px; border: 1px solid #007A33; border-radius: 6px; padding: 4px; background: white;">
                                 </div>
                                 
                                 <div class="diploma-footer" style="align-items: center;">
