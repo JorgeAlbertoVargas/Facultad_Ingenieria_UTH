@@ -108,7 +108,10 @@
             </aside>
 
             <!-- Contenido Principal -->
-            <main class="main-content">
+            <main class="main-content" style="position: relative;">
+                <button id="toggle-sidebar" class="btn btn-icon" style="position: absolute; top: 15px; left: 15px; z-index: 100; font-size: 20px;" title="Ocultar/Mostrar Menú" onclick="document.querySelector('.sidebar').classList.toggle('hidden-sidebar')">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <!-- Vistas dinámicas inyectadas aquí -->
                 <div id="content-area"></div>
             </main>

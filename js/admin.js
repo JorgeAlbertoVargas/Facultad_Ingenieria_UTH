@@ -160,8 +160,8 @@ const Admin = {
                                         <i class="fas fa-star"></i>
                                     </div>
                                     
-                                    <!-- Logo Derecha (Logo UTH.png) desplazado hacia abajo un poco -->
-                                    <div class="diploma-logo-right" style="margin-top: 35px;">
+                                    <!-- Logo Derecha (Logo UTH.png) desplazado hacia abajo un poco y a la izquierda -->
+                                    <div class="diploma-logo-right" style="margin-top: 35px; margin-right: 20px;">
                                         <img src="img/UTH.png" alt="Logo UTH" style="max-height: 180px; max-width: 340px;" onerror="this.src='img/media__1786081543163.png'">
                                     </div>
                                 </div>
