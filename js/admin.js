@@ -150,7 +150,7 @@ const Admin = {
                                 <div class="diploma-header-row">
                                     <!-- Logo Izquierda (Logo UTH nuevo doble de grande) -->
                                     <div class="diploma-logo-left">
-                                        <img src="img/media__1786084541662.png" alt="Logo UTH Nuevo" style="max-height: 200px; max-width: 360px;">
+                                        <img src="img/media__1786084541662.png" alt="Logo UTH Nuevo" style="max-height: 280px; max-width: 500px;">
                                     </div>
                                     
                                     <!-- Estrellas -->
@@ -162,7 +162,7 @@ const Admin = {
                                     
                                     <!-- Logo Derecha (Logo UTH.png) -->
                                     <div class="diploma-logo-right">
-                                        <img src="img/UTH.png" alt="Logo UTH" style="max-height: 200px; max-width: 360px;" onerror="this.src='img/media__1786081543163.png'">
+                                        <img src="img/UTH.png" alt="Logo UTH" style="max-height: 280px; max-width: 500px;" onerror="this.src='img/media__1786081543163.png'">
                                     </div>
                                 </div>
                                 

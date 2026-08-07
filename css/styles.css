@@ -652,18 +652,19 @@ body {
 }
 /* Diploma Preview Styles */
 .diploma-wrapper {
-    width: 100%;
-    max-width: 900px;
+    width: 1122px; /* A4 width at 96dpi */
+    height: 794px; /* A4 height at 96dpi */
     margin: 20px auto;
     background: #fff;
     position: relative;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     overflow: hidden;
-    padding: 20px;
+    padding: 20px 40px;
     border: 2px solid #0a4f31;
-    aspect-ratio: 1.414; /* A4 landscape roughly */
     display: flex;
     flex-direction: column;
+    transform-origin: top center;
+    /* On smaller screens, it will cause horizontal scroll but preserve internal layout */
 }
 
 .diploma-border-top-left {
