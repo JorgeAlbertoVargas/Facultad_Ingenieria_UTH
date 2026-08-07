@@ -87,6 +87,11 @@ function getTerna(email) {
 }
 
 function getProjects(terna, email) {
+  // Seguridad: Si el usuario no tiene terna asignada, no se envían proyectos
+  if (!terna || String(terna).trim() === "" || String(terna).trim() === "null") {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: "No estás asignado a ninguna Terna. Contacta al administrador para que asigne tu correo a una Terna." })).setMimeType(ContentService.MimeType.JSON);
+  }
+
   var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheetProyectos = spreadsheet.getSheetByName('Proyectos');
   var sheetEvaluaciones = spreadsheet.getSheetByName('Evaluaciones');
