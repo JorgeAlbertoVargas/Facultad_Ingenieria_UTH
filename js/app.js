@@ -65,10 +65,21 @@ const App = {
         } else if (Auth.user.role === 'Administrador') {
             menu.innerHTML = `
                 <li><a href="#" class="active" id="nav-admin-dash"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
-                <li><a href="#" id="nav-admin-ranking"><i class="fas fa-trophy"></i> Rankings</a></li>
+                <li><a href="#" id="nav-admin-ranking"><i class="fas fa-trophy"></i> Diplomas y Rankings</a></li>
                 <li><a href="#" id="nav-admin-users"><i class="fas fa-users"></i> Jueces</a></li>
             `;
-            // Faltan listeners, por brevedad
+            
+            document.getElementById('nav-admin-dash').addEventListener('click', (e) => {
+                e.preventDefault();
+                UI.updateActiveNav('nav-admin-dash');
+                Admin.loadDashboard();
+            });
+            
+            document.getElementById('nav-admin-ranking').addEventListener('click', (e) => {
+                e.preventDefault();
+                UI.updateActiveNav('nav-admin-ranking');
+                Admin.loadRankings();
+            });
         }
     }
 };

@@ -41,6 +41,8 @@ function doGet(e) {
       return getMapUrl();
     } else if (action === 'ubicarProyectos') {
       return ejecutarUbicarProyectos();
+    } else if (action === 'getRankings') {
+      return getRankings(e.parameter.categoria);
     } else {
       return output.setContent(JSON.stringify({ success: false, error: 'Acción GET no válida' }));
     }
@@ -324,7 +326,9 @@ function loginUser(data) {
   var values = sheet.getDataRange().getValues();
   for (var i = 1; i < values.length; i++) {
     if (String(values[i][3]).trim() === String(data.email).trim() && String(values[i][4]) === String(data.password)) {
-      return ContentService.createTextOutput(JSON.stringify({ success: true, user: { name: values[i][2], email: values[i][3], role: 'Evaluador' } })).setMimeType(ContentService.MimeType.JSON);
+      var roleValue = values[i][5] ? String(values[i][5]).trim().toLowerCase() : '';
+      var userRole = (roleValue === 'admin') ? 'Administrador' : 'Evaluador';
+      return ContentService.createTextOutput(JSON.stringify({ success: true, user: { name: values[i][2], email: values[i][3], role: userRole } })).setMimeType(ContentService.MimeType.JSON);
     }
   }
   return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Credenciales inválidas' })).setMimeType(ContentService.MimeType.JSON);
@@ -339,14 +343,30 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
   // Por seguridad si notaTecnico no viene, lo hacemos 0
   notaTecnico = notaTecnico || 0;
 
-  // Buscar el nombre del juez en la pestaña Usuarios
+  // Buscar el nombre del juez
   var nombreJuez = correoJuez;
   var sheetUsuarios = spreadsheet.getSheetByName('Usuarios');
   if (sheetUsuarios) {
     var usuarios = sheetUsuarios.getDataRange().getValues();
     for (var u = 1; u < usuarios.length; u++) {
       if (String(usuarios[u][3]).trim() === String(correoJuez).trim()) {
-        nombreJuez = String(usuarios[u][2]).trim() + " | " + correoJuez;
+        nombreJuez = String(usuarios[u][2]).trim();
+        break;
+      }
+    }
+  }
+
+  // Buscar info del proyecto
+  var pNombre = "", pAsignatura = "", pCarrera = "", pCatedratico = "";
+  var sheetProyectos = spreadsheet.getSheetByName('Proyectos');
+  if (sheetProyectos) {
+    var proy = sheetProyectos.getDataRange().getValues();
+    for (var p = 1; p < proy.length; p++) {
+      if (String(proy[p][2]).trim() === String(codigoProyecto).trim()) { // Col C (2)
+        pNombre = String(proy[p][4]).trim(); // Col E (4) Nombre_Corto
+        pAsignatura = String(proy[p][10]).trim(); // Col K (10) Asignatura
+        pCarrera = String(proy[p][11]).trim(); // Col L (11) Carrera
+        pCatedratico = String(proy[p][14]).trim(); // Col O (14) Catedratico
         break;
       }
     }
@@ -361,9 +381,9 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
   // Si la pestaña no existe, la creamos y le ponemos encabezados
   if (!sheet) {
     sheet = spreadsheet.insertSheet(sheetName);
-    var headers = ["Fecha", "ID_Proyecto", "Evaluador_1", "Evaluador_2", "Evaluador_3", "Nota_Evaluador_1", "Nota_Evaluador_2", "Nota_Evaluador_3", "Promedio", "Tecnico_1", "Tecnico_2", "Tecnico_3", "Suma_Tecnico"];
+    var headers = ["Fecha", "ID_Proyecto", "Nombre_Corto", "Asignatura", "Carrera", "Catedratico", "Evaluador_1", "Evaluador_2", "Evaluador_3", "Nota_1", "Nota_2", "Nota_3", "Promedio", "Tecnico_1", "Tecnico_2", "Tecnico_3", "Suma_Tecnico"];
     sheet.appendRow(headers);
-    sheet.getRange("A1:M1").setFontWeight("bold").setBackground("#f3f4f6");
+    sheet.getRange("A1:Q1").setFontWeight("bold").setBackground("#f3f4f6");
   }
 
   var data = sheet.getDataRange().getValues();
@@ -380,65 +400,67 @@ function updateConsolidatedRanking(codigoProyecto, correoJuez, notaTotal, catego
   if (rowIndex !== -1) {
     // El proyecto ya existe, buscar espacio para el juez o actualizar si ya existe
     var rowData = data[rowIndex - 1]; // Índice base 0
-    var j1 = rowData[2]; // Evaluador_1
-    var j2 = rowData[3]; // Evaluador_2
-    var j3 = rowData[4]; // Evaluador_3
+    // Como añadimos 4 columnas, los jueces ahora están en las columnas 7, 8 y 9 (índices 6, 7 y 8)
+    var j1 = rowData[6]; // Evaluador_1
+    var j2 = rowData[7]; // Evaluador_2
+    var j3 = rowData[8]; // Evaluador_3
 
     var currentDate = new Date();
     sheet.getRange(rowIndex, 1).setValue(currentDate); // Actualizar Fecha
 
     // Verificamos si este juez ya evaluó (buscando su correo dentro de la celda) y actualizamos su nota
     if (String(j1).indexOf(String(correoJuez).trim()) !== -1) {
-      sheet.getRange(rowIndex, 6).setValue(notaTotal); // Nota 1
-      sheet.getRange(rowIndex, 10).setValue(notaTecnico); // Tecnico 1
+      sheet.getRange(rowIndex, 10).setValue(notaTotal); // Nota 1
+      sheet.getRange(rowIndex, 14).setValue(notaTecnico); // Tecnico 1
     } else if (String(j2).indexOf(String(correoJuez).trim()) !== -1) {
-      sheet.getRange(rowIndex, 7).setValue(notaTotal); // Nota 2
-      sheet.getRange(rowIndex, 11).setValue(notaTecnico); // Tecnico 2
+      sheet.getRange(rowIndex, 11).setValue(notaTotal); // Nota 2
+      sheet.getRange(rowIndex, 15).setValue(notaTecnico); // Tecnico 2
     } else if (String(j3).indexOf(String(correoJuez).trim()) !== -1) {
-      sheet.getRange(rowIndex, 8).setValue(notaTotal); // Nota 3
-      sheet.getRange(rowIndex, 12).setValue(notaTecnico); // Tecnico 3
+      sheet.getRange(rowIndex, 12).setValue(notaTotal); // Nota 3
+      sheet.getRange(rowIndex, 16).setValue(notaTecnico); // Tecnico 3
     } else {
       // Es un juez nuevo, buscar la primera columna vacía
       if (!j1 || String(j1).trim() === "") {
-        sheet.getRange(rowIndex, 3).setValue(nombreJuez);
-        sheet.getRange(rowIndex, 6).setValue(notaTotal);
-        sheet.getRange(rowIndex, 10).setValue(notaTecnico);
+        sheet.getRange(rowIndex, 7).setValue(nombreJuez);
+        sheet.getRange(rowIndex, 10).setValue(notaTotal);
+        sheet.getRange(rowIndex, 14).setValue(notaTecnico);
       } else if (!j2 || String(j2).trim() === "") {
-        sheet.getRange(rowIndex, 4).setValue(nombreJuez);
-        sheet.getRange(rowIndex, 7).setValue(notaTotal);
-        sheet.getRange(rowIndex, 11).setValue(notaTecnico);
+        sheet.getRange(rowIndex, 8).setValue(nombreJuez);
+        sheet.getRange(rowIndex, 11).setValue(notaTotal);
+        sheet.getRange(rowIndex, 15).setValue(notaTecnico);
       } else if (!j3 || String(j3).trim() === "") {
-        sheet.getRange(rowIndex, 5).setValue(nombreJuez);
-        sheet.getRange(rowIndex, 8).setValue(notaTotal);
-        sheet.getRange(rowIndex, 12).setValue(notaTecnico);
+        sheet.getRange(rowIndex, 9).setValue(nombreJuez);
+        sheet.getRange(rowIndex, 12).setValue(notaTotal);
+        sheet.getRange(rowIndex, 16).setValue(notaTecnico);
       }
     }
 
-    // Recalcular promedio y aplicar formato de 3 decimales
-    var cell = sheet.getRange(rowIndex, 9);
-    cell.setFormula('=AVERAGE(F' + rowIndex + ':H' + rowIndex + ')');
+    // Recalcular promedio (Columna 13)
+    var cell = sheet.getRange(rowIndex, 13);
+    cell.setFormula('=AVERAGE(J' + rowIndex + ':L' + rowIndex + ')');
     cell.setNumberFormat('0.000');
     
-    // Sumar el bloque Técnico
-    sheet.getRange(rowIndex, 13).setFormula('=SUM(J' + rowIndex + ':L' + rowIndex + ')');
+    // Sumar el bloque Técnico (Columna 17)
+    sheet.getRange(rowIndex, 17).setFormula('=SUM(N' + rowIndex + ':P' + rowIndex + ')');
     
   } else {
-    // El proyecto no existe, insertar nueva fila
-    var newRow = [new Date(), codigoProyecto, nombreJuez, "", "", notaTotal, "", "", "", notaTecnico, "", "", ""];
+    // El proyecto no existe, insertar nueva fila con los datos extra
+    // [Fecha, ID, Nombre, Asignatura, Carrera, Catedratico, J1, J2, J3, N1, N2, N3, Prom, T1, T2, T3, SumaT]
+    var newRow = [new Date(), codigoProyecto, pNombre, pAsignatura, pCarrera, pCatedratico, nombreJuez, "", "", notaTotal, "", "", "", notaTecnico, "", "", ""];
     sheet.appendRow(newRow);
     var newRowIndex = sheet.getLastRow();
-    var cell = sheet.getRange(newRowIndex, 9);
-    cell.setFormula('=AVERAGE(F' + newRowIndex + ':H' + newRowIndex + ')');
+    var cell = sheet.getRange(newRowIndex, 13);
+    cell.setFormula('=AVERAGE(J' + newRowIndex + ':L' + newRowIndex + ')');
     cell.setNumberFormat('0.000');
-    sheet.getRange(newRowIndex, 13).setFormula('=SUM(J' + newRowIndex + ':L' + newRowIndex + ')');
+    sheet.getRange(newRowIndex, 17).setFormula('=SUM(N' + newRowIndex + ':P' + newRowIndex + ')');
   }
   
-  // Ordenar la hoja automáticamente por la columna Promedio (9) primero y Suma_Tecnico (13) después
+  // Ordenar la hoja automáticamente por la columna Promedio (13) primero y Suma_Tecnico (17) después
   var lastRow = sheet.getLastRow();
   if (lastRow > 1) {
-    sheet.getRange(2, 1, lastRow - 1, 13).sort([
-      {column: 9, ascending: false}, // 1ra prioridad: Promedio más alto
-      {column: 13, ascending: false} // 2da prioridad: Suma técnico más alto
+    sheet.getRange(2, 1, lastRow - 1, 17).sort([
+      {column: 13, ascending: false}, // 1ra prioridad: Promedio más alto
+      {column: 17, ascending: false} // 2da prioridad: Suma técnico más alto
     ]);
   }
 }
@@ -569,4 +591,56 @@ function ubicarProyectos() {
   // Guardamos los cambios
   rangeMapa.setValues(valuesMapa);
   console.log("¡Éxito! Se ubicaron " + countUbicados + " proyectos en el mapa.");
+}
+
+// ------------------------------------
+// Obtener Ranking (para Diplomas)
+// ------------------------------------
+function getRankings(categoria) {
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  
+  if (categoria === 'all' || !categoria) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Debes especificar una categoría' })).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  var cleanCat = String(categoria).replace(/[:*?\[\]\\/]/g, '').trim().substring(0, 22);
+  var sheetName = "Ranking_" + cleanCat;
+  var sheet = spreadsheet.getSheetByName(sheetName);
+
+  if (!sheet) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'No hay ranking generado aún para esta categoría' })).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  var data = sheet.getDataRange().getValues();
+  var ranking = [];
+
+  // Fila 0 es encabezados
+  for (var i = 1; i < data.length; i++) {
+    var id = String(data[i][1]).trim();
+    if (id) {
+      // Las columnas ahora son:
+      // 0:Fecha, 1:ID_Proyecto, 2:Nombre_Corto, 3:Asignatura, 4:Carrera, 5:Catedratico
+      // 6-8: Jueces, 9-11: Notas, 12: Promedio, 13-15: Tecnico, 16: Suma_Tecnico
+      var promedio = parseFloat(data[i][12]);
+      if (isNaN(promedio)) promedio = 0;
+      
+      ranking.push({
+        id: id,
+        nombre: String(data[i][2]).trim() || id, // Usar Nombre_Corto si existe
+        asignatura: String(data[i][3]).trim(),
+        carrera: String(data[i][4]).trim(),
+        catedratico: String(data[i][5]).trim(),
+        promedio: promedio,
+        sumaTecnico: parseFloat(data[i][16]) || 0
+      });
+    }
+  }
+
+  // Ordenar descendentemente por promedio (luego suma tecnico)
+  ranking.sort(function(a, b) {
+    if (b.promedio !== a.promedio) return b.promedio - a.promedio;
+    return b.sumaTecnico - a.sumaTecnico;
+  });
+
+  return ContentService.createTextOutput(JSON.stringify({ success: true, ranking: ranking, categoria: categoria })).setMimeType(ContentService.MimeType.JSON);
 }

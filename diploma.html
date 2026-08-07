@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Diplomas - Feria de Ingeniería</title>
+    <!-- Incluir fuentes similares a la imagen -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #0a4f31;
+            --secondary-green: #15803d;
+            --accent-gold: #b45309; /* Por si lo necesitamos */
+            --text-dark: #1f2937;
+            --text-blue: #1d4ed8;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f3f4f6; /* Fondo de pantalla, no se imprime */
+            color: var(--text-dark);
+        }
+
+        /* Estilos específicos para impresión y para la página en pantalla */
+        .diploma-container {
+            width: 297mm; /* Tamaño A4 horizontal */
+            height: 210mm;
+            margin: 20px auto;
+            background: white;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            /* Se forzará el page break al imprimir */
+            page-break-after: always;
+            page-break-inside: avoid;
+        }
+
+        /* En impresión ocultamos los márgenes de la página y el fondo */
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+            body {
+                background: white;
+            }
+            .diploma-container {
+                margin: 0;
+                box-shadow: none;
+                border: none;
+            }
+            /* Ocultar botón de imprimir si lo hubiera */
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        /* Diseño geométrico verde en las esquinas */
+        .border-top-left {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-top: 150px solid var(--primary-green);
+            border-right: 150px solid transparent;
+        }
+        .border-top-left::after {
+            content: '';
+            position: absolute;
+            top: -150px;
+            left: -30px;
+            width: 0;
+            height: 0;
+            border-top: 200px solid rgba(21, 128, 61, 0.4);
+            border-right: 200px solid transparent;
+            z-index: 1;
+        }
+
+        .border-bottom-right {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-bottom: 200px solid var(--primary-green);
+            border-left: 200px solid transparent;
+        }
+        .border-bottom-right::after {
+            content: '';
+            position: absolute;
+            bottom: -200px;
+            right: -50px;
+            width: 0;
+            height: 0;
+            border-bottom: 250px solid rgba(21, 128, 61, 0.4);
+            border-left: 250px solid transparent;
+            z-index: 1;
+        }
+
+        /* Contenido del Diploma */
+        .content {
+            position: relative;
+            z-index: 10;
+            padding: 40px 80px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 20px solid transparent; /* Espacio para un borde interior sutil */
+        }
+
+        .inner-border {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 2px solid rgba(10, 79, 49, 0.2);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* Logo y estrellas */
+        .header {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .stars {
+            color: var(--primary-green);
+            font-size: 24px;
+            margin-bottom: 10px;
+            letter-spacing: 5px;
+        }
+        
+        .stars .fa-star:nth-child(2) {
+            font-size: 32px;
+            transform: translateY(-5px);
+            display: inline-block;
+        }
+
+        .logo-placeholder {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary-green);
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            border-bottom: 3px solid var(--primary-green);
+            padding-bottom: 5px;
+        }
+
+        /* Textos principales */
+        .certifies {
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #4b5563;
+            margin-bottom: 15px;
+        }
+
+        .feria-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .award-text {
+            font-size: 20px;
+            color: #374151;
+            margin-bottom: 15px;
+        }
+
+        .place-category {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 25px;
+        }
+
+        .project-name {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-blue);
+            margin-bottom: 20px;
+            max-width: 80%;
+            line-height: 1.2;
+            min-height: 80px;
+        }
+
+        .project-details {
+            font-size: 16px;
+            color: #4b5563;
+            margin-bottom: 30px;
+        }
+
+        .project-details span {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* Firma */
+        .signature-section {
+            margin-top: auto;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 40px;
+        }
+
+        .signature-block {
+            text-align: center;
+        }
+
+        .signature-line {
+            width: 250px;
+            border-bottom: 1px solid var(--text-dark);
+            margin-bottom: 10px;
+            height: 40px; /* Espacio para imagen de firma si hubiera */
+        }
+
+        .signature-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .signature-title {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .date-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        #diplomas-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .controls {
+            padding: 20px;
+            background: white;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn:hover { background: var(--secondary-green); }
+    </style>
+</head>
+<body>
+
+    <div class="controls no-print">
+        <button class="btn" onclick="window.print()">
+            <i class="fas fa-print"></i> Imprimir Diplomas
+        </button>
+        <p style="margin-top: 10px; font-size: 14px; color: #666;">
+            (Asegúrate de ajustar tu impresora a formato <strong>Horizontal (Landscape)</strong> y tamaño <strong>A4 o Carta</strong>. Activa "Gráficos de fondo" si los bordes no se ven.)
+        </p>
+    </div>
+
+    <div id="diplomas-wrapper">
+        <!-- Los diplomas se generarán aquí -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const wrapper = document.getElementById('diplomas-wrapper');
+            const dataStr = localStorage.getItem('diplomasData');
+            
+            if (!dataStr) {
+                wrapper.innerHTML = '<div style="padding: 50px; text-align: center;"><h2>Error: No se encontraron datos para generar los diplomas.</h2><p>Por favor, regresa al sistema y presiona "Generar Diplomas" de nuevo.</p></div>';
+                return;
+            }
+
+            const data = JSON.parse(dataStr);
+            const ganadores = data.ganadores;
+            const categoria = data.categoria;
+
+            // Obtener fecha actual en formato "D de Mes del YYYY"
+            const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+            const hoy = new Date();
+            const fechaStr = \`\${hoy.getDate()} de \${meses[hoy.getMonth()]} del \${hoy.getFullYear()}\`;
+
+            function getPlaceText(index) {
+                const places = ["Primer Lugar", "Segundo Lugar", "Tercer Lugar", "Cuarto Lugar", "Quinto Lugar", "Sexto Lugar", "Séptimo Lugar", "Octavo Lugar", "Noveno Lugar", "Décimo Lugar"];
+                if (index < places.length) return places[index];
+                return \`\${index + 1}º Lugar\`;
+            }
+
+            ganadores.forEach((g, index) => {
+                const placeText = getPlaceText(index);
+                
+                const diplomaHTML = \`
+                <div class="diploma-container">
+                    <div class="border-top-left"></div>
+                    <div class="border-bottom-right"></div>
+                    <div class="inner-border"></div>
+                    
+                    <div class="content">
+                        <div class="header">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="logo-placeholder">UTH</div>
+                        </div>
+
+                        <div class="certifies">Se otorga el presente diploma de reconocimiento en la</div>
+                        
+                        <div class="feria-title">Feria de Ingeniería</div>
+                        
+                        <div class="award-text">Por haber obtenido el</div>
+                        
+                        <div class="place-category">\${placeText} - Categoría \${categoria}</div>
+                        
+                        <div class="project-name">"\${g.nombre}"</div>
+                        
+                        <div class="project-details">
+                            Presentado por los estudiantes de <span>\${g.carrera}</span><br>
+                            Clase: <span>\${g.asignatura}</span> | Catedrático: <span>\${g.catedratico}</span>
+                        </div>
+
+                        <div class="signature-section">
+                            <div class="date-text">
+                                San Pedro Sula, Cortés<br>
+                                \${fechaStr}
+                            </div>
+                            
+                            <div class="signature-block">
+                                <div class="signature-line"></div>
+                                <div class="signature-name">Dr. Dennis Aguilar</div>
+                                <div class="signature-title">Decano, Facultad de Ingeniería</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                \`;
+                
+                wrapper.innerHTML += diplomaHTML;
+            });
+        });
+    </script>
+</body>
+</html>
