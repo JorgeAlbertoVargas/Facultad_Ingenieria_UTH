@@ -69,10 +69,13 @@
         </div>
 
         <!-- Layout de la App Autenticada -->
-        <div id="main-layout" class="view">
+        <div id="main-layout" class="view" style="position: relative;">
+            <button id="toggle-sidebar" class="btn btn-icon" style="position: absolute; top: 15px; left: 15px; z-index: 1000; font-size: 20px;" title="Ocultar/Mostrar Menú" onclick="document.querySelector('.sidebar').classList.toggle('hidden-sidebar')">
+                <i class="fas fa-bars"></i>
+            </button>
             <!-- Sidebar -->
             <aside class="sidebar">
-                <div class="sidebar-header">
+                <div class="sidebar-header" style="padding-top: 50px;">
                     <img src="https://www.uth.hn/wp-content/uploads/2026/01/logo-40-aniversario.png" alt="UTH Logo" class="sidebar-logo">
                     <span id="user-role-badge" class="badge">Evaluador</span>
                 </div>
@@ -108,10 +111,7 @@
             </aside>
 
             <!-- Contenido Principal -->
-            <main class="main-content" style="position: relative;">
-                <button id="toggle-sidebar" class="btn btn-icon" style="position: absolute; top: 15px; left: 15px; z-index: 100; font-size: 20px;" title="Ocultar/Mostrar Menú" onclick="document.querySelector('.sidebar').classList.toggle('hidden-sidebar')">
-                    <i class="fas fa-bars"></i>
-                </button>
+            <main class="main-content">
                 <!-- Vistas dinámicas inyectadas aquí -->
                 <div id="content-area"></div>
             </main>
