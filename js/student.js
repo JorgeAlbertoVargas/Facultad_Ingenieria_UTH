@@ -118,8 +118,8 @@ const StudentRegistration = {
             }
             .stands-grid-custom {
                 display: grid;
-                grid-template-columns: 45px 30px repeat(10, 45px) 40px repeat(2, 45px) 40px 45px;
-                grid-template-rows: repeat(8, 45px);
+                grid-template-columns: 1fr 0.6fr repeat(10, 1fr) 0.8fr repeat(2, 1fr) 0.8fr 1fr;
+                grid-template-rows: repeat(8, minmax(45px, 1fr));
                 gap: 6px;
                 background: white;
                 min-width: 860px;
@@ -135,7 +135,8 @@ const StudentRegistration = {
                 transition: transform 0.1s, box-shadow 0.1s;
                 border: 1px solid rgba(0,0,0,0.2);
                 border-top-width: 6px;
-                border-top-color: #a5d6a7; /* Simulating the green top bar from the image */
+                border-top-color: #a5d6a7;
+                aspect-ratio: 1;
             }
             .stand-free {
                 background-color: #ffffff;
@@ -212,7 +213,7 @@ const StudentRegistration = {
 
         container.innerHTML = `
             <div style="background-color: #EDF3EA; min-height: 100vh; padding: 30px 15px;">
-                <div style="max-width: 770px; margin: 0 auto;">
+                <div style="max-width: 1600px; width: 96%; margin: 0 auto;">
                     
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <button class="btn btn-text" onclick="UI.navigate('login-view')" style="background-color: white; border-radius: 20px; padding: 6px 16px; box-shadow: var(--shadow-sm); font-size: 13px;">
