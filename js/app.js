@@ -66,6 +66,7 @@ const App = {
             menu.innerHTML = `
                 <li><a href="#" class="active" id="nav-admin-dash"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
                 <li><a href="#" id="nav-admin-ranking"><i class="fas fa-trophy"></i> Diplomas y Rankings</a></li>
+                <li><a href="#" id="nav-admin-report"><i class="fas fa-file-alt"></i> Reporte de Notas</a></li>
                 <li><a href="#" id="nav-admin-users"><i class="fas fa-users"></i> Jueces</a></li>
             `;
             
@@ -79,6 +80,12 @@ const App = {
                 e.preventDefault();
                 UI.updateActiveNav('nav-admin-ranking');
                 Admin.loadRankings();
+            });
+
+            document.getElementById('nav-admin-report').addEventListener('click', (e) => {
+                e.preventDefault();
+                UI.updateActiveNav('nav-admin-report');
+                Admin.loadReport();
             });
 
             document.getElementById('nav-admin-users').addEventListener('click', (e) => {

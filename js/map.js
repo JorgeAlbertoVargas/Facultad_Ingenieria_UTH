@@ -15,10 +15,6 @@ const MapView = {
                     </div>
                     
                     <div style="display: flex; gap: 10px; align-items: center;">
-                        <button id="btn-update-stands" class="btn btn-secondary" onclick="MapView.updateStands()" style="padding: 10px; margin-right: 15px; background: var(--secondary); color: white;">
-                            <i class="fas fa-sync-alt"></i> Ubicar Proyectos en Stands
-                        </button>
-
                         <button class="btn btn-primary" onclick="MapView.zoomOut()" style="padding: 10px; font-size: 1rem; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-minus"></i></button>
                         
                         <input type="range" id="zoom-slider" min="0.4" max="2.5" step="0.05" value="0.70" oninput="MapView.onSliderChange(this.value)" style="width: 150px; cursor: pointer; accent-color: var(--primary);">
@@ -102,35 +98,6 @@ const MapView = {
             if (slider) {
                 slider.value = this.currentZoom;
             }
-        }
-    },
-
-    async updateStands() {
-        const btn = document.getElementById('btn-update-stands');
-        if(!btn) return;
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ubicando...';
-        btn.disabled = true;
-        
-        try {
-            const res = await API.get('ubicarProyectos');
-            if (res.success) {
-                UI.showToast('Proyectos ubicados correctamente en el mapa.', 'success');
-                // Recargar el iframe para ver los cambios
-                const iframe = document.getElementById('map-iframe');
-                if (iframe) {
-                    // Forzar recarga del iframe añadiendo un parámetro de tiempo
-                    const currentSrc = iframe.src.split('&t=')[0];
-                    iframe.src = currentSrc + '&t=' + new Date().getTime();
-                }
-            } else {
-                UI.showToast('Error: ' + (res.error || 'No se pudieron ubicar los proyectos.'), 'error');
-            }
-        } catch (error) {
-            UI.showToast('Error de conexión al sincronizar.', 'error');
-        } finally {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
         }
     }
 };

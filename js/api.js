@@ -77,6 +77,12 @@ const API = {
                         this._mockProjects[index].evaluado = true;
                     }
                     resolve({ success: true, message: 'Evaluación guardada (Mock)' });
+                } else if (action === 'sendReportEmails') {
+                    resolve({
+                        success: true,
+                        message: 'Se enviaron correos de prueba (Mock) a jorge.vargas@uth.hn',
+                        log: ['Mock email enviado para Catedrático X']
+                    });
                 }
             }, 800);
         });
@@ -114,6 +120,15 @@ const API = {
                     resolve({
                         success: true,
                         message: 'Proyectos ubicados (Mock)'
+                    });
+                } else if (action === 'getReportData') {
+                    resolve({
+                        success: true,
+                        report: [
+                            { idProyecto: 'PRJ-001', nombreLargo: 'Brazo Robótico Controlado por IA', nombreCorto: 'Brazo Robótico', asignatura: 'Robótica 1', catedratico: 'Ing. Carlos', calificacion: 95.5 },
+                            { idProyecto: 'PRJ-002', nombreLargo: 'EcoTrack: App de reciclaje', nombreCorto: 'App Reciclaje', asignatura: 'Programación 3', catedratico: 'Ing. Ana', calificacion: 88.0 },
+                            { idProyecto: 'PRJ-003', nombreLargo: 'Eficiencia en Paneles Solares', nombreCorto: 'Panel Solar', asignatura: 'Física 2', catedratico: 'Ing. Luis', calificacion: 0 }
+                        ]
                     });
                 }
             }, 800);

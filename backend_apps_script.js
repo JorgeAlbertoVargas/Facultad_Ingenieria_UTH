@@ -14,6 +14,8 @@ function doPost(e) {
       return loginUser(data);
     } else if (action === 'saveEvaluation') {
       return saveEvaluation(data);
+    } else if (action === 'sendReportEmails') {
+      return sendReportEmails(data);
     } else {
       return output.setContent(JSON.stringify({ success: false, error: 'Acción no válida' }));
     }
@@ -43,6 +45,8 @@ function doGet(e) {
       return ejecutarUbicarProyectos();
     } else if (action === 'getRankings') {
       return getRankings(e.parameter.categoria);
+    } else if (action === 'getReportData') {
+      return getReportData();
     } else {
       return output.setContent(JSON.stringify({ success: false, error: 'Acción GET no válida' }));
     }
@@ -677,4 +681,143 @@ function getRankings(categoria) {
   });
 
   return ContentService.createTextOutput(JSON.stringify({ success: true, ranking: ranking, categoria: categoria })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// ------------------------------------
+// Funciones de Reporte y Correos
+// ------------------------------------
+function getReportData() {
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  
+  // 1. Obtener información de Proyectos
+  var sheetProyectos = spreadsheet.getSheetByName('Proyectos');
+  if (!sheetProyectos) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Pestaña Proyectos no encontrada' })).setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  var proyectosData = sheetProyectos.getDataRange().getValues();
+  var proyectosDict = {};
+  
+  // Fila 0 son encabezados
+  for (var i = 1; i < proyectosData.length; i++) {
+    var idProyecto = String(proyectosData[i][2]).trim();
+    if (idProyecto) {
+      proyectosDict[idProyecto] = {
+        idProyecto: idProyecto,
+        nombreLargo: String(proyectosData[i][3]).trim(),
+        nombreCorto: String(proyectosData[i][4]).trim(),
+        asignatura: String(proyectosData[i][10]).trim(),
+        catedratico: String(proyectosData[i][14]).trim(),
+        calificacion: 0 // Por defecto
+      };
+    }
+  }
+  
+  // 2. Obtener las calificaciones de todos los Ranking_*
+  var sheets = spreadsheet.getSheets();
+  for (var s = 0; s < sheets.length; s++) {
+    var sheetName = sheets[s].getName();
+    if (sheetName.substring(0, 8) === 'Ranking_') {
+      var rankingData = sheets[s].getDataRange().getValues();
+      for (var r = 1; r < rankingData.length; r++) {
+        var idProyecto = String(rankingData[r][1]).trim(); // Col B (1)
+        var promedio = parseFloat(rankingData[r][12]); // Col M (12)
+        
+        if (idProyecto && proyectosDict[idProyecto] && !isNaN(promedio)) {
+          proyectosDict[idProyecto].calificacion = promedio;
+        }
+      }
+    }
+  }
+  
+  // Convertir diccionario a array
+  var result = [];
+  for (var key in proyectosDict) {
+    result.push(proyectosDict[key]);
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify({ success: true, report: result })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function sendReportEmails(data) {
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var reportData = data.reportData;
+  
+  var sheetTernas = spreadsheet.getSheetByName('Ternas');
+  var ternasData = sheetTernas ? sheetTernas.getDataRange().getValues() : [];
+  
+  var catedraticoEmails = {};
+  for (var i = 1; i < ternasData.length; i++) {
+    var nombre = String(ternasData[i][1]).trim().toLowerCase(); // Nombre_Evaluador
+    var email = String(ternasData[i][2]).trim(); // Email_Evaluador
+    if (nombre && email) {
+      catedraticoEmails[nombre] = email;
+    }
+  }
+  
+  // Agrupar proyectos por Catedratico
+  var proyectosPorCatedratico = {};
+  
+  for (var i = 0; i < reportData.length; i++) {
+    var p = reportData[i];
+    var cat = p.catedratico;
+    if (!cat || cat === "") {
+      cat = "Sin Catedrático";
+    }
+    if (!proyectosPorCatedratico[cat]) {
+      proyectosPorCatedratico[cat] = [];
+    }
+    proyectosPorCatedratico[cat].push(p);
+  }
+  
+  var emailsEnviados = 0;
+  var log = [];
+  
+  for (var catedratico in proyectosPorCatedratico) {
+    if (catedratico === "Sin Catedrático") continue;
+    
+    // HARDCODED PARA PRUEBAS:
+    var emailDestino = "jorge.vargas@uth.hn"; 
+    
+    var proyectos = proyectosPorCatedratico[catedratico];
+    
+    var htmlBody = "<h2>Reporte de Calificaciones de Proyectos</h2>";
+    htmlBody += "<p>Estimado(a) " + catedratico + ",</p>";
+    htmlBody += "<p>A continuación se detallan las calificaciones finales de los proyectos evaluados en la Feria de Ingeniería:</p>";
+    
+    htmlBody += "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse; width: 100%; font-family: sans-serif;'>";
+    htmlBody += "<tr style='background-color: #007A33; color: white; text-align: left;'>";
+    htmlBody += "<th>ID Proyecto</th><th>Asignatura</th><th>Nombre Corto</th><th>Nombre Largo</th><th>Calificación Final</th>";
+    htmlBody += "</tr>";
+    
+    for (var j = 0; j < proyectos.length; j++) {
+      var proy = proyectos[j];
+      htmlBody += "<tr>";
+      htmlBody += "<td>" + proy.idProyecto + "</td>";
+      htmlBody += "<td>" + proy.asignatura + "</td>";
+      htmlBody += "<td>" + proy.nombreCorto + "</td>";
+      htmlBody += "<td>" + proy.nombreLargo + "</td>";
+      htmlBody += "<td><strong>" + proy.calificacion.toFixed(2) + " / 100</strong></td>";
+      htmlBody += "</tr>";
+    }
+    
+    htmlBody += "</table>";
+    htmlBody += "<br><p>Saludos cordiales,<br>Comité Organizador UTH</p>";
+    
+    try {
+      GmailApp.sendEmail(emailDestino, "Calificaciones Feria de Ingeniería - " + catedratico, "", {
+        htmlBody: htmlBody
+      });
+      emailsEnviados++;
+      log.push("Enviado para: " + catedratico + " a " + emailDestino);
+    } catch (e) {
+      log.push("Error enviando a " + catedratico + ": " + e.toString());
+    }
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify({ 
+    success: true, 
+    message: 'Se enviaron ' + emailsEnviados + ' correos de prueba a jorge.vargas@uth.hn',
+    log: log
+  })).setMimeType(ContentService.MimeType.JSON);
 }

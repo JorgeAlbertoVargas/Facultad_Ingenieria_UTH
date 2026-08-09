@@ -222,5 +222,139 @@ const Admin = {
                 previewDiv.innerHTML = `<p class="error-msg">${err.message}</p>`;
             }
         });
+    },
+
+    async loadReport() {
+        const content = document.getElementById('content-area');
+        content.innerHTML = `
+            <div class="page-header">
+                <h1>Reporte de Notas</h1>
+                <p style="color:var(--text-muted); margin-top:5px;">Calificaciones finales de todos los proyectos.</p>
+            </div>
+            
+            <div class="card" style="margin-bottom: 20px;">
+                <h3 style="margin-bottom: 15px;">Filtros</h3>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <input type="text" id="filter-id" class="input-field" placeholder="Buscar por ID Proyecto">
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <input type="text" id="filter-asignatura" class="input-field" placeholder="Buscar por Asignatura">
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <input type="text" id="filter-catedratico" class="input-field" placeholder="Buscar por Catedrático">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <h3 style="margin: 0;">Resultados</h3>
+                <button id="btn-send-emails" class="btn btn-primary" style="background:var(--success)">
+                    <i class="fas fa-paper-plane"></i> Enviar Correos (Prueba Jorge)
+                </button>
+            </div>
+
+            <div class="card" style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; min-width: 800px;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--border-color); text-align: left;">
+                            <th style="padding: 12px 8px;">ID Proyecto</th>
+                            <th style="padding: 12px 8px;">Asignatura</th>
+                            <th style="padding: 12px 8px;">Catedrático</th>
+                            <th style="padding: 12px 8px;">Nombre Corto</th>
+                            <th style="padding: 12px 8px;">Nombre Largo</th>
+                            <th style="padding: 12px 8px;">Calificación</th>
+                        </tr>
+                    </thead>
+                    <tbody id="report-table-body">
+                        <tr><td colspan="6" style="text-align: center; padding: 20px;"><div class="loader" style="margin: 0 auto;"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        try {
+            const response = await API.get('getReportData');
+            if (response.success) {
+                Admin.reportData = response.report || [];
+                Admin.renderReportTable();
+
+                document.getElementById('filter-id').addEventListener('input', Admin.renderReportTable);
+                document.getElementById('filter-asignatura').addEventListener('input', Admin.renderReportTable);
+                document.getElementById('filter-catedratico').addEventListener('input', Admin.renderReportTable);
+                
+                document.getElementById('btn-send-emails').addEventListener('click', async () => {
+                    if (confirm("¿Estás seguro de enviar los correos de prueba a jorge.vargas@uth.hn?")) {
+                        const btn = document.getElementById('btn-send-emails');
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+                        
+                        try {
+                            const res = await API.post('sendReportEmails', { reportData: Admin.reportData });
+                            if (res.success) {
+                                UI.showToast(res.message, 'success');
+                                console.log("Log de envíos:", res.log);
+                            } else {
+                                UI.showToast(res.error || 'Error al enviar correos', 'error');
+                            }
+                        } catch (e) {
+                            UI.showToast(e.message, 'error');
+                        } finally {
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Correos (Prueba Jorge)';
+                        }
+                    }
+                });
+
+            } else {
+                document.getElementById('report-table-body').innerHTML = `<tr><td colspan="6" class="error-msg" style="text-align:center;">${response.error || 'Error al obtener datos'}</td></tr>`;
+            }
+        } catch (err) {
+            document.getElementById('report-table-body').innerHTML = `<tr><td colspan="6" class="error-msg" style="text-align:center;">${err.message}</td></tr>`;
+        }
+    },
+
+    renderReportTable() {
+        const tbody = document.getElementById('report-table-body');
+        if (!Admin.reportData || Admin.reportData.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px;">No hay datos para mostrar.</td></tr>';
+            return;
+        }
+
+        const filterId = document.getElementById('filter-id').value.toLowerCase();
+        const filterAsig = document.getElementById('filter-asignatura').value.toLowerCase();
+        const filterCat = document.getElementById('filter-catedratico').value.toLowerCase();
+
+        const filtered = Admin.reportData.filter(p => {
+            return (p.idProyecto || '').toLowerCase().includes(filterId) &&
+                   (p.asignatura || '').toLowerCase().includes(filterAsig) &&
+                   (p.catedratico || '').toLowerCase().includes(filterCat);
+        });
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px;">Ningún proyecto coincide con los filtros.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = filtered.map(p => {
+            let badgeClass = 'badge-secondary'; // default
+            if (p.calificacion >= 60) badgeClass = 'badge-success'; // assuming >= 60 is pass
+            else if (p.calificacion > 0) badgeClass = 'badge-danger';
+            
+            return \`
+            <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 12px 8px; font-weight: 500;">\${p.idProyecto || '-'}</td>
+                <td style="padding: 12px 8px;">\${p.asignatura || '-'}</td>
+                <td style="padding: 12px 8px;">\${p.catedratico || '-'}</td>
+                <td style="padding: 12px 8px;">\${p.nombreCorto || '-'}</td>
+                <td style="padding: 12px 8px; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="\${p.nombreLargo || ''}">\${p.nombreLargo || '-'}</td>
+                <td style="padding: 12px 8px;">
+                    <span class="badge \${badgeClass}">
+                        \${p.calificacion > 0 ? p.calificacion.toFixed(2) : 'N/A'}
+                    </span>
+                </td>
+            </tr>
+            \`;
+        }).join('');
     }
 };
