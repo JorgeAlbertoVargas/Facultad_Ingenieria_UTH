@@ -262,11 +262,43 @@ const StudentRegistration = {
             '5. Campus Juticalpa', '6. Campus Puerto Cortes', '7. Campus Roatan', '8. Campus San Pedro Sula',
             '9. Campus Santa Barbara', '10. Campus Siguatepeque', '11. Campus Tegucigalpa', '12. Campus Villanueva', '13. Campus Choloma'
         ]);
-        const asigOpts = this.buildOptions(this.config?.Asignaturas?.length > 0 ? this.config.Asignaturas : ['Automatización Industrial']); 
+        const fallbackAsignaturas = [
+            '1. Automatización Industrial', '2. Automatización de Sistemas de Producción', '3. Automatización Industrial y Sistemas de Percepción', 
+            '4. Circuitos Eléctricos I', '5. Circuitos Eléctricos II', '6. Circuitos Integrados', '7. Control de Procesos I', '8. Control de Procesos II', 
+            '9. Diseño y Experimentación', '10. Dispositivos Lógicos Programables', '11. Dibujo Técnico I', '12. Dibujo Técnico II', 
+            '13. Electrónica Análoga I', '14. Electrónica Análoga II', '15. Electrónica Digital', '16. Electromagnetismo', '17. Electrónica de Potencia', 
+            '18. Estática', '19. Física I', '20. Física II', '21. Introducción a la Ingeniería Electrónica', '22. Internet Industrial de las Cosas IOT', 
+            '23. Ingeniería de Métodos I', '24. Ingeniería de Métodos II', '25. Investigación de Operaciones I', '26. Investigación de Operaciones II', 
+            '27. Microcontroladores', '28. Máquinas Eléctricas', '29. Metrología', '30. Mecánica de Fluidos', '31. Ondas Electromagnéticas', 
+            '32. Optimización de Sistemas Productivos', '33. Preparación y Evaluación de Proyectos', '34. Producción I', '35. Producción II', 
+            '36. Programación y Control de la Producción', '37. Planeación y Control de Proyectos', '38. Planeación y Control de la Calidad', 
+            '39. Presupuesto y Control', '40. Procesos de Fabricación I', '41. Procesos de Fabricación II', '42. Proyectos de Inversión', '43. PLCs', 
+            '44. Química General', '45. Robótica Industrial', '46. Redes Industriales', '47. Resistencia de Materiales I', 
+            '48. Sistemas de Calidad Seis Sigma I', '49. Sistemas de Calidad Seis Sigma II', '50. Sistemas Hidráulicos y Neumáticos', 
+            '51. Sistemas Industriales Distribuidos', '52. Telefonía y Seguridad IP', '53. Transductores y Actuadores', '54. Teoría de Control I', 
+            '55. Teoría de Control II', '56. Telecomunicaciones'
+        ];
+        const fallbackCatedraticos = [
+            'Ada Lesbia Gallo González', 'Alejandro Bosco Menocal Castillo', 'Alicia Cárdenas Maldonado', 'Carlos Antonio Ramírez Maldonado', 
+            'Carlos Julio David Arita Castellanos', 'Carlos Bladimir', 'David Ricardo Santos Erazo', 'Dennis Amílcar Nolasco Martínez', 
+            'Edgar Quinett Sanabria Peña', 'Eduin Alexis Figueroa Torres', 'Emilio José Estévez Pleitez', 'Enoc Murillo Henríquez', 
+            'Erick Eduardo Escobar Orellana', 'Fredy Omar Hernández Torres', 'Gloria Carolina Ardón Montero', 'Gustavo Geovany López Membreño', 
+            'Janania Clariza Viana Sevilla', 'Jonathan Medardo Paz Salgado', 'Jorge Alberto Vargas', 'Jorge Luis Diaz Ayestas', 
+            'José Armando Hernández Gabrie', 'Jose David Valerio Eguigurems', 'José Luis Bendaña Laínez', 'José Ricardo Marín De Jesús', 
+            'Juan José Cruz Orellana', 'Junior Armando Medina Agurcia', 'Karla Patricia Guardado Solorzano', 'Luis Edgardo Leiva Aguilar', 
+            'Laura', 'Mirna Belisle Cardona', 'Nelson David Reyes Cárcamo', 'Oscar Alfonzo Bedoya Ramírez', 'Oscar David Carbajal Zuniga', 
+            'Reynerio Edgardo Vásquez Becerra', 'Rosa María Segura Enamorado', 'Vilma Valladares Fajardo'
+        ];
+        const fallbackPeriodos = [
+            '1er. Periodo', '2do. Periodo', '3er. Periodo', '4to. Periodo', '5to. Periodo', '6to. Periodo', '7mo. Periodo', 
+            '8vo. Periodo', '9no. Periodo', '10mo. Periodo', '11mo. Periodo', '12mo. Periodo', '13vo. Periodo'
+        ];
+        
+        const asigOpts = this.buildOptions(this.config?.Asignaturas?.length > 0 ? this.config.Asignaturas : fallbackAsignaturas); 
         const catOpts = this.buildOptions(this.config?.Categorias?.length > 0 ? this.config.Categorias : ['1.- Junior', '2.- Avanzado', '3.- Emprendimiento.', '4.- Demostrativo.', '5.- Investigacion.']);
         const carOpts = this.buildOptions(this.config?.Carreras?.length > 0 ? this.config.Carreras : ['Ingeniería Computación', 'Ingeniería Electrónica', 'Ingeniería Mecatrónica', 'Ingeniería Producción Industrial', 'Matemáticas', 'Técnico Automotriz']);
-        const perOpts = this.buildOptions(this.config?.Periodos?.length > 0 ? this.config.Periodos : ['1er. Periodo', '2do. Periodo', '3er. Periodo']); 
-        const catedOpts = this.buildOptions(this.config?.Catedraticos?.length > 0 ? this.config.Catedraticos : ['Jorge Alberto Vargas']); 
+        const perOpts = this.buildOptions(this.config?.Periodos?.length > 0 ? this.config.Periodos : fallbackPeriodos); 
+        const catedOpts = this.buildOptions(this.config?.Catedraticos?.length > 0 ? this.config.Catedraticos : fallbackCatedraticos); 
         const alimOpts = this.buildOptions(this.config?.Alimentacion?.length > 0 ? this.config.Alimentacion : ['110 Volts. Monofásica.', '220 Volts. Monofásica.', '220 Volts. Trifásica.']);
         const dimOpts = this.buildOptions(this.config?.Dimensiones?.length > 0 ? this.config.Dimensiones : ['2 Mts. x 1 Mts. (2 Mts. Cuadrados).', '3 Mts. x 2 Mts (6 Mts. Cuadrados).', 'Planta Baja UTH | Consulte con su catedrático, si no es justificable automáticamente es descalificado.']); 
 
