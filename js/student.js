@@ -141,8 +141,9 @@ const StudentRegistration = {
         html += `<div class="map-label label-red" style="grid-row: 1; grid-column: 2; align-self: start; white-space: nowrap;">Entrada<br>Posterior</div>`;
         html += `<div class="map-label label-red" style="grid-row: 8; grid-column: 2; align-self: end; white-space: nowrap;">Entrada<br>Frontal</div>`;
 
-        html += `<div class="map-vertical-label" style="left: -40px; top: 50%; transform: translateY(-50%) rotate(180deg);">220V Trifásico</div>`;
-        html += `<div class="map-vertical-label" style="right: -45px; top: 50%; transform: translateY(-50%);">220V Monofásico</div>`;
+        html += `<div class="map-vertical-label" style="left: -55px; top: 50%; transform: translateY(-50%) rotate(180deg);">220V Trifásico</div>`;
+        html += `<div class="map-vertical-label" style="right: -60px; top: 50%; transform: translateY(-50%);">220V Monofásico</div>`;
+        html += `<div class="map-horizontal-label" style="top: -25px; left: 50%; transform: translateX(-50%);">110 Volts. Monofásico.</div>`;
 
         html += '</div></div>';
         
@@ -150,16 +151,16 @@ const StudentRegistration = {
         <style>
             .stands-map-wrapper {
                 overflow-x: auto;
-                padding: 10px 0;
+                padding: 30px 60px;
             }
             .stands-grid-custom {
                 display: grid;
                 grid-template-columns: 1fr 0.6fr repeat(10, 1fr) 0.8fr repeat(2, 1fr) 0.8fr 1fr;
-                grid-template-rows: repeat(8, minmax(40px, 1fr));
+                grid-template-rows: repeat(8, minmax(43px, 1fr));
                 gap: 5px;
                 background: white;
-                min-width: 740px;
-                max-width: 800px;
+                min-width: 835px;
+                max-width: 860px;
                 margin: 0 auto;
                 position: relative;
             }
@@ -250,6 +251,18 @@ const StudentRegistration = {
                 font-size: 26px;
                 letter-spacing: 2px;
                 text-align: center;
+            }
+            .map-horizontal-label {
+                position: absolute;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 900;
+                color: #555;
+                font-size: 24px;
+                letter-spacing: 1px;
+                text-align: center;
+                white-space: nowrap;
             }
                 color: #d32f2f;
                 font-size: 11px;
