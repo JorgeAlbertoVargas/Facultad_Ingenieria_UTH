@@ -341,20 +341,20 @@ const Admin = {
             if (p.calificacion >= 60) badgeClass = 'badge-success'; // assuming >= 60 is pass
             else if (p.calificacion > 0) badgeClass = 'badge-danger';
             
-            return \`
+            return `
             <tr style="border-bottom: 1px solid var(--border-color);">
-                <td style="padding: 12px 8px; font-weight: 500;">\${p.idProyecto || '-'}</td>
-                <td style="padding: 12px 8px;">\${p.asignatura || '-'}</td>
-                <td style="padding: 12px 8px;">\${p.catedratico || '-'}</td>
-                <td style="padding: 12px 8px;">\${p.nombreCorto || '-'}</td>
-                <td style="padding: 12px 8px; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="\${p.nombreLargo || ''}">\${p.nombreLargo || '-'}</td>
+                <td style="padding: 12px 8px; font-weight: 500;">${p.idProyecto || '-'}</td>
+                <td style="padding: 12px 8px;">${p.asignatura || '-'}</td>
+                <td style="padding: 12px 8px;">${p.catedratico || '-'}</td>
+                <td style="padding: 12px 8px;">${p.nombreCorto || '-'}</td>
+                <td style="padding: 12px 8px; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${p.nombreLargo || ''}">${p.nombreLargo || '-'}</td>
                 <td style="padding: 12px 8px;">
-                    <span class="badge \${badgeClass}">
-                        \${p.calificacion > 0 ? p.calificacion.toFixed(2) : 'N/A'}
+                    <span class="badge ${badgeClass}">
+                        ${p.calificacion > 0 ? p.calificacion.toFixed(2) : 'N/A'}
                     </span>
                 </td>
             </tr>
-            \`;
+            `;
         }).join('');
     }
 };
