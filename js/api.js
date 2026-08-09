@@ -116,7 +116,7 @@ const API = {
                     });
                 } else if (action === 'getAvailableStands') {
                     let standsMock = [];
-                    for(let i = 1; i <= 60; i++) {
+                    for (let i = 1; i <= 60; i++) {
                         standsMock.push({
                             number: i,
                             status: Math.random() > 0.85 ? 'ocupado' : 'libre'

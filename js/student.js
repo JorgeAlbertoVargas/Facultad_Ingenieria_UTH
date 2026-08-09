@@ -183,7 +183,7 @@ const StudentRegistration = {
             <div style="max-width: 1000px; margin: 0 auto; padding: 20px; min-height: 100vh;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h1 style="color: var(--primary); margin: 0;">Inscripción de Proyecto</h1>
-                    <button class="btn btn-text" onclick="ui.showView('login-view')">
+                    <button class="btn btn-text" onclick="UI.navigate('login-view')">
                         <i class="fas fa-arrow-left"></i> Volver
                     </button>
                 </div>
@@ -336,7 +336,7 @@ const StudentRegistration = {
         event.preventDefault();
         
         if (!this.selectedStand) {
-            ui.showToast("Debes seleccionar un stand en el mapa antes de continuar.", "error");
+            UI.showToast("Debes seleccionar un stand en el mapa antes de continuar.", "error");
             return;
         }
 
@@ -379,7 +379,7 @@ const StudentRegistration = {
             const response = await API.post('registerProject', payload);
 
             if (response.success) {
-                ui.showToast("Proyecto inscrito con éxito.", "success");
+                UI.showToast("Proyecto inscrito con éxito.", "success");
                 
                 // Limpiar formulario y volver al login
                 document.getElementById('student-registration-form').reset();
@@ -387,14 +387,14 @@ const StudentRegistration = {
                 this.randomChars = this.generateRandomString(8); // Generar uno nuevo por si acaso
                 
                 setTimeout(() => {
-                    ui.showView('login-view');
+                    UI.navigate('login-view');
                 }, 2000);
             } else {
-                ui.showToast(response.error || "Error al inscribir el proyecto.", "error");
+                UI.showToast(response.error || "Error al inscribir el proyecto.", "error");
             }
         } catch (error) {
             console.error(error);
-            ui.showToast("Error de conexión al enviar los datos.", "error");
+            UI.showToast("Error de conexión al enviar los datos.", "error");
         } finally {
             btn.innerHTML = originalText;
             btn.disabled = false;
@@ -411,7 +411,7 @@ const StudentRegistration = {
             // Validar tamaño (~3MB)
             if (file.size > 3 * 1024 * 1024) {
                 reject(new Error(`El archivo ${file.name} es demasiado grande. Máximo 3MB.`));
-                ui.showToast(`El archivo ${file.name} es demasiado grande.`, "error");
+                UI.showToast(`El archivo ${file.name} es demasiado grande.`, "error");
                 return;
             }
 
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnRegister.addEventListener('click', (e) => {
             e.preventDefault();
             StudentRegistration.init();
-            ui.showView('student-registration-view');
+            UI.navigate('student-registration-view');
         });
     }
 });
