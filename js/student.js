@@ -144,8 +144,8 @@ const StudentRegistration = {
         html += `<div class="map-label label-red" style="grid-row: 1; grid-column: 2; align-self: start; white-space: nowrap;">Entrada<br>Posterior</div>`;
         html += `<div class="map-label label-red" style="grid-row: 8; grid-column: 2; align-self: end; white-space: nowrap;">Entrada<br>Frontal</div>`;
 
-        html += `<div class="map-vertical-label" style="left: -55px; top: 50%; transform: translateY(-50%) rotate(180deg);">220V Trifásico</div>`;
-        html += `<div class="map-vertical-label" style="right: -60px; top: 50%; transform: translateY(-50%);">220V Monofásico</div>`;
+        html += `<div class="map-vertical-label" style="left: -55px; top: 50%; transform: translateY(-50%) rotate(180deg);">220 Volts. Trifásico.</div>`;
+        html += `<div class="map-vertical-label" style="right: -60px; top: 50%; transform: translateY(-50%);">220 Volts. Monofásico.</div>`;
         html += `<div class="map-horizontal-label" style="top: -25px; left: 50%; transform: translateX(-50%);">110 Volts. Monofásico.</div>`;
 
         html += '</div></div>';
@@ -297,6 +297,47 @@ const StudentRegistration = {
         const selectedEl = document.querySelector(`.stand-box[data-stand="${standNumber}"]`);
         if (selectedEl) {
             selectedEl.classList.add('stand-selected');
+            
+            // Restricción de Alimentación Eléctrica
+            const alimSelect = document.getElementById('reg-alimentacion');
+            if (alimSelect) {
+                let restrictType = "110";
+                if (selectedEl.classList.contains('stand-trifasico')) {
+                    restrictType = "trifasica";
+                } else if (selectedEl.classList.contains('stand-monofasico')) {
+                    restrictType = "220_monofasica";
+                }
+                
+                Array.from(alimSelect.options).forEach(opt => {
+                    if (opt.value === "") return;
+                    let valLower = opt.value.toLowerCase();
+                    let keep = false;
+                    
+                    if (restrictType === "trifasica" && valLower.includes("trifásica")) keep = true;
+                    if (restrictType === "220_monofasica" && valLower.includes("220") && valLower.includes("monofásica")) keep = true;
+                    if (restrictType === "110" && valLower.includes("110")) keep = true;
+                    
+                    if (keep) {
+                        opt.disabled = false;
+                        opt.style.display = 'block';
+                        alimSelect.value = opt.value;
+                    } else {
+                        opt.disabled = true;
+                        opt.style.display = 'none';
+                    }
+                });
+                
+                let msgDiv = document.getElementById('alim-warning-msg');
+                if (!msgDiv) {
+                    msgDiv = document.createElement('div');
+                    msgDiv.id = 'alim-warning-msg';
+                    msgDiv.style.fontSize = '12px';
+                    msgDiv.style.color = '#d32f2f';
+                    msgDiv.style.marginTop = '8px';
+                    alimSelect.parentNode.appendChild(msgDiv);
+                }
+                msgDiv.innerHTML = `<i class="fas fa-info-circle"></i> La alimentación eléctrica está restringida por la ubicación seleccionada. Si requiere otro tipo, cambie de ubicación en el mapa.`;
+            }
         }
     },
 
