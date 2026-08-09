@@ -83,6 +83,9 @@ const API = {
                         message: 'Se enviaron correos de prueba (Mock) a jorge.vargas@uth.hn',
                         log: ['Mock email enviado para Catedrático X']
                     });
+                } else if (action === 'registerProject') {
+                    console.log('Mock registerProject payload:', payload);
+                    resolve({ success: true, message: 'Proyecto registrado (Mock)' });
                 }
             }, 800);
         });
@@ -110,6 +113,18 @@ const API = {
                             { bloque: "I - EL GRUPO (30%)", numero: 2, titulo: "Orden y Presentación", porcentaje: 6, puntos_A: 5, criterio_A: "Stand profesional, claro.", puntos_B: 3, criterio_B: "Bien organizado.", puntos_C: 1, criterio_C: "Desorganizado." },
                             { bloque: "II - TÉCNICO (50%)", numero: 6, titulo: "Claridad de Objetivos", porcentaje: 10, puntos_A: 10, criterio_A: "Específicos y correctos (Escala 10).", puntos_B: 5, criterio_B: "Básico correcto (Escala 5).", puntos_C: 1, criterio_C: "Vagos o débiles." }
                         ]
+                    });
+                } else if (action === 'getAvailableStands') {
+                    let standsMock = [];
+                    for(let i = 1; i <= 60; i++) {
+                        standsMock.push({
+                            number: i,
+                            status: Math.random() > 0.85 ? 'ocupado' : 'libre'
+                        });
+                    }
+                    resolve({
+                        success: true,
+                        stands: standsMock
                     });
                 } else if (action === 'getMapUrl') {
                     resolve({

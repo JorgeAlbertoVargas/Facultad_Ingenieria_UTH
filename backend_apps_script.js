@@ -16,6 +16,8 @@ function doPost(e) {
       return saveEvaluation(data);
     } else if (action === 'sendReportEmails') {
       return sendReportEmails(data);
+    } else if (action === 'registerProject') {
+      return registerProject(data);
     } else {
       return output.setContent(JSON.stringify({ success: false, error: 'Acción no válida' }));
     }
@@ -59,6 +61,8 @@ function doGet(e) {
       return getRankings(e.parameter.categoria);
     } else if (action === 'getReportData') {
       return getReportData();
+    } else if (action === 'getAvailableStands') {
+      return getAvailableStands();
     } else {
       return output.setContent(JSON.stringify({ success: false, error: 'Acción GET no válida' }));
     }
@@ -872,4 +876,142 @@ function sendReportEmails(data) {
     message: 'Se enviaron ' + emailsEnviados + ' correos a los catedráticos.',
     log: log
   })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// ------------------------------------
+// Funciones de Inscripción de Estudiantes
+// ------------------------------------
+function getAvailableStands() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheetMapa = ss.getSheetByName("Distribucion_Proyectos");
+  
+  if (!sheetMapa) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña 'Distribucion_Proyectos' no encontrada" })).setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  var valuesMapa = sheetMapa.getDataRange().getValues();
+  var stands = [];
+  
+  for (var r = 0; r < valuesMapa.length; r++) {
+    for (var c = 0; c < valuesMapa[r].length; c++) {
+      var cellVal = String(valuesMapa[r][c]).trim().toLowerCase();
+      if (cellVal.indexOf("stan") !== -1 || cellVal.indexOf("stab") !== -1) {
+        var numStand = null;
+        var targetRow = null;
+        
+        if (/\d+/.test(cellVal)) {
+          var matchStand = cellVal.match(/\d+/);
+          numStand = parseInt(matchStand[0], 10);
+          targetRow = r + 1;
+        } else if (r + 1 < valuesMapa.length && /\d+/.test(String(valuesMapa[r+1][c]))) {
+          var matchStand = String(valuesMapa[r+1][c]).match(/\d+/);
+          numStand = parseInt(matchStand[0], 10);
+          targetRow = r + 2;
+        }
+        
+        if (numStand !== null && targetRow !== null && targetRow < valuesMapa.length) {
+          var content = String(valuesMapa[targetRow][c]).trim().toLowerCase();
+          var isFree = content === "" || content.indexOf("libre") !== -1 || content.indexOf("sin asignar") !== -1;
+          stands.push({
+            number: numStand,
+            status: isFree ? 'libre' : 'ocupado'
+          });
+        }
+      }
+    }
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify({ success: true, stands: stands })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function registerProject(data) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('Proyectos_Estudiantes');
+  
+  if (!sheet) {
+    sheet = ss.insertSheet('Proyectos_Estudiantes');
+    var headers = ["Fecha", "E_mail_Grupo", "ID_Proyecto", "Nombre_Largo_Proyecto", "Nombre_Corto_Proyecto", "No_Factura", "Funcionalidad_Proyecto", "Campus", "Alimentacion_Electrica", "Dimensiones_Stand", "Asignatura", "Carrera", "Periodo", "Categoria_Ingresada", "Catedratico", "Comprobante_Pago", "Fotografia_Grupal", "Video_Proyecto", "Articulo_Cientifico", "Terna_Asignada"];
+    sheet.appendRow(headers);
+    sheet.getRange("A1:T1").setFontWeight("bold").setBackground("#f3f4f6");
+  }
+
+  // Guardar archivos en Drive
+  var folderIterator = DriveApp.getFoldersByName("Proyectos_Inscritos_Archivos");
+  var folder;
+  if (folderIterator.hasNext()) {
+    folder = folderIterator.next();
+  } else {
+    folder = DriveApp.createFolder("Proyectos_Inscritos_Archivos");
+  }
+
+  function saveFile(base64Data, typeName) {
+    if (!base64Data || !base64Data.data) return "";
+    try {
+      var blob = Utilities.newBlob(Utilities.base64Decode(base64Data.data), base64Data.mimeType || "application/octet-stream", data.ID_Proyecto + "_" + typeName + "_" + (base64Data.filename || "archivo"));
+      var file = folder.createFile(blob);
+      return file.getUrl();
+    } catch(e) {
+      return "Error al guardar archivo: " + e.toString();
+    }
+  }
+
+  var comprobanteUrl = saveFile(data.Comprobante_Pago, "comprobante");
+  var fotoUrl = saveFile(data.Fotografia_Grupal, "foto");
+  var articuloUrl = saveFile(data.Articulo_Cientifico, "articulo");
+
+  var newRow = [
+    data.Fecha,
+    data.E_mail_Grupo,
+    data.ID_Proyecto,
+    data.Nombre_Largo_Proyecto,
+    data.Nombre_Corto_Proyecto,
+    data.No_Factura,
+    data.Funcionalidad_Proyecto,
+    data.Campus,
+    data.Alimentacion_Electrica,
+    data.Dimensiones_Stand,
+    data.Asignatura,
+    data.Carrera,
+    data.Periodo,
+    data.Categoria_Ingresada,
+    data.Catedratico,
+    comprobanteUrl,
+    fotoUrl,
+    data.Video_Proyecto,
+    articuloUrl,
+    "" // Terna asignada en blanco
+  ];
+
+  sheet.appendRow(newRow);
+  
+  // Ubicar en el mapa
+  if (data.Stand_Seleccionado) {
+    var sheetMapa = ss.getSheetByName("Distribucion_Proyectos");
+    if (sheetMapa) {
+      var valuesMapa = sheetMapa.getDataRange().getValues();
+      for (var r = 0; r < valuesMapa.length; r++) {
+        for (var c = 0; c < valuesMapa[r].length; c++) {
+          var cellVal = String(valuesMapa[r][c]).trim().toLowerCase();
+          if (cellVal.indexOf("stan") !== -1 || cellVal.indexOf("stab") !== -1) {
+            var numStand = null;
+            var targetRow = null;
+            if (/\d+/.test(cellVal)) {
+              var matchStand = cellVal.match(/\d+/);
+              numStand = parseInt(matchStand[0], 10);
+              targetRow = r + 1;
+            } else if (r + 1 < valuesMapa.length && /\d+/.test(String(valuesMapa[r+1][c]))) {
+              var matchStand = String(valuesMapa[r+1][c]).match(/\d+/);
+              numStand = parseInt(matchStand[0], 10);
+              targetRow = r + 2;
+            }
+            if (numStand === parseInt(data.Stand_Seleccionado, 10) && targetRow !== null) {
+              sheetMapa.getRange(targetRow + 1, c + 1).setValue(data.ID_Proyecto + "\n" + data.Nombre_Corto_Proyecto);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Proyecto inscrito con éxito' })).setMimeType(ContentService.MimeType.JSON);
 }
