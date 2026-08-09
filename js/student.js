@@ -625,7 +625,7 @@ const StudentRegistration = {
                 this.randomChars = this.generateRandomString(8); // Generar uno nuevo por si acaso
                 
                 setTimeout(() => {
-                    UI.navigate('login-view');
+                    MapView.load();
                 }, 2000);
             } else {
                 UI.showToast(response.error || "Error al inscribir el proyecto.", "error");
