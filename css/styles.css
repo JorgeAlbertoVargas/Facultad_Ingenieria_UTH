@@ -837,9 +837,221 @@ body {
     body * { visibility: hidden; }
     #ranking-preview, #ranking-preview * { visibility: visible; }
     #ranking-preview { position: absolute; left: 0; top: 0; width: 100%; }
+@media (min-width: 768px) {
+    .eval-options {
+        flex-direction: row;
+    }
+    .eval-option {
+        flex: 1;
+    }
+}
+/* Diploma Preview Styles */
+.diploma-wrapper {
+    width: 100%;
+    max-width: 900px;
+    margin: 20px auto;
+    background: #fff;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    padding: 20px;
+    border: 2px solid #0a4f31;
+    aspect-ratio: 1.414; /* A4 landscape roughly */
+    display: flex;
+    flex-direction: column;
+}
+
+.diploma-border-top-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-top: 150px solid #8cc63f; /* Lighter green chevron */
+    border-right: 150px solid transparent;
+}
+.diploma-border-top-left::after {
+    content: '';
+    position: absolute;
+    top: -150px;
+    left: -70px;
+    width: 0;
+    height: 0;
+    border-top: 150px solid #007A33;
+    border-right: 150px solid transparent;
+}
+
+.diploma-border-bottom-right {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-bottom: 150px solid #8cc63f;
+    border-left: 150px solid transparent;
+}
+.diploma-border-bottom-right::after {
+    content: '';
+    position: absolute;
+    bottom: -150px;
+    right: -70px;
+    width: 0;
+    height: 0;
+    border-bottom: 150px solid #007A33;
+    border-left: 150px solid transparent;
+}
+
+.diploma-content {
+    position: relative;
+    z-index: 10;
+    padding: 20px 40px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.diploma-header-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.diploma-logo-left {
+    width: 150px;
+    height: 80px;
+    
+    background-size: contain;
+}
+
+.diploma-stars {
+    color: #4ade80; /* bright green */
+    font-size: 30px;
+}
+.diploma-stars i:nth-child(2) {
+    font-size: 45px;
+    transform: translateY(-10px);
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.diploma-logo-right {
+    width: 100px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #007A33;
+    
+    
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.1;
+}
+
+.diploma-title {
+    font-size: 36px;
+    font-weight: 900;
+    color: #000;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.diploma-place {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 5px;
+}
+.diploma-place span.red {
+    color: red;
+}
+
+.diploma-certifies {
+    font-size: 14px;
+    font-weight: bold;
+    color: #000;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.diploma-project {
+    font-size: 22px;
+    font-weight: bold;
+    color: #1d4ed8; /* blue */
+    margin-bottom: auto;
+    max-width: 80%;
+}
+
+.diploma-footer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 30px;
+    padding: 0 40px;
+}
+
+.diploma-signature {
+    text-align: center;
+}
+.diploma-signature-name {
+    font-family: 'Brush Script MT', 'Dancing Script', cursive;
+    font-size: 32px;
+    color: #000;
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+.diploma-signature-title {
+    font-size: 14px;
+    color: #000;
+}
+
+.diploma-date {
+    text-align: center;
+}
+.diploma-date-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 5px;
+}
+.diploma-date-label {
+    font-size: 14px;
+    color: #000;
+}
+@media print {
+    @page { size: A4 landscape; margin: 0; }
+    body * { visibility: hidden; }
+    #ranking-preview, #ranking-preview * { visibility: visible; }
+    #ranking-preview { position: absolute; left: 0; top: 0; width: 100%; }
     .diploma-wrapper { page-break-after: always; page-break-inside: avoid; border: none; box-shadow: none; margin: 0; padding: 20px 40px; }
     .no-print { display: none !important; }
 }
 
 .sidebar.hidden-sidebar { display: none !important; }
 
+/* Grid Registration Layout */
+.registration-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group select,
+.input-group input {
+    width: 100%;
+    box-sizing: border-box;
+}

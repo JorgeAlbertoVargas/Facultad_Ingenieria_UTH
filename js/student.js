@@ -257,16 +257,16 @@ const StudentRegistration = {
                                         <p><strong>¡Mucho éxito en su presentación!</strong><br>
                                         Facultad de Ingeniería — Universidad Tecnológica de Honduras (UTH)</p>`;
 
-        const campusOpts = this.buildOptions(this.config?.Campus || [
+        const campusOpts = this.buildOptions(this.config?.Campus?.length > 0 ? this.config.Campus : [
             '1. Campus La Ceiba', '2. Campus Choluteca', '3. Campus Comayagua', '4. Campus El Progreso',
             '5. Campus Juticalpa', '6. Campus Puerto Cortes', '7. Campus Roatan', '8. Campus San Pedro Sula',
             '9. Campus Santa Barbara', '10. Campus Siguatepeque', '11. Campus Tegucigalpa', '12. Campus Villanueva', '13. Campus Choloma'
         ]);
-        const asigOpts = this.buildOptions(this.config?.Asignaturas || ['Automatización Industrial']); 
-        const catOpts = this.buildOptions(this.config?.Categorias || ['1.- Junior', '2.- Avanzado', '3.- Emprendimiento.', '4.- Demostrativo.', '5.- Investigacion.']);
-        const carOpts = this.buildOptions(this.config?.Carreras || ['Ingeniería Electrónica', 'Ingeniería Producción Industrial', 'Ingeniería Mecatrónica', 'Matemáticas', 'Ingeniería Computación']);
-        const perOpts = this.buildOptions(this.config?.Periodos || ['1er. Periodo', '2do. Periodo', '3er. Periodo']); 
-        const catedOpts = this.buildOptions(this.config?.Catedraticos || ['Jorge Alberto Vargas']); 
+        const asigOpts = this.buildOptions(this.config?.Asignaturas?.length > 0 ? this.config.Asignaturas : ['Automatización Industrial']); 
+        const catOpts = this.buildOptions(this.config?.Categorias?.length > 0 ? this.config.Categorias : ['1.- Junior', '2.- Avanzado', '3.- Emprendimiento.', '4.- Demostrativo.', '5.- Investigacion.']);
+        const carOpts = this.buildOptions(this.config?.Carreras?.length > 0 ? this.config.Carreras : ['Ingeniería Electrónica', 'Ingeniería Producción Industrial', 'Ingeniería Mecatrónica', 'Matemáticas', 'Ingeniería Computación']);
+        const perOpts = this.buildOptions(this.config?.Periodos?.length > 0 ? this.config.Periodos : ['1er. Periodo', '2do. Periodo', '3er. Periodo']); 
+        const catedOpts = this.buildOptions(this.config?.Catedraticos?.length > 0 ? this.config.Catedraticos : ['Jorge Alberto Vargas']); 
 
         container.innerHTML = `
             <div style="background-color: #EDF3EA; min-height: 100vh; padding: 30px 15px;">
