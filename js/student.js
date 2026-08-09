@@ -228,10 +228,57 @@ const StudentRegistration = {
 
                     <form id="student-registration-form" onsubmit="StudentRegistration.submitForm(event)">
                         
-                        <!-- Tarjeta de Título -->
+                        <!-- Tarjeta de Título e Instrucciones -->
                         <div class="card" style="padding: 22px 24px 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; border-top: 10px solid var(--primary); background: white;">
                             <h1 style="color: #202124; margin: 0 0 12px 0; font-size: 32px; font-weight: 400; line-height: 1.2;">Feria Ingeniería | Formulario de Inscripción de Proyectos 2do. Periodo del 2026.</h1>
-                            <p style="color: #202124; font-size: 14px; margin: 0; line-height: 1.5;">Completa el formulario a continuación para inscribir tu proyecto.</p>
+                            
+                            <div style="background: #f8f9fa; border: 1px solid #e8eaed; border-radius: 8px; padding: 15px; margin-top: 15px;">
+                                <details>
+                                    <summary style="font-weight: 500; color: var(--primary); cursor: pointer; outline: none; font-size: 15px;">
+                                        <i class="fas fa-info-circle" style="margin-right: 5px;"></i> Leer Instrucciones Importantes y Mensaje de Bienvenida
+                                    </summary>
+                                    <div style="margin-top: 15px; font-size: 13.5px; color: #3c4043; line-height: 1.6; max-height: 350px; overflow-y: auto; padding-right: 10px;">
+                                        <p><strong>Bienvenido(a) al proceso de inscripción de proyectos.</strong> Por favor, complete todos los campos con información verídica actualizada. Es importante tener en cuenta que los datos proporcionados serán verificados por los organizadores, cualquier información falsa o incompleta podría invalidar su inscripción. Agradecemos su honestidad y colaboración.</p>
+
+                                        <p><strong>¡Felicidades y gracias, futuros ingenieros e ingenieras de la UTH!</strong><br>
+                                        Hoy es un día para celebrar. Cada proyecto que presentan en esta Feria de Ingeniería 2doP 2026 es la prueba de que lo aprendido en el aula puede convertirse en algo real: una solución que resuelve un problema, que mejora un proceso, que transforma una idea en algo tangible y útil para nuestra sociedad y nuestra industria.</p>
+
+                                        <p>La Facultad de Ingeniería de la UTH reconoce y agradece profundamente el esfuerzo, las noches de trabajo, la creatividad y la dedicación que cada uno de ustedes puso para llegar hasta aquí. No es fácil tomar un concepto de clase y convertirlo en un prototipo, un sistema o una propuesta funcional. Pero ustedes lo lograron, y eso habla de su compromiso con la excelencia y la innovación.</p>
+
+                                        <p>Recuerden que cada proyecto cuenta una historia: la del problema que identificaron, la del proceso que siguieron y la de la solución que construyeron. Por eso, les pedimos que completen toda la información solicitada en su ficha/formato de participación, esto nos permite conocer a fondo su trabajo. Reconocer su esfuerzo como se merece y compartir su innovación con quienes evaluarán los proyectos.</p>
+
+                                        <p>Sigan soñando en grande, sigan innovando, y no olviden que la ingeniería no solo se trata de resolver ecuaciones, sino de resolver la vida de las personas a través del conocimiento adquirido cambiando para bien la sociedad a la que nos debemos.</p>
+
+                                        <p><strong>¡Mucho éxito en su presentación!</strong><br>
+                                        Facultad de Ingeniería — Universidad Tecnológica de Honduras (UTH)</p>
+
+                                        <hr style="border: 0; border-top: 1px solid #dadce0; margin: 20px 0;">
+
+                                        <h4 style="margin: 0 0 10px 0; color: #202124;">Instrucciones:</h4>
+                                        <p>El presente formulario tiene como objetivo la inscripción de su proyecto y para ello se requiere de su valiosa colaboración enviando información muy importante que será útil para el buen suceso de la feria de ingeniería para este 2do. Periodo del 2026. Tome unos minutos para proporcionar los datos de manera correcta, lea en todo momento las indicaciones o ejemplos para el correcto llenado de este documento.</p>
+
+                                        <p>La Cuenta de la Universidad para inscribir su proyecto es: <strong>635</strong></p>
+
+                                        <div style="background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 4px; border: 1px solid #ffeeba; margin-bottom: 15px;">
+                                            <strong>Nota Importante:</strong> tenga a mano su recibo de inscripción, el articulo científico en formato Word de su proyecto en la plantilla autorizada de la IEEE y una foto grupal que evidencie su labor desarrollando su proyecto con su grupo como paso previo al envío de la información requerida. Usted también recibirá un código único en la cuenta de correo que use para inscribirse, con información relacionada a su proyecto dentro de la feria y el reglamento de la misma, tómelo en consideración y léalo detenidamente.
+                                        </div>
+
+                                        <p><strong>1.-</strong> Se le pedirá que ingrese un nombre largo de su proyecto y además en español, por ejemplo: <em>"Control Automático de Robot Articulado clasificador de desechos mediante Inteligencia Artificial"</em>.</p>
+
+                                        <p><strong>2.-</strong> Se le pedirá que ingrese un nombre corto de su proyecto (acrónimo), por ejemplo: <em>"CRAID"</em>. Formado de manera ingeniosa a partir del nombre largo, para que sea una palabra o frase que Impacte. en el caso del ejemplo las palabras involucradas para el acrónimo son (Control | Robot | Artificial | Inteligencia | Desechos).</p>
+
+                                        <p>Por favor sea creativo y no deje ambigüedades en este punto, hay nombres que han sido confusos en experiencias pasadas, le motivamos a ser creativo también aquí.</p>
+
+                                        <div style="background-color: #e2e3e5; color: #383d41; padding: 10px; border-radius: 4px; border: 1px solid #d6d8db;">
+                                            <strong>Otros ejemplos reconocidos:</strong><br>
+                                            Nombre largo: "International Business Machines" ➔ Nombre Corto: "IBM"<br>
+                                            Nombre Largo: "Advanced Robotics Engineering System" ➔ Nombre Corto: "ARES"<br>
+                                            Nombre Largo: "Technological Integration for Automated Navigation" ➔ Nombre Corto: "TITAN"<br>
+                                            Nombre Largo: "Hydrogen-Based Renewable Operations System" ➔ Nombre Corto: "HYDROS"
+                                        </div>
+                                    </div>
+                                </details>
+                            </div>
                         </div>
 
                         <!-- Tarjeta 1: Mapa -->
