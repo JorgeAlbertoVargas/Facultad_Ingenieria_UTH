@@ -155,10 +155,12 @@ const StudentRegistration = {
             .stands-grid-custom {
                 display: grid;
                 grid-template-columns: 1fr 0.6fr repeat(10, 1fr) 0.8fr repeat(2, 1fr) 0.8fr 1fr;
-                grid-template-rows: repeat(8, minmax(45px, 1fr));
-                gap: 6px;
+                grid-template-rows: repeat(8, minmax(40px, 1fr));
+                gap: 5px;
                 background: white;
-                min-width: 860px;
+                min-width: 740px;
+                max-width: 800px;
+                margin: 0 auto;
                 position: relative;
             }
             .stand-box {
@@ -393,7 +395,7 @@ const StudentRegistration = {
 
                         <!-- Tarjeta 1: Mapa -->
                         <div class="card" style="padding: 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; background: white;">
-                            <h3 style="margin-top:0; color: #202124; font-size: 16px; font-weight: 500; margin-bottom: 12px;">1. Ubicación en el Mapa (Check-in)</h3>
+                            <h3 style="margin-top:0; color: #202124; font-size: 22px; font-weight: 700; margin-bottom: 12px;">1. Ubicación en el Mapa (Check-in)</h3>
                             <p style="color: #5f6368; font-size: 14px; margin-bottom: 16px; line-height: 1.5;">Selecciona un stand disponible (en verde) para tu proyecto. El ID de tu proyecto se generará automáticamente basado en esta selección.</p>
                             
                             <div id="interactive-map-container" style="margin-bottom: 10px;">
@@ -403,9 +405,9 @@ const StudentRegistration = {
 
                         <!-- Tarjeta 2: Datos Generales -->
                         <div class="card" style="padding: 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; background: white;">
-                            <h3 style="color: #202124; font-size: 16px; font-weight: 500; margin-bottom: 20px; margin-top: 0;">2. Datos Generales</h3>
+                            <h3 style="color: #202124; font-size: 22px; font-weight: 700; margin-bottom: 20px; margin-top: 0;">2. Datos Generales</h3>
                             
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px;">
                                 <div class="input-group">
                                     <label for="reg-fecha" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Fecha</label>
                                     <input type="date" id="reg-fecha" value="${today}" required readonly style="background-color: #f1f3f4; border: 0; border-bottom: 1px solid #80868b; border-radius: 4px 4px 0 0; padding: 12px 14px; width: 100%; box-sizing: border-box;">
@@ -432,8 +434,8 @@ const StudentRegistration = {
                                 </div>
                             </div>
                             
-                            <h4 style="color: #202124; font-size: 15px; font-weight: 500; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 8px;">Clasificación Académica</h4>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px;">
+                            <h4 style="color: #202124; font-size: 18px; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 8px;">Clasificación Académica</h4>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
                                 <div class="input-group">
                                     <label for="reg-campus" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Campus *</label>
                                     <select id="reg-campus" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
@@ -481,18 +483,18 @@ const StudentRegistration = {
 
                         <!-- Tarjeta 3: Logística -->
                         <div class="card" style="padding: 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; background: white;">
-                            <h3 style="margin-top:0; color: #202124; font-size: 16px; font-weight: 500; margin-bottom: 20px;">3. Logística</h3>
-                            <div class="registration-form-grid">
+                            <h3 style="margin-top:0; color: #202124; font-size: 22px; font-weight: 700; margin-bottom: 20px;">3. Logística</h3>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
                                 <div class="input-group">
                                     <label for="reg-alimentacion" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">¿Qué tipo de alimentación eléctrica requiere su proyecto? *</label>
-                                    <select id="reg-alimentacion" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
+                                    <select id="reg-alimentacion" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
                                         <option value="">Elige</option>
                                         ${alimOpts}
                                     </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-dimensiones" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">¿Qué dimensiones en términos de área física necesita su proyecto? *</label>
-                                    <select id="reg-dimensiones" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
+                                    <select id="reg-dimensiones" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
                                         <option value="">Elige</option>
                                         ${dimOpts}
                                     </select>
