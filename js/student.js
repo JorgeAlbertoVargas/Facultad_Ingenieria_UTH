@@ -418,11 +418,11 @@ const StudentRegistration = {
                                     <label for="reg-carrera" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Carrera *</label>
                                     <select id="reg-carrera" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
                                         <option value="">Elige</option>
-                                        <option value="Ing. Computación">Ing. Computación</option>
-                                        <option value="Ing. Electrónica">Ing. Electrónica</option>
-                                        <option value="Ing. Producción Industrial">Ing. Producción Industrial</option>
-                                        <option value="Ing. Financiera">Ing. Financiera</option>
-                                        <option value="Otra">Otra</option>
+                                        <option value="Ingeniería Electrónica">Ingeniería Electrónica</option>
+                                        <option value="Ingeniería Producción Industrial">Ingeniería Producción Industrial</option>
+                                        <option value="Ingeniería Mecatrónica">Ingeniería Mecatrónica</option>
+                                        <option value="Matemáticas">Matemáticas</option>
+                                        <option value="Ingeniería Computación">Ingeniería Computación</option>
                                     </select>
                                 </div>
                                 <div class="input-group">
@@ -431,16 +431,32 @@ const StudentRegistration = {
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-periodo" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Periodo *</label>
-                                    <input type="text" id="reg-periodo" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none;">
+                                    <select id="reg-periodo" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
+                                        <option value="">Elige</option>
+                                        <option value="1er. Periodo">1er. Periodo</option>
+                                        <option value="2do. Periodo">2do. Periodo</option>
+                                        <option value="3er. Periodo">3er. Periodo</option>
+                                        <option value="4to. Periodo">4to. Periodo</option>
+                                        <option value="5to. Periodo">5to. Periodo</option>
+                                        <option value="6to. Periodo">6to. Periodo</option>
+                                        <option value="7mo. Periodo">7mo. Periodo</option>
+                                        <option value="8vo. Periodo">8vo. Periodo</option>
+                                        <option value="9no. Periodo">9no. Periodo</option>
+                                        <option value="10mo. Periodo">10mo. Periodo</option>
+                                        <option value="11mo. Periodo">11mo. Periodo</option>
+                                        <option value="12mo. Periodo">12mo. Periodo</option>
+                                        <option value="13vo. Periodo">13vo. Periodo</option>
+                                    </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-categoria" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Categoría *</label>
                                     <select id="reg-categoria" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
                                         <option value="">Elige</option>
                                         <option value="Junior">Junior</option>
-                                        <option value="Senior">Senior</option>
                                         <option value="Avanzado">Avanzado</option>
-                                        <option value="Maestría">Maestría</option>
+                                        <option value="Emprendimiento">Emprendimiento</option>
+                                        <option value="Demostrativo">Demostrativo</option>
+                                        <option value="Investigacion">Investigacion</option>
                                     </select>
                                 </div>
                             </div>
