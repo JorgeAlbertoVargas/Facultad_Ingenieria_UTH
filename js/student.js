@@ -221,20 +221,20 @@ const StudentRegistration = {
                 border-color: #2e7d32 !important;
                 border-top-color: #2e7d32 !important;
                 transform: scale(1.1);
-                box-shadow: 0 0 0 2px #fff, 0 0 0 4px #4caf50;
+                box-shadow: 0 0 0 2px #fff, 0 0 0 4px #4caf50 !important;
                 z-index: 10;
             }
             .stand-trifasico.stand-selected {
                 background-color: #29b6f6 !important;
                 border-color: #0277bd !important;
                 border-top-color: #0277bd !important;
-                box-shadow: 0 0 0 2px #fff, 0 0 0 4px #29b6f6;
+                box-shadow: 0 0 0 2px #fff, 0 0 0 4px #29b6f6 !important;
             }
             .stand-monofasico.stand-selected {
                 background-color: #ff9800 !important;
                 border-color: #e65100 !important;
                 border-top-color: #e65100 !important;
-                box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ff9800;
+                box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ff9800 !important;
             }
             .map-label {
                 display: flex;
