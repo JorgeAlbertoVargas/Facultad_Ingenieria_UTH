@@ -760,11 +760,24 @@ function sendReportEmails(data) {
   var ternasData = sheetTernas ? sheetTernas.getDataRange().getValues() : [];
   
   var catedraticoEmails = {};
+  
+  // 1. Llenar diccionario con correos de Ternas
   for (var i = 1; i < ternasData.length; i++) {
     var nombre = String(ternasData[i][1]).trim().toLowerCase(); // Nombre_Evaluador
     var email = String(ternasData[i][2]).trim(); // Email_Evaluador
     if (nombre && email) {
       catedraticoEmails[nombre] = email;
+    }
+  }
+
+  // 2. Llenar/completar diccionario con correos de Usuarios (por si no están en Ternas)
+  var sheetUsuarios = spreadsheet.getSheetByName('Usuarios');
+  var usuariosData = sheetUsuarios ? sheetUsuarios.getDataRange().getValues() : [];
+  for (var u = 1; u < usuariosData.length; u++) {
+    var nombreUsr = String(usuariosData[u][2]).trim().toLowerCase(); // Columna C: Nombre
+    var emailUsr = String(usuariosData[u][3]).trim(); // Columna D: Email
+    if (nombreUsr && emailUsr && !catedraticoEmails[nombreUsr]) {
+      catedraticoEmails[nombreUsr] = emailUsr;
     }
   }
   
