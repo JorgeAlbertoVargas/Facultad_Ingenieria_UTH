@@ -102,7 +102,7 @@ const StudentRegistration = {
         else if (i >= 72 && i <= 75) { row = i - 71; col = 17; }
         else if (i >= 76 && i <= 78) { row = (i - 76) + 6; col = 17; }
 
-        return { row, col: col + 1 };
+        return { row, col };
     },
 
     renderMap() {
@@ -116,14 +116,14 @@ const StudentRegistration = {
             const isOccupied = standInfo.status !== 'libre';
             const statusClass = isOccupied ? 'stand-occupied' : 'stand-free';
             
+            const pos = this.getStandGridPosition(i);
+            
             let typeClass = 'stand-110v';
-            if (i >= 61 && i <= 67) {
+            if (pos.col === 1) {
                 typeClass = 'stand-trifasico';
-            } else if (i >= 68 && i <= 78) {
+            } else if (pos.col === 17) {
                 typeClass = 'stand-monofasico';
             }
-            
-            const pos = this.getStandGridPosition(i);
             
             html += `
                 <div class="stand-box ${statusClass} ${typeClass}" data-stand="${i}" 
@@ -136,13 +136,13 @@ const StudentRegistration = {
         }
         
         // Agregar etiquetas
-        html += `<div class="map-label" style="grid-row: 5; grid-column: 2;">Baños</div>`;
-        html += `<div class="map-label" style="grid-row: 5; grid-column: 18;">Escenario</div>`;
-        html += `<div class="map-label label-red" style="grid-row: 1; grid-column: 3; align-self: start; white-space: nowrap;">Entrada<br>Posterior</div>`;
-        html += `<div class="map-label label-red" style="grid-row: 8; grid-column: 3; align-self: end; white-space: nowrap;">Entrada<br>Frontal</div>`;
+        html += `<div class="map-label" style="grid-row: 5; grid-column: 1;">Baños</div>`;
+        html += `<div class="map-label" style="grid-row: 5; grid-column: 17;">Escenario</div>`;
+        html += `<div class="map-label label-red" style="grid-row: 1; grid-column: 2; align-self: start; white-space: nowrap;">Entrada<br>Posterior</div>`;
+        html += `<div class="map-label label-red" style="grid-row: 8; grid-column: 2; align-self: end; white-space: nowrap;">Entrada<br>Frontal</div>`;
 
-        html += `<div class="map-vertical-label" style="grid-row: 1 / span 8; grid-column: 1;">220V Trifásico</div>`;
-        html += `<div class="map-vertical-label" style="grid-row: 1 / span 8; grid-column: 19; transform: none;">220V Monofásico</div>`;
+        html += `<div class="map-vertical-label" style="left: -40px; top: 50%; transform: translateY(-50%) rotate(180deg);">220V Trifásico</div>`;
+        html += `<div class="map-vertical-label" style="right: -45px; top: 50%; transform: translateY(-50%);">220V Monofásico</div>`;
 
         html += '</div></div>';
         
@@ -154,11 +154,11 @@ const StudentRegistration = {
             }
             .stands-grid-custom {
                 display: grid;
-                grid-template-columns: 0.5fr 1fr 0.6fr repeat(10, 1fr) 0.8fr repeat(2, 1fr) 0.8fr 1fr 0.5fr;
+                grid-template-columns: 1fr 0.6fr repeat(10, 1fr) 0.8fr repeat(2, 1fr) 0.8fr 1fr;
                 grid-template-rows: repeat(8, minmax(45px, 1fr));
                 gap: 6px;
                 background: white;
-                min-width: 920px;
+                min-width: 860px;
                 position: relative;
             }
             .stand-box {
@@ -239,14 +239,14 @@ const StudentRegistration = {
             }
             .map-vertical-label {
                 writing-mode: vertical-rl;
-                transform: rotate(180deg);
+                position: absolute;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-weight: bold;
-                color: #666;
-                font-size: 13px;
-                letter-spacing: 1px;
+                font-weight: 900;
+                color: #555;
+                font-size: 26px;
+                letter-spacing: 2px;
                 text-align: center;
             }
                 color: #d32f2f;
