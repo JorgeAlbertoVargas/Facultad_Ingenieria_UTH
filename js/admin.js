@@ -239,10 +239,14 @@ const Admin = {
                         <input type="text" id="filter-id" class="input-field" placeholder="Buscar por ID Proyecto">
                     </div>
                     <div style="flex: 1; min-width: 200px;">
-                        <input type="text" id="filter-asignatura" class="input-field" placeholder="Buscar por Asignatura">
+                        <select id="filter-asignatura" class="input-field">
+                            <option value="">Todas las Asignaturas</option>
+                        </select>
                     </div>
                     <div style="flex: 1; min-width: 200px;">
-                        <input type="text" id="filter-catedratico" class="input-field" placeholder="Buscar por Catedrático">
+                        <select id="filter-catedratico" class="input-field">
+                            <option value="">Todos los Catedráticos</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -277,11 +281,32 @@ const Admin = {
             const response = await API.get('getReportData');
             if (response.success) {
                 Admin.reportData = response.report || [];
+                
+                // Poblar los comboboxes (selects)
+                const asignaturas = [...new Set(Admin.reportData.map(p => p.asignatura).filter(Boolean))].sort();
+                const catedraticos = [...new Set(Admin.reportData.map(p => p.catedratico).filter(Boolean))].sort();
+                
+                const asigSelect = document.getElementById('filter-asignatura');
+                asignaturas.forEach(a => {
+                    const opt = document.createElement('option');
+                    opt.value = a;
+                    opt.textContent = a;
+                    asigSelect.appendChild(opt);
+                });
+
+                const catSelect = document.getElementById('filter-catedratico');
+                catedraticos.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c;
+                    opt.textContent = c;
+                    catSelect.appendChild(opt);
+                });
+
                 Admin.renderReportTable();
 
                 document.getElementById('filter-id').addEventListener('input', Admin.renderReportTable);
-                document.getElementById('filter-asignatura').addEventListener('input', Admin.renderReportTable);
-                document.getElementById('filter-catedratico').addEventListener('input', Admin.renderReportTable);
+                document.getElementById('filter-asignatura').addEventListener('change', Admin.renderReportTable);
+                document.getElementById('filter-catedratico').addEventListener('change', Admin.renderReportTable);
                 
                 document.getElementById('btn-send-emails').addEventListener('click', async () => {
                     if (confirm("¿Estás seguro de enviar los correos de prueba a jorge.vargas@uth.hn?")) {
@@ -322,13 +347,14 @@ const Admin = {
         }
 
         const filterId = document.getElementById('filter-id').value.toLowerCase();
-        const filterAsig = document.getElementById('filter-asignatura').value.toLowerCase();
-        const filterCat = document.getElementById('filter-catedratico').value.toLowerCase();
+        const filterAsig = document.getElementById('filter-asignatura').value;
+        const filterCat = document.getElementById('filter-catedratico').value;
 
         const filtered = Admin.reportData.filter(p => {
-            return (p.idProyecto || '').toLowerCase().includes(filterId) &&
-                   (p.asignatura || '').toLowerCase().includes(filterAsig) &&
-                   (p.catedratico || '').toLowerCase().includes(filterCat);
+            const matchId = (p.idProyecto || '').toLowerCase().includes(filterId);
+            const matchAsig = filterAsig === "" || p.asignatura === filterAsig;
+            const matchCat = filterCat === "" || p.catedratico === filterCat;
+            return matchId && matchAsig && matchCat;
         });
 
         if (filtered.length === 0) {
