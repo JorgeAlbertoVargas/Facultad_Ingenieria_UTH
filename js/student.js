@@ -440,19 +440,19 @@ const StudentRegistration = {
                                 </div>
                                 <div class="input-group" style="grid-column: 1 / -1;">
                                     <label for="reg-email-grupo" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Correo Electrónico del Grupo / Líder *</label>
-                                    <input type="email" id="reg-email-grupo" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; transition: border-bottom 0.2s; width: 100%; box-sizing: border-box;">
+                                    <input type="email" id="reg-email-grupo" required placeholder="ejemplo@uth.hn" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; transition: border-bottom 0.2s; width: 100%; box-sizing: border-box;">
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-nombre-largo" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Nombre Largo del Proyecto *</label>
-                                    <input type="text" id="reg-nombre-largo" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; width: 100%; box-sizing: border-box;">
+                                    <input type="text" id="reg-nombre-largo" required placeholder="Ej. Brazo Robótico Automatizado con IA" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; width: 100%; box-sizing: border-box;">
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-nombre-corto" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Nombre Corto del Proyecto *</label>
-                                    <input type="text" id="reg-nombre-corto" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; width: 100%; box-sizing: border-box;">
+                                    <input type="text" id="reg-nombre-corto" required placeholder="Ej. Brazo Robot IA" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; width: 100%; box-sizing: border-box;">
                                 </div>
                                 <div class="input-group" style="grid-column: 1 / -1;">
                                     <label for="reg-funcionalidad" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Funcionalidad del Proyecto *</label>
-                                    <input type="text" id="reg-funcionalidad" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; width: 100%; box-sizing: border-box;">
+                                    <input type="text" id="reg-funcionalidad" required placeholder="Ej. Seleccionar y clasificar piezas en la banda..." style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; width: 100%; box-sizing: border-box;">
                                 </div>
                             </div>
                             
@@ -526,27 +526,27 @@ const StudentRegistration = {
 
                         <!-- Tarjeta 4: Archivos -->
                         <div class="card" style="padding: 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; background: white;">
-                            <h3 style="margin-top:0; color: #202124; font-size: 16px; font-weight: 500; margin-bottom: 12px;">4. Archivos y Documentación</h3>
-                            <p style="color: #5f6368; font-size: 13px; margin-bottom: 24px; line-height: 1.5;">Nota: Solo se permite 1 documento por campo. Extensiones permitidas: PDF, JPG, PNG.</p>
+                            <h3 style="margin-top:0; color: #202124; font-size: 22px; font-weight: 700; margin-bottom: 12px;">4. Archivos y Documentación</h3>
+                            <p style="color: #5f6368; font-size: 13px; margin-bottom: 24px; line-height: 1.5;">Nota: Solo se permite 1 documento por campo. Extensiones permitidas: PDF, DOC, DOCX, PNG.</p>
                             
                             <div class="registration-form-grid">
                                 <div class="input-group">
                                     <label for="reg-factura" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">No. Factura / Recibo *</label>
-                                    <input type="text" id="reg-factura" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none;">
+                                    <input type="text" id="reg-factura" pattern="\\d{3}-\\d{3}-\\d{2}-\\d{8}" title="El formato debe ser 000-000-00-00000000" required placeholder="000-000-00-00000000" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; width: 100%; box-sizing: border-box;">
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-comprobante-file" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Comprobante de Pago (Foto/PDF) *</label>
-                                    <input type="file" id="reg-comprobante-file" accept=".pdf,image/*" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 10px; width: 100%;">
+                                    <input type="file" id="reg-comprobante-file" accept=".pdf,image/png" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 10px; width: 100%; box-sizing: border-box;">
                                     <span class="file-note" style="color: #5f6368; font-size: 12px; margin-top: 4px;">Peso máximo recomendado: 2MB</span>
                                 </div>
                                 <div class="input-group">
-                                    <label for="reg-foto-file" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Fotografía Grupal *</label>
-                                    <input type="file" id="reg-foto-file" accept="image/*" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 10px; width: 100%;">
+                                    <label for="reg-foto-file" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Fotografía Grupal (PNG) *</label>
+                                    <input type="file" id="reg-foto-file" accept="image/png" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 10px; width: 100%; box-sizing: border-box;">
                                     <span class="file-note" style="color: #5f6368; font-size: 12px; margin-top: 4px;">Peso máximo recomendado: 2MB</span>
                                 </div>
                                 <div class="input-group">
-                                    <label for="reg-articulo-file" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Artículo Científico (PDF) *</label>
-                                    <input type="file" id="reg-articulo-file" accept=".pdf" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 10px; width: 100%;">
+                                    <label for="reg-articulo-file" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Artículo Científico (PDF o Word) *</label>
+                                    <input type="file" id="reg-articulo-file" accept=".pdf,.doc,.docx" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 10px; width: 100%; box-sizing: border-box;">
                                     <span class="file-note" style="color: #5f6368; font-size: 12px; margin-top: 4px;">Peso máximo recomendado: 2MB</span>
                                 </div>
                             </div>
