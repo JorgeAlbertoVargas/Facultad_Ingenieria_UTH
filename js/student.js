@@ -427,7 +427,45 @@ const StudentRegistration = {
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-catedratico" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Catedrático *</label>
-                                    <input type="text" id="reg-catedratico" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none;">
+                                    <select id="reg-catedratico" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
+                                        <option value="">Elige</option>
+                                        <option value="Ada Lesbia Gallo González">Ada Lesbia Gallo González</option>
+                                        <option value="Alejandro Bosco Menocal Castillo">Alejandro Bosco Menocal Castillo</option>
+                                        <option value="Alicia Cárdenas Maldonado">Alicia Cárdenas Maldonado</option>
+                                        <option value="Carlos Antonio Ramírez Maldonado">Carlos Antonio Ramírez Maldonado</option>
+                                        <option value="Carlos Julio David Arita Castellanos">Carlos Julio David Arita Castellanos</option>
+                                        <option value="Carlos Bladimir">Carlos Bladimir</option>
+                                        <option value="David Ricardo Santos Erazo">David Ricardo Santos Erazo</option>
+                                        <option value="Dennis Amílcar Nolasco Martínez">Dennis Amílcar Nolasco Martínez</option>
+                                        <option value="Edgar Quinett Sanabria Peña">Edgar Quinett Sanabria Peña</option>
+                                        <option value="Eduin Alexis Figueroa Torres">Eduin Alexis Figueroa Torres</option>
+                                        <option value="Emilio José Estévez Pleitez">Emilio José Estévez Pleitez</option>
+                                        <option value="Enoc Murillo Henríquez">Enoc Murillo Henríquez</option>
+                                        <option value="Erick Eduardo Escobar Orellana">Erick Eduardo Escobar Orellana</option>
+                                        <option value="Fredy Omar Hernández Torres">Fredy Omar Hernández Torres</option>
+                                        <option value="Gloria Carolina Ardón Montero">Gloria Carolina Ardón Montero</option>
+                                        <option value="Gustavo Geovany López Membreño">Gustavo Geovany López Membreño</option>
+                                        <option value="Janania Clariza Viana Sevilla">Janania Clariza Viana Sevilla</option>
+                                        <option value="Jonathan Medardo Paz Salgado">Jonathan Medardo Paz Salgado</option>
+                                        <option value="Jorge Alberto Vargas">Jorge Alberto Vargas</option>
+                                        <option value="Jorge Luis Diaz Ayestas">Jorge Luis Diaz Ayestas</option>
+                                        <option value="José Armando Hernández Gabrie">José Armando Hernández Gabrie</option>
+                                        <option value="Jose David Valerio Eguigurems">Jose David Valerio Eguigurems</option>
+                                        <option value="José Luis Bendaña Laínez">José Luis Bendaña Laínez</option>
+                                        <option value="José Ricardo Marín De Jesús">José Ricardo Marín De Jesús</option>
+                                        <option value="Juan José Cruz Orellana">Juan José Cruz Orellana</option>
+                                        <option value="Junior Armando Medina Agurcia">Junior Armando Medina Agurcia</option>
+                                        <option value="Karla Patricia Guardado Solorzano">Karla Patricia Guardado Solorzano</option>
+                                        <option value="Luis Edgardo Leiva Aguilar">Luis Edgardo Leiva Aguilar</option>
+                                        <option value="Laura">Laura</option>
+                                        <option value="Mirna Belisle Cardona">Mirna Belisle Cardona</option>
+                                        <option value="Nelson David Reyes Cárcamo">Nelson David Reyes Cárcamo</option>
+                                        <option value="Oscar Alfonzo Bedoya Ramírez">Oscar Alfonzo Bedoya Ramírez</option>
+                                        <option value="Oscar David Carbajal Zuniga">Oscar David Carbajal Zuniga</option>
+                                        <option value="Reynerio Edgardo Vásquez Becerra">Reynerio Edgardo Vásquez Becerra</option>
+                                        <option value="Rosa María Segura Enamorado">Rosa María Segura Enamorado</option>
+                                        <option value="Vilma Valladares Fajardo">Vilma Valladares Fajardo</option>
+                                    </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-periodo" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Periodo *</label>
