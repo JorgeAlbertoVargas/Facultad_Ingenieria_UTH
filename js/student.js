@@ -230,6 +230,11 @@ const StudentRegistration = {
                         </button>
                     </div>
 
+                    <!-- Tarjeta de Título -->
+                    <div class="card" style="padding: 22px 24px 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; border-top: 10px solid var(--primary); background: white;">
+                        <h1 style="color: #202124; margin: 0; font-size: 32px; font-weight: 400; line-height: 1.2;">Feria Ingeniería | Formulario de Inscripción de Proyectos 2do. Periodo del 2026.</h1>
+                    </div>
+
                     <!-- Banner de imagen -->
                     <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 12px; border-radius: 8px; border: 1px solid #dadce0;">
                         <img src="./img/UTH.png" alt="Logo UTH" style="width: 100%; height: auto; display: block; object-fit: cover;">
@@ -237,11 +242,11 @@ const StudentRegistration = {
 
                     <form id="student-registration-form" onsubmit="StudentRegistration.submitForm(event)">
                         
-                        <!-- Tarjeta de Título e Instrucciones -->
-                        <div class="card" style="padding: 22px 24px 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; border-top: 10px solid var(--primary); background: white;">
-                            <h1 style="color: #202124; margin: 0 0 12px 0; font-size: 32px; font-weight: 400; line-height: 1.2;">Feria Ingeniería | Formulario de Inscripción de Proyectos 2do. Periodo del 2026.</h1>
+                        <!-- Tarjeta de Instrucciones -->
+                        <div class="card" style="padding: 22px 24px 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; background: white;">
+                            <h1 style="color: #202124; margin: 0 0 12px 0; font-size: 32px; font-weight: 400; line-height: 1.2;">Instrucciones</h1>
                             
-                            <div style="background: #f8f9fa; border: 1px solid #e8eaed; border-radius: 8px; padding: 15px; margin-top: 15px;">
+                            <div style="background: #f8f9fa; border: 1px solid #e8eaed; border-radius: 8px; padding: 15px; margin-top: 5px;">
                                 <details>
                                     <summary style="font-weight: 500; color: var(--primary); cursor: pointer; outline: none; font-size: 15px;">
                                         <i class="fas fa-info-circle" style="margin-right: 5px;"></i> Leer Instrucciones Importantes y Mensaje de Bienvenida
