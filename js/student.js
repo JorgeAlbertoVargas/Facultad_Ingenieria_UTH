@@ -452,11 +452,11 @@ const StudentRegistration = {
                                     <label for="reg-categoria" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Categoría *</label>
                                     <select id="reg-categoria" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
                                         <option value="">Elige</option>
-                                        <option value="Junior">Junior</option>
-                                        <option value="Avanzado">Avanzado</option>
-                                        <option value="Emprendimiento">Emprendimiento</option>
-                                        <option value="Demostrativo">Demostrativo</option>
-                                        <option value="Investigacion">Investigacion</option>
+                                        <option value="Junior">1.- Junior</option>
+                                        <option value="Avanzado">2.- Avanzado</option>
+                                        <option value="Emprendimiento">3.- Emprendimiento.</option>
+                                        <option value="Demostrativo">4.- Demostrativo.</option>
+                                        <option value="Investigacion">5.- Investigacion.</option>
                                     </select>
                                 </div>
                             </div>
