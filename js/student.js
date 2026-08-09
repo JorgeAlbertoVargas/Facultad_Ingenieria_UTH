@@ -264,9 +264,11 @@ const StudentRegistration = {
         ]);
         const asigOpts = this.buildOptions(this.config?.Asignaturas?.length > 0 ? this.config.Asignaturas : ['Automatización Industrial']); 
         const catOpts = this.buildOptions(this.config?.Categorias?.length > 0 ? this.config.Categorias : ['1.- Junior', '2.- Avanzado', '3.- Emprendimiento.', '4.- Demostrativo.', '5.- Investigacion.']);
-        const carOpts = this.buildOptions(this.config?.Carreras?.length > 0 ? this.config.Carreras : ['Ingeniería Electrónica', 'Ingeniería Producción Industrial', 'Ingeniería Mecatrónica', 'Matemáticas', 'Ingeniería Computación']);
+        const carOpts = this.buildOptions(this.config?.Carreras?.length > 0 ? this.config.Carreras : ['Ingeniería Computación', 'Ingeniería Electrónica', 'Ingeniería Mecatrónica', 'Ingeniería Producción Industrial', 'Matemáticas', 'Técnico Automotriz']);
         const perOpts = this.buildOptions(this.config?.Periodos?.length > 0 ? this.config.Periodos : ['1er. Periodo', '2do. Periodo', '3er. Periodo']); 
         const catedOpts = this.buildOptions(this.config?.Catedraticos?.length > 0 ? this.config.Catedraticos : ['Jorge Alberto Vargas']); 
+        const alimOpts = this.buildOptions(this.config?.Alimentacion?.length > 0 ? this.config.Alimentacion : ['110 Volts. Monofásica.', '220 Volts. Monofásica.', '220 Volts. Trifásica.']);
+        const dimOpts = this.buildOptions(this.config?.Dimensiones?.length > 0 ? this.config.Dimensiones : ['2 Mts. x 1 Mts. (2 Mts. Cuadrados).', '3 Mts. x 2 Mts (6 Mts. Cuadrados).', 'Planta Baja UTH | Consulte con su catedrático, si no es justificable automáticamente es descalificado.']); 
 
         container.innerHTML = `
             <div style="background-color: #EDF3EA; min-height: 100vh; padding: 30px 15px;">
@@ -394,17 +396,18 @@ const StudentRegistration = {
                             <h3 style="margin-top:0; color: #202124; font-size: 16px; font-weight: 500; margin-bottom: 20px;">3. Logística</h3>
                             <div class="registration-form-grid">
                                 <div class="input-group">
-                                    <label for="reg-alimentacion" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Alimentación Eléctrica requerida *</label>
+                                    <label for="reg-alimentacion" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">¿Qué tipo de alimentación eléctrica requiere su proyecto? *</label>
                                     <select id="reg-alimentacion" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
                                         <option value="">Elige</option>
-                                        <option value="110V">110V</option>
-                                        <option value="220V">220V</option>
-                                        <option value="No requiere">No requiere</option>
+                                        ${alimOpts}
                                     </select>
                                 </div>
                                 <div class="input-group">
-                                    <label for="reg-dimensiones" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Dimensiones del Stand estimadas *</label>
-                                    <input type="text" id="reg-dimensiones" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none;">
+                                    <label for="reg-dimensiones" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">¿Qué dimensiones en términos de área física necesita su proyecto? *</label>
+                                    <select id="reg-dimensiones" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
+                                        <option value="">Elige</option>
+                                        ${dimOpts}
+                                    </select>
                                 </div>
                             </div>
                         </div>
