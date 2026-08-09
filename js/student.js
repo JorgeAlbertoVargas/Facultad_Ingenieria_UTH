@@ -232,7 +232,7 @@ const StudentRegistration = {
 
                     <!-- Tarjeta de Título -->
                     <div class="card" style="padding: 22px 24px 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; border-top: 10px solid var(--primary); background: white;">
-                        <h1 style="color: #202124; margin: 0; font-size: 32px; font-weight: 400; line-height: 1.2;">Feria Ingeniería | Formulario de Inscripción de Proyectos 2do. Periodo del 2026.</h1>
+                        <h1 style="color: #202124; margin: 0; font-size: 32px; font-weight: 400; line-height: 1.2;">Feria Ingeniería | Formulario de Inscripción de Proyectos | 2do. Periodo del 2026.</h1>
                     </div>
 
                     <!-- Banner de imagen -->
@@ -337,19 +337,56 @@ const StudentRegistration = {
                                     <label for="reg-campus" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Campus *</label>
                                     <select id="reg-campus" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
                                         <option value="">Elige</option>
-                                        <option value="SPS">San Pedro Sula</option>
-                                        <option value="Tegucigalpa">Tegucigalpa</option>
-                                        <option value="El Progreso">El Progreso</option>
-                                        <option value="La Ceiba">La Ceiba</option>
+                                        <option value="Ceiba">Ceiba</option>
+                                        <option value="Choloma">Choloma</option>
+                                        <option value="Cofradía">Cofradía</option>
                                         <option value="Choluteca">Choluteca</option>
-                                        <option value="Roatán">Roatán</option>
+                                        <option value="El Progreso">El Progreso</option>
+                                        <option value="Juticalpa">Juticalpa</option>
+                                        <option value="Roatan">Roatan</option>
+                                        <option value="San Pedro Sula">San Pedro Sula</option>
                                         <option value="Siguatepeque">Siguatepeque</option>
-                                        <option value="Santa Bárbara">Santa Bárbara</option>
+                                        <option value="Santa Barbara">Santa Barbara</option>
+                                        <option value="Tegucigalpa">Tegucigalpa</option>
+                                        <option value="Puerto Cortes">Puerto Cortes</option>
+                                        <option value="Villanueva">Villanueva</option>
                                     </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-asignatura" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Asignatura *</label>
-                                    <input type="text" id="reg-asignatura" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none;">
+                                    <select id="reg-asignatura" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
+                                        <option value="">Elige</option>
+                                        <option value="Automatización Industrial">1. Automatización Industrial</option>
+                                        <option value="Automatización de Sistemas de Producción">2. Automatización de Sistemas de Producción</option>
+                                        <option value="Automatización Industrial y Sistemas de Percepción">3. Automatización Industrial y Sistemas de Percepción</option>
+                                        <option value="Circuitos Eléctricos I">4. Circuitos Eléctricos I</option>
+                                        <option value="Circuitos Eléctricos II">5. Circuitos Eléctricos II</option>
+                                        <option value="Circuitos Integrados">6. Circuitos Integrados</option>
+                                        <option value="Control de Procesos I">7. Control de Procesos I</option>
+                                        <option value="Control de Procesos II">8. Control de Procesos II</option>
+                                        <option value="Diseño y Experimentación">9. Diseño y Experimentación</option>
+                                        <option value="Dispositivos Lógicos Programables">10. Dispositivos Lógicos Programables</option>
+                                        <option value="Dibujo Técnico I">11. Dibujo Técnico I</option>
+                                        <option value="Dibujo Técnico II">12. Dibujo Técnico II</option>
+                                        <option value="Electrónica Análoga I">13. Electrónica Análoga I</option>
+                                        <option value="Electrónica Análoga II">14. Electrónica Análoga II</option>
+                                        <option value="Electrónica Digital">15. Electrónica Digital</option>
+                                        <option value="Electromagnetismo">16. Electromagnetismo</option>
+                                        <option value="Electrónica de Potencia">17. Electrónica de Potencia</option>
+                                        <option value="Estática">18. Estática</option>
+                                        <option value="Física I">19. Física I</option>
+                                        <option value="Física II">20. Física II</option>
+                                        <option value="Introducción a la Ingeniería Electrónica">21. Introducción a la Ingeniería Electrónica</option>
+                                        <option value="Internet Industrial de las Cosas IOT">22. Internet Industrial de las Cosas IOT</option>
+                                        <option value="Ingeniería de Métodos I">23. Ingeniería de Métodos I</option>
+                                        <option value="Ingeniería de Métodos II">24. Ingeniería de Métodos II</option>
+                                        <option value="Investigación de Operaciones I">25. Investigación de Operaciones I</option>
+                                        <option value="Investigación de Operaciones II">26. Investigación de Operaciones II</option>
+                                        <option value="Microcontroladores">27. Microcontroladores</option>
+                                        <option value="Máquinas Eléctricas">28. Máquinas Eléctricas</option>
+                                        <option value="Metrología">29. Metrología</option>
+                                        <option value="Mecánica de Fluidos">30. Mecánica de Fluidos</option>
+                                    </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-carrera" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Carrera *</label>
