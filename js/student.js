@@ -160,7 +160,7 @@ const StudentRegistration = {
                 gap: 5px;
                 background: white;
                 min-width: 835px;
-                max-width: 860px;
+                width: 100%;
                 margin: 0 auto;
                 position: relative;
             }
