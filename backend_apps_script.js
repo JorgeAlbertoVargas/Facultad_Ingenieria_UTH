@@ -921,7 +921,29 @@ function getAvailableStands() {
     }
   }
   
-  return ContentService.createTextOutput(JSON.stringify({ success: true, stands: stands })).setMimeType(ContentService.MimeType.JSON);
+  // Obtener instrucciones dinámicas
+  var sheetProyectos = ss.getSheetByName('Proyectos_Estudiantes');
+  var instrucciones = null;
+  if (sheetProyectos) {
+    var valuesProyectos = sheetProyectos.getDataRange().getValues();
+    if (valuesProyectos.length > 0) {
+      var instColIndex = -1;
+      for (var c = 0; c < valuesProyectos[0].length; c++) {
+        if (String(valuesProyectos[0][c]).toLowerCase().indexOf("instrucciones") !== -1) {
+          instColIndex = c;
+          break;
+        }
+      }
+      if (instColIndex !== -1 && valuesProyectos.length > 1) {
+        var cellVal = String(valuesProyectos[1][instColIndex]).trim();
+        if (cellVal !== "") {
+          instrucciones = cellVal;
+        }
+      }
+    }
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify({ success: true, stands: stands, instrucciones: instrucciones })).setMimeType(ContentService.MimeType.JSON);
 }
 
 function registerProject(data) {

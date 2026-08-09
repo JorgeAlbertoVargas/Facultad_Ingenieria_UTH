@@ -42,6 +42,15 @@ const StudentRegistration = {
             const response = await API.get('getAvailableStands');
             if (response.success) {
                 this.stands = response.stands; // Array of objects { number: 1, status: 'libre' | 'ocupado' }
+                
+                // Actualizar instrucciones si provienen de la BD
+                if (response.instrucciones) {
+                    const instContainer = document.getElementById('dynamic-instructions-container');
+                    if (instContainer) {
+                        instContainer.innerHTML = response.instrucciones.replace(/\n/g, '<br>');
+                    }
+                }
+
                 this.renderMap();
             } else {
                 if (mapContainer) {
@@ -237,7 +246,7 @@ const StudentRegistration = {
                                     <summary style="font-weight: 500; color: var(--primary); cursor: pointer; outline: none; font-size: 15px;">
                                         <i class="fas fa-info-circle" style="margin-right: 5px;"></i> Leer Instrucciones Importantes y Mensaje de Bienvenida
                                     </summary>
-                                    <div style="margin-top: 15px; font-size: 13.5px; color: #3c4043; line-height: 1.6; max-height: 350px; overflow-y: auto; padding-right: 10px;">
+                                    <div id="dynamic-instructions-container" style="margin-top: 15px; font-size: 13.5px; color: #3c4043; line-height: 1.6; max-height: 350px; overflow-y: auto; padding-right: 10px; white-space: pre-wrap;">
                                         <p><strong>Bienvenido(a) al proceso de inscripción de proyectos.</strong> Por favor, complete todos los campos con información verídica actualizada. Es importante tener en cuenta que los datos proporcionados serán verificados por los organizadores, cualquier información falsa o incompleta podría invalidar su inscripción. Agradecemos su honestidad y colaboración.</p>
 
                                         <p><strong>¡Felicidades y gracias, futuros ingenieros e ingenieras de la UTH!</strong><br>
