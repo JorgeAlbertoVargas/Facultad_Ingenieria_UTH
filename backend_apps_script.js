@@ -371,12 +371,35 @@ function loginUser(data) {
   var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Usuarios');
   if (!sheet) return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Pestaña 'Usuarios' no encontrada" })).setMimeType(ContentService.MimeType.JSON);
   var values = sheet.getDataRange().getValues();
+  
+  // Encontrar índices de columnas dinámicamente por si se movieron
+  var emailIdx = 3, passIdx = 4, roleIdx = 5, senderIdx = 6, nameIdx = 2;
+  if (values.length > 0) {
+    for (var c = 0; c < values[0].length; c++) {
+      var header = String(values[0][c]).toLowerCase();
+      if (header === 'usuario' || header === 'email') emailIdx = c;
+      if (header.indexOf('password') !== -1) passIdx = c;
+      if (header === 'rol') roleIdx = c;
+      if (header.indexOf('sender') !== -1) senderIdx = c;
+      if (header === 'nombre') nameIdx = c;
+    }
+  }
+
   for (var i = 1; i < values.length; i++) {
-    if (String(values[i][3]).trim() === String(data.email).trim() && String(values[i][4]) === String(data.password)) {
-      var roleValue = values[i][5] ? String(values[i][5]).trim().toLowerCase() : '';
+    if (String(values[i][emailIdx]).trim() === String(data.email).trim() && String(values[i][passIdx]) === String(data.password)) {
+      var roleValue = values[i][roleIdx] ? String(values[i][roleIdx]).trim().toLowerCase() : '';
       var userRole = (roleValue === 'admin') ? 'Administrador' : 'Evaluador';
-      var isSender = values[i][6] && String(values[i][6]).trim().toUpperCase() === 'TRUE';
-      return ContentService.createTextOutput(JSON.stringify({ success: true, user: { name: values[i][2], email: values[i][3], role: userRole, correoSender: isSender } })).setMimeType(ContentService.MimeType.JSON);
+      
+      var isSender = false;
+      if (values[i][senderIdx]) {
+        var s = String(values[i][senderIdx]).trim().toUpperCase();
+        isSender = (s === 'TRUE' || s === 'VERDADERO');
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({ 
+        success: true, 
+        user: { name: values[i][nameIdx], email: values[i][emailIdx], role: userRole, correoSender: isSender } 
+      })).setMimeType(ContentService.MimeType.JSON);
     }
   }
   return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Credenciales inválidas' })).setMimeType(ContentService.MimeType.JSON);
