@@ -102,7 +102,7 @@ const StudentRegistration = {
         else if (i >= 72 && i <= 75) { row = i - 71; col = 17; }
         else if (i >= 76 && i <= 78) { row = (i - 76) + 6; col = 17; }
 
-        return { row, col };
+        return { row, col: col + 1 };
     },
 
     renderMap() {
@@ -116,10 +116,17 @@ const StudentRegistration = {
             const isOccupied = standInfo.status !== 'libre';
             const statusClass = isOccupied ? 'stand-occupied' : 'stand-free';
             
+            let typeClass = 'stand-110v';
+            if (i >= 61 && i <= 67) {
+                typeClass = 'stand-trifasico';
+            } else if (i >= 68 && i <= 78) {
+                typeClass = 'stand-monofasico';
+            }
+            
             const pos = this.getStandGridPosition(i);
             
             html += `
-                <div class="stand-box ${statusClass}" data-stand="${i}" 
+                <div class="stand-box ${statusClass} ${typeClass}" data-stand="${i}" 
                      style="grid-row: ${pos.row}; grid-column: ${pos.col};"
                      ${isOccupied ? '' : `onclick="StudentRegistration.selectStand(${i})"`} 
                      title="Stand ${i} - ${isOccupied ? 'Ocupado' : 'Disponible'}">
@@ -129,10 +136,13 @@ const StudentRegistration = {
         }
         
         // Agregar etiquetas
-        html += `<div class="map-label" style="grid-row: 5; grid-column: 1;">Baños</div>`;
-        html += `<div class="map-label" style="grid-row: 5; grid-column: 17;">Escenario</div>`;
-        html += `<div class="map-label label-red" style="grid-row: 1; grid-column: 2; align-self: start; white-space: nowrap;">Entrada<br>Posterior</div>`;
-        html += `<div class="map-label label-red" style="grid-row: 8; grid-column: 2; align-self: end; white-space: nowrap;">Entrada<br>Frontal</div>`;
+        html += `<div class="map-label" style="grid-row: 5; grid-column: 2;">Baños</div>`;
+        html += `<div class="map-label" style="grid-row: 5; grid-column: 18;">Escenario</div>`;
+        html += `<div class="map-label label-red" style="grid-row: 1; grid-column: 3; align-self: start; white-space: nowrap;">Entrada<br>Posterior</div>`;
+        html += `<div class="map-label label-red" style="grid-row: 8; grid-column: 3; align-self: end; white-space: nowrap;">Entrada<br>Frontal</div>`;
+
+        html += `<div class="map-vertical-label" style="grid-row: 1 / span 8; grid-column: 1;">220V Trifásico</div>`;
+        html += `<div class="map-vertical-label" style="grid-row: 1 / span 8; grid-column: 19; transform: none;">220V Monofásico</div>`;
 
         html += '</div></div>';
         
@@ -144,11 +154,11 @@ const StudentRegistration = {
             }
             .stands-grid-custom {
                 display: grid;
-                grid-template-columns: 1fr 0.6fr repeat(10, 1fr) 0.8fr repeat(2, 1fr) 0.8fr 1fr;
+                grid-template-columns: 0.5fr 1fr 0.6fr repeat(10, 1fr) 0.8fr repeat(2, 1fr) 0.8fr 1fr 0.5fr;
                 grid-template-rows: repeat(8, minmax(45px, 1fr));
                 gap: 6px;
                 background: white;
-                min-width: 860px;
+                min-width: 920px;
                 position: relative;
             }
             .stand-box {
@@ -161,12 +171,31 @@ const StudentRegistration = {
                 transition: transform 0.1s, box-shadow 0.1s;
                 border: 1px solid rgba(0,0,0,0.2);
                 border-top-width: 6px;
-                border-top-color: #a5d6a7;
                 aspect-ratio: 1;
             }
-            .stand-free {
-                background-color: #ffffff;
-                color: #2e7d32;
+            .stand-110v {
+                border-color: #81c784;
+                border-top-color: #2e7d32;
+            }
+            .stand-110v.stand-free {
+                background-color: #e8f5e9;
+                color: #1b5e20;
+            }
+            .stand-trifasico {
+                border-color: #ef9a9a;
+                border-top-color: #d32f2f;
+            }
+            .stand-trifasico.stand-free {
+                background-color: #ffebee;
+                color: #c62828;
+            }
+            .stand-monofasico {
+                border-color: #bcaaa4;
+                border-top-color: #5d4037;
+            }
+            .stand-monofasico.stand-free {
+                background-color: #ffe0b2;
+                color: #e65100;
             }
             .stand-free:hover {
                 transform: scale(1.1);
@@ -174,10 +203,11 @@ const StudentRegistration = {
                 z-index: 10;
             }
             .stand-occupied {
-                background-color: #f5f5f5;
-                color: #bdbdbd;
+                background-color: #f5f5f5 !important;
+                color: #bdbdbd !important;
                 cursor: not-allowed;
-                border-top-color: #e0e0e0;
+                border-color: rgba(0,0,0,0.2) !important;
+                border-top-color: #e0e0e0 !important;
             }
             .stand-selected {
                 background-color: var(--primary) !important;
@@ -187,6 +217,12 @@ const StudentRegistration = {
                 transform: scale(1.1);
                 box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--primary);
                 z-index: 10;
+            }
+            .stand-trifasico.stand-selected {
+                background-color: #29b6f6 !important;
+                border-color: #0277bd !important;
+                border-top-color: #0277bd !important;
+                box-shadow: 0 0 0 2px #fff, 0 0 0 4px #29b6f6;
             }
             .map-label {
                 display: flex;
@@ -198,6 +234,21 @@ const StudentRegistration = {
                 text-align: center;
             }
             .label-red {
+                color: #c62828;
+                font-size: 11px;
+            }
+            .map-vertical-label {
+                writing-mode: vertical-rl;
+                transform: rotate(180deg);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                color: #666;
+                font-size: 13px;
+                letter-spacing: 1px;
+                text-align: center;
+            }
                 color: #d32f2f;
                 font-size: 11px;
             }
@@ -353,69 +404,74 @@ const StudentRegistration = {
                         <!-- Tarjeta 2: Datos Generales -->
                         <div class="card" style="padding: 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; background: white;">
                             <h3 style="color: #202124; font-size: 16px; font-weight: 500; margin-bottom: 20px; margin-top: 0;">2. Datos Generales</h3>
-                            <div class="registration-form-grid">
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px;">
                                 <div class="input-group">
                                     <label for="reg-fecha" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Fecha</label>
-                                    <input type="date" id="reg-fecha" value="${today}" required readonly style="background-color: #f1f3f4; border: 0; border-bottom: 1px solid #80868b; border-radius: 4px 4px 0 0; padding: 12px 14px;">
+                                    <input type="date" id="reg-fecha" value="${today}" required readonly style="background-color: #f1f3f4; border: 0; border-bottom: 1px solid #80868b; border-radius: 4px 4px 0 0; padding: 12px 14px; width: 100%; box-sizing: border-box;">
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-id-proyecto" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">ID Proyecto (Auto-generado)</label>
-                                    <input type="text" id="reg-id-proyecto" placeholder="Selecciona un stand primero..." required readonly style="background-color: #f1f3f4; border: 0; border-bottom: 1px solid #80868b; border-radius: 4px 4px 0 0; padding: 12px 14px; font-weight: bold; color: var(--primary);">
+                                    <input type="text" id="reg-id-proyecto" placeholder="Selecciona un stand primero..." required readonly style="background-color: #f1f3f4; border: 0; border-bottom: 1px solid #80868b; border-radius: 4px 4px 0 0; padding: 12px 14px; font-weight: bold; color: var(--primary); width: 100%; box-sizing: border-box;">
                                 </div>
-                                <div class="input-group">
+                                <div class="input-group" style="grid-column: 1 / -1;">
                                     <label for="reg-email-grupo" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Correo Electrónico del Grupo / Líder *</label>
-                                    <input type="email" id="reg-email-grupo" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; transition: border-bottom 0.2s;">
+                                    <input type="email" id="reg-email-grupo" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; transition: border-bottom 0.2s; width: 100%; box-sizing: border-box;">
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-nombre-largo" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Nombre Largo del Proyecto *</label>
-                                    <input type="text" id="reg-nombre-largo" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none;">
+                                    <input type="text" id="reg-nombre-largo" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; width: 100%; box-sizing: border-box;">
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-nombre-corto" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Nombre Corto del Proyecto *</label>
-                                    <input type="text" id="reg-nombre-corto" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none;">
+                                    <input type="text" id="reg-nombre-corto" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; width: 100%; box-sizing: border-box;">
                                 </div>
-                                <div class="input-group">
+                                <div class="input-group" style="grid-column: 1 / -1;">
                                     <label for="reg-funcionalidad" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Funcionalidad del Proyecto *</label>
-                                    <input type="text" id="reg-funcionalidad" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none;">
+                                    <input type="text" id="reg-funcionalidad" required placeholder="Tu respuesta" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; width: 100%; box-sizing: border-box;">
                                 </div>
+                            </div>
+                            
+                            <h4 style="color: #202124; font-size: 15px; font-weight: 500; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 8px;">Clasificación Académica</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px;">
                                 <div class="input-group">
                                     <label for="reg-campus" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Campus *</label>
-                                    <select id="reg-campus" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
+                                    <select id="reg-campus" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
                                         <option value="">Elige</option>
                                         ${campusOpts}
                                     </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-asignatura" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Asignatura *</label>
-                                    <select id="reg-asignatura" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
+                                    <select id="reg-asignatura" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
                                         <option value="">Elige</option>
                                         ${asigOpts}
                                     </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-carrera" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Carrera *</label>
-                                    <select id="reg-carrera" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
+                                    <select id="reg-carrera" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
                                         <option value="">Elige</option>
                                         ${carOpts}
                                     </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-catedratico" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Catedrático *</label>
-                                    <select id="reg-catedratico" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
+                                    <select id="reg-catedratico" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
                                         <option value="">Elige</option>
                                         ${catedOpts}
                                     </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-periodo" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Periodo *</label>
-                                    <select id="reg-periodo" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
+                                    <select id="reg-periodo" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
                                         <option value="">Elige</option>
                                         ${perOpts}
                                     </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-categoria" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Categoría *</label>
-                                    <select id="reg-categoria" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
+                                    <select id="reg-categoria" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
                                         <option value="">Elige</option>
                                         ${catOpts}
                                     </select>
