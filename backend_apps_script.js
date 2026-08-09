@@ -375,7 +375,8 @@ function loginUser(data) {
     if (String(values[i][3]).trim() === String(data.email).trim() && String(values[i][4]) === String(data.password)) {
       var roleValue = values[i][5] ? String(values[i][5]).trim().toLowerCase() : '';
       var userRole = (roleValue === 'admin') ? 'Administrador' : 'Evaluador';
-      return ContentService.createTextOutput(JSON.stringify({ success: true, user: { name: values[i][2], email: values[i][3], role: userRole } })).setMimeType(ContentService.MimeType.JSON);
+      var isSender = values[i][6] && String(values[i][6]).trim().toUpperCase() === 'TRUE';
+      return ContentService.createTextOutput(JSON.stringify({ success: true, user: { name: values[i][2], email: values[i][3], role: userRole, correoSender: isSender } })).setMimeType(ContentService.MimeType.JSON);
     }
   }
   return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Credenciales inválidas' })).setMimeType(ContentService.MimeType.JSON);
@@ -788,8 +789,11 @@ function sendReportEmails(data) {
   for (var catedratico in proyectosPorCatedratico) {
     if (catedratico === "Sin Catedrático") continue;
     
-    // HARDCODED PARA PRUEBAS:
-    var emailDestino = "jorge.vargas@uth.hn"; 
+    var emailDestino = catedraticoEmails[catedratico.toLowerCase()];
+    if (!emailDestino) {
+      log.push("No se encontró email para: " + catedratico);
+      continue; // Skip if no email found
+    }
     
     var proyectos = proyectosPorCatedratico[catedratico];
     
@@ -829,7 +833,7 @@ function sendReportEmails(data) {
   
   return ContentService.createTextOutput(JSON.stringify({ 
     success: true, 
-    message: 'Se enviaron ' + emailsEnviados + ' correos de prueba a jorge.vargas@uth.hn',
+    message: 'Se enviaron ' + emailsEnviados + ' correos a los catedráticos.',
     log: log
   })).setMimeType(ContentService.MimeType.JSON);
 }

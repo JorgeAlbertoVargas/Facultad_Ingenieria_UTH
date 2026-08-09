@@ -63,7 +63,7 @@ const API = {
                     if (payload.email === 'juez@uth.hn' && payload.password === '1234') {
                         resolve({ success: true, user: { email: 'juez@uth.hn', role: 'Evaluador', name: 'Juan Pérez' } });
                     } else if (payload.email === 'admin@uth.hn') {
-                        resolve({ success: true, user: { email: 'admin@uth.hn', role: 'Administrador', name: 'Admin UTH' } });
+                        resolve({ success: true, user: { email: 'admin@uth.hn', role: 'Administrador', name: 'Admin UTH', correoSender: true } });
                     } else {
                         resolve({ success: false, error: 'Credenciales inválidas (Prueba con juez@uth.hn / 1234)' });
                     }

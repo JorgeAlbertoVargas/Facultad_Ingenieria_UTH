@@ -63,13 +63,19 @@ const App = {
                 Judge.loadDashboard();
             });
         } else if (Auth.user.role === 'Administrador') {
-            menu.innerHTML = `
+            let menuHTML = `
                 <li><a href="#" class="active" id="nav-admin-dash"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
                 <li><a href="#" id="nav-admin-ranking"><i class="fas fa-trophy"></i> Diplomas y Rankings</a></li>
-                <li><a href="#" id="nav-admin-report"><i class="fas fa-file-alt"></i> Reporte de Notas</a></li>
-                <li><a href="#" id="nav-admin-users"><i class="fas fa-users"></i> Jueces</a></li>
             `;
             
+            if (Auth.user.correoSender) {
+                menuHTML += `<li><a href="#" id="nav-admin-report"><i class="fas fa-file-alt"></i> Reporte de Notas</a></li>`;
+            }
+
+            menuHTML += `<li><a href="#" id="nav-admin-users"><i class="fas fa-users"></i> Jueces</a></li>`;
+            
+            menu.innerHTML = menuHTML;
+
             document.getElementById('nav-admin-dash').addEventListener('click', (e) => {
                 e.preventDefault();
                 UI.updateActiveNav('nav-admin-dash');
@@ -82,11 +88,13 @@ const App = {
                 Admin.loadRankings();
             });
 
-            document.getElementById('nav-admin-report').addEventListener('click', (e) => {
-                e.preventDefault();
-                UI.updateActiveNav('nav-admin-report');
-                Admin.loadReport();
-            });
+            if (Auth.user.correoSender) {
+                document.getElementById('nav-admin-report').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    UI.updateActiveNav('nav-admin-report');
+                    Admin.loadReport();
+                });
+            }
 
             document.getElementById('nav-admin-users').addEventListener('click', (e) => {
                 e.preventDefault();

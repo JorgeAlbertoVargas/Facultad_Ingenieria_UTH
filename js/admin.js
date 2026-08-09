@@ -254,7 +254,7 @@ const Admin = {
             <div class="card" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <h3 style="margin: 0;">Resultados</h3>
                 <button id="btn-send-emails" class="btn btn-primary" style="background:var(--success)">
-                    <i class="fas fa-paper-plane"></i> Enviar Correos (Prueba Jorge)
+                    <i class="fas fa-paper-plane"></i> Enviar Correos a Catedráticos
                 </button>
             </div>
 
@@ -309,7 +309,7 @@ const Admin = {
                 document.getElementById('filter-catedratico').addEventListener('change', Admin.renderReportTable);
                 
                 document.getElementById('btn-send-emails').addEventListener('click', async () => {
-                    if (confirm("¿Estás seguro de enviar los correos de prueba a jorge.vargas@uth.hn?")) {
+                    if (confirm("¿Estás seguro de que deseas ENVIAR LOS CORREOS OFICIALES a cada catedrático con sus calificaciones? Esta acción no se puede deshacer.")) {
                         const btn = document.getElementById('btn-send-emails');
                         btn.disabled = true;
                         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
@@ -326,7 +326,7 @@ const Admin = {
                             UI.showToast(e.message, 'error');
                         } finally {
                             btn.disabled = false;
-                            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Correos (Prueba Jorge)';
+                            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Correos a Catedráticos';
                         }
                     }
                 });
