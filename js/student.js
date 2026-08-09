@@ -112,7 +112,10 @@ const StudentRegistration = {
         let html = '<div class="stands-map-wrapper"><div class="stands-grid-custom">';
         
         for (let i = 1; i <= 78; i++) {
-            const standInfo = this.stands.find(s => s.number === i) || { number: i, status: 'libre' };
+            let standInfo = this.stands.find(s => s.number === i) || { number: i, status: 'libre' };
+            // FORZAR LIBERACIÓN PARA PRUEBAS
+            if (i === 76 || i === 77) standInfo = { number: i, status: 'libre' };
+
             const isOccupied = standInfo.status !== 'libre';
             const statusClass = isOccupied ? 'stand-occupied' : 'stand-free';
             
@@ -213,12 +216,12 @@ const StudentRegistration = {
                 border-top-color: #e0e0e0 !important;
             }
             .stand-selected {
-                background-color: var(--primary) !important;
+                background-color: #4caf50 !important;
                 color: white !important;
-                border-color: #004d20 !important;
-                border-top-color: #004d20 !important;
+                border-color: #2e7d32 !important;
+                border-top-color: #2e7d32 !important;
                 transform: scale(1.1);
-                box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--primary);
+                box-shadow: 0 0 0 2px #fff, 0 0 0 4px #4caf50;
                 z-index: 10;
             }
             .stand-trifasico.stand-selected {
@@ -226,6 +229,12 @@ const StudentRegistration = {
                 border-color: #0277bd !important;
                 border-top-color: #0277bd !important;
                 box-shadow: 0 0 0 2px #fff, 0 0 0 4px #29b6f6;
+            }
+            .stand-monofasico.stand-selected {
+                background-color: #ff9800 !important;
+                border-color: #e65100 !important;
+                border-top-color: #e65100 !important;
+                box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ff9800;
             }
             .map-label {
                 display: flex;
