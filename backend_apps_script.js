@@ -63,6 +63,8 @@ function doGet(e) {
       return getReportData();
     } else if (action === 'getAvailableStands') {
       return getAvailableStands();
+    } else if (action === 'getConfig') {
+      return getConfig();
     } else {
       return output.setContent(JSON.stringify({ success: false, error: 'Acción GET no válida' }));
     }
@@ -77,6 +79,47 @@ function ejecutarUbicarProyectos() {
     return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Proyectos ubicados correctamente' })).setMimeType(ContentService.MimeType.JSON);
   } catch (e) {
     return ContentService.createTextOutput(JSON.stringify({ success: false, error: e.toString() })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ------------------------------------
+// Obtener Configuración Dinámica (Dropdowns, Títulos, etc.)
+// ------------------------------------
+function getConfig() {
+  try {
+    var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Configuracion');
+    if (!sheet) {
+      return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Pestaña "Configuracion" no encontrada' })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    var data = sheet.getDataRange().getValues();
+    if (data.length === 0) {
+      return ContentService.createTextOutput(JSON.stringify({ success: true, config: {} })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    var config = {};
+    var headers = data[0];
+    
+    // Inicializar arrays para cada encabezado válido
+    for (var i = 0; i < headers.length; i++) {
+      if (headers[i] && String(headers[i]).trim() !== '') {
+        config[String(headers[i]).trim()] = [];
+      }
+    }
+    
+    // Llenar los arrays con las filas siguientes (ignorando vacíos)
+    for (var j = 1; j < data.length; j++) {
+      for (var i = 0; i < headers.length; i++) {
+        var header = String(headers[i]).trim();
+        if (header !== '' && data[j][i] !== undefined && data[j][i] !== '') {
+          config[header].push(String(data[j][i]).trim());
+        }
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({ success: true, config: config })).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: error.toString() })).setMimeType(ContentService.MimeType.JSON);
   }
 }
 

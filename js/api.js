@@ -145,6 +145,20 @@ const API = {
                             { idProyecto: 'PRJ-003', nombreLargo: 'Eficiencia en Paneles Solares', nombreCorto: 'Panel Solar', asignatura: 'Física 2', catedratico: 'Ing. Luis', calificacion: 0 }
                         ]
                     });
+                } else if (action === 'getConfig') {
+                    resolve({
+                        success: true,
+                        config: {
+                            'Campus': ['SPS (Mock)', 'Tegucigalpa', 'El Progreso'],
+                            'Asignaturas': ['1. Automatización Industrial', '2. Circuitos Eléctricos'],
+                            'Categorias': ['1.- Junior', '2.- Avanzado'],
+                            'Carreras': ['Ingeniería Electrónica', 'Ingeniería Computación'],
+                            'Periodos': ['1er. Periodo', '2do. Periodo'],
+                            'Catedraticos': ['Jorge Alberto Vargas', 'Laura'],
+                            'Titulo': ['Feria Ingeniería | Formulario de Inscripción | (Mock)'],
+                            'Instrucciones': ['Bienvenido(a) al proceso de inscripción de proyectos. (Mock)']
+                        }
+                    });
                 }
             }, 800);
         });

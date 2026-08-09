@@ -5,13 +5,30 @@
 const StudentRegistration = {
     stands: [],
     selectedStand: null,
-    randomChars: '',
+    config: null,
 
-    init() {
+    async init() {
         // Generar 8 caracteres aleatorios para el ID base
         this.randomChars = this.generateRandomString(8);
+        try {
+            const configResp = await API.get('getConfig');
+            if (configResp.success && configResp.config) {
+                this.config = configResp.config;
+            } else {
+                this.config = {};
+                console.error("No se pudo cargar la configuración:", configResp.error);
+            }
+        } catch (e) {
+            console.error("Error al cargar configuración:", e);
+            this.config = {};
+        }
         this.render();
         this.loadStands();
+    },
+
+    buildOptions(optionsArray) {
+        if (!optionsArray || !optionsArray.length) return '';
+        return optionsArray.map(opt => `<option value="${opt}">${opt}</option>`).join('\n                                        ');
     },
 
     generateRandomString(length) {
@@ -220,6 +237,37 @@ const StudentRegistration = {
         
         const today = new Date().toISOString().split('T')[0];
 
+        const tituloPrincipal = (this.config && this.config.Titulo && this.config.Titulo.length > 0) 
+            ? this.config.Titulo[0] 
+            : 'Feria Ingeniería | Formulario de Inscripción de Proyectos | 2do. Periodo del 2026.';
+            
+        const instruccionesHtml = (this.config && this.config.Instrucciones && this.config.Instrucciones.length > 0)
+            ? this.config.Instrucciones.join('<br><br>')
+            : `<p><strong>Bienvenido(a) al proceso de inscripción de proyectos.</strong> Por favor, complete todos los campos con información verídica actualizada. Es importante tener en cuenta que los datos proporcionados serán verificados por los organizadores, cualquier información falsa o incompleta podría invalidar su inscripción. Agradecemos su honestidad y colaboración.</p>
+
+                                        <p><strong>¡Felicidades y gracias, futuros ingenieros e ingenieras de la UTH!</strong><br>
+                                        Hoy es un día para celebrar. Cada proyecto que presentan en esta Feria de Ingeniería 2doP 2026 es la prueba de que lo aprendido en el aula puede convertirse en algo real: una solución que resuelve un problema, que mejora un proceso, que transforma una idea en algo tangible y útil para nuestra sociedad y nuestra industria.</p>
+
+                                        <p>La Facultad de Ingeniería de la UTH reconoce y agradece profundamente el esfuerzo, las noches de trabajo, la creatividad y la dedicación que cada uno de ustedes puso para llegar hasta aquí. No es fácil tomar un concepto de clase y convertirlo en un prototipo, un sistema o una propuesta funcional. Pero ustedes lo lograron, y eso habla de su compromiso con la excelencia y la innovación.</p>
+
+                                        <p>Recuerden que cada proyecto cuenta una historia: la del problema que identificaron, la del proceso que siguieron y la de la solución que construyeron. Por eso, les pedimos que completen toda la información solicitada en su ficha/formato de participación, esto nos permite conocer a fondo su trabajo. Reconocer su esfuerzo como se merece y compartir su innovación con quienes evaluarán los proyectos.</p>
+
+                                        <p>Sigan soñando en grande, sigan innovando, y no olviden que la ingeniería no solo se trata de resolver ecuaciones, sino de resolver la vida de las personas a través del conocimiento adquirido cambiando para bien la sociedad a la que nos debemos.</p>
+
+                                        <p><strong>¡Mucho éxito en su presentación!</strong><br>
+                                        Facultad de Ingeniería — Universidad Tecnológica de Honduras (UTH)</p>`;
+
+        const campusOpts = this.buildOptions(this.config?.Campus || [
+            '1. Campus La Ceiba', '2. Campus Choluteca', '3. Campus Comayagua', '4. Campus El Progreso',
+            '5. Campus Juticalpa', '6. Campus Puerto Cortes', '7. Campus Roatan', '8. Campus San Pedro Sula',
+            '9. Campus Santa Barbara', '10. Campus Siguatepeque', '11. Campus Tegucigalpa', '12. Campus Villanueva', '13. Campus Choloma'
+        ]);
+        const asigOpts = this.buildOptions(this.config?.Asignaturas || ['Automatización Industrial']); 
+        const catOpts = this.buildOptions(this.config?.Categorias || ['1.- Junior', '2.- Avanzado', '3.- Emprendimiento.', '4.- Demostrativo.', '5.- Investigacion.']);
+        const carOpts = this.buildOptions(this.config?.Carreras || ['Ingeniería Electrónica', 'Ingeniería Producción Industrial', 'Ingeniería Mecatrónica', 'Matemáticas', 'Ingeniería Computación']);
+        const perOpts = this.buildOptions(this.config?.Periodos || ['1er. Periodo', '2do. Periodo', '3er. Periodo']); 
+        const catedOpts = this.buildOptions(this.config?.Catedraticos || ['Jorge Alberto Vargas']); 
+
         container.innerHTML = `
             <div style="background-color: #EDF3EA; min-height: 100vh; padding: 30px 15px;">
                 <div style="max-width: 1600px; width: 96%; margin: 0 auto;">
@@ -232,7 +280,7 @@ const StudentRegistration = {
 
                     <!-- Tarjeta de Título -->
                     <div class="card" style="padding: 22px 24px 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; border-top: 10px solid var(--primary); background: white;">
-                        <h1 style="color: #202124; margin: 0; font-size: 32px; font-weight: 400; line-height: 1.2;">Feria Ingeniería | Formulario de Inscripción de Proyectos | 2do. Periodo del 2026.</h1>
+                        <h1 style="color: #202124; margin: 0; font-size: 32px; font-weight: 400; line-height: 1.2;">${tituloPrincipal}</h1>
                     </div>
 
                     <!-- Banner de imagen -->
@@ -252,44 +300,7 @@ const StudentRegistration = {
                                         <i class="fas fa-info-circle" style="margin-right: 5px;"></i> Leer Instrucciones Importantes y Mensaje de Bienvenida
                                     </summary>
                                     <div id="dynamic-instructions-container" style="margin-top: 15px; font-size: 13.5px; color: #3c4043; line-height: 1.6; max-height: 350px; overflow-y: auto; padding-right: 10px; white-space: pre-wrap;">
-                                        <p><strong>Bienvenido(a) al proceso de inscripción de proyectos.</strong> Por favor, complete todos los campos con información verídica actualizada. Es importante tener en cuenta que los datos proporcionados serán verificados por los organizadores, cualquier información falsa o incompleta podría invalidar su inscripción. Agradecemos su honestidad y colaboración.</p>
-
-                                        <p><strong>¡Felicidades y gracias, futuros ingenieros e ingenieras de la UTH!</strong><br>
-                                        Hoy es un día para celebrar. Cada proyecto que presentan en esta Feria de Ingeniería 2doP 2026 es la prueba de que lo aprendido en el aula puede convertirse en algo real: una solución que resuelve un problema, que mejora un proceso, que transforma una idea en algo tangible y útil para nuestra sociedad y nuestra industria.</p>
-
-                                        <p>La Facultad de Ingeniería de la UTH reconoce y agradece profundamente el esfuerzo, las noches de trabajo, la creatividad y la dedicación que cada uno de ustedes puso para llegar hasta aquí. No es fácil tomar un concepto de clase y convertirlo en un prototipo, un sistema o una propuesta funcional. Pero ustedes lo lograron, y eso habla de su compromiso con la excelencia y la innovación.</p>
-
-                                        <p>Recuerden que cada proyecto cuenta una historia: la del problema que identificaron, la del proceso que siguieron y la de la solución que construyeron. Por eso, les pedimos que completen toda la información solicitada en su ficha/formato de participación, esto nos permite conocer a fondo su trabajo. Reconocer su esfuerzo como se merece y compartir su innovación con quienes evaluarán los proyectos.</p>
-
-                                        <p>Sigan soñando en grande, sigan innovando, y no olviden que la ingeniería no solo se trata de resolver ecuaciones, sino de resolver la vida de las personas a través del conocimiento adquirido cambiando para bien la sociedad a la que nos debemos.</p>
-
-                                        <p><strong>¡Mucho éxito en su presentación!</strong><br>
-                                        Facultad de Ingeniería — Universidad Tecnológica de Honduras (UTH)</p>
-
-                                        <hr style="border: 0; border-top: 1px solid #dadce0; margin: 20px 0;">
-
-                                        <h4 style="margin: 0 0 10px 0; color: #202124;">Instrucciones:</h4>
-                                        <p>El presente formulario tiene como objetivo la inscripción de su proyecto y para ello se requiere de su valiosa colaboración enviando información muy importante que será útil para el buen suceso de la feria de ingeniería para este 2do. Periodo del 2026. Tome unos minutos para proporcionar los datos de manera correcta, lea en todo momento las indicaciones o ejemplos para el correcto llenado de este documento.</p>
-
-                                        <p>La Cuenta de la Universidad para inscribir su proyecto es: <strong>635</strong></p>
-
-                                        <div style="background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 4px; border: 1px solid #ffeeba; margin-bottom: 15px;">
-                                            <strong>Nota Importante:</strong> tenga a mano su recibo de inscripción, el articulo científico en formato Word de su proyecto en la plantilla autorizada de la IEEE y una foto grupal que evidencie su labor desarrollando su proyecto con su grupo como paso previo al envío de la información requerida. Usted también recibirá un código único en la cuenta de correo que use para inscribirse, con información relacionada a su proyecto dentro de la feria y el reglamento de la misma, tómelo en consideración y léalo detenidamente.
-                                        </div>
-
-                                        <p><strong>1.-</strong> Se le pedirá que ingrese un nombre largo de su proyecto y además en español, por ejemplo: <em>"Control Automático de Robot Articulado clasificador de desechos mediante Inteligencia Artificial"</em>.</p>
-
-                                        <p><strong>2.-</strong> Se le pedirá que ingrese un nombre corto de su proyecto (acrónimo), por ejemplo: <em>"CRAID"</em>. Formado de manera ingeniosa a partir del nombre largo, para que sea una palabra o frase que Impacte. en el caso del ejemplo las palabras involucradas para el acrónimo son (Control | Robot | Artificial | Inteligencia | Desechos).</p>
-
-                                        <p>Por favor sea creativo y no deje ambigüedades en este punto, hay nombres que han sido confusos en experiencias pasadas, le motivamos a ser creativo también aquí.</p>
-
-                                        <div style="background-color: #e2e3e5; color: #383d41; padding: 10px; border-radius: 4px; border: 1px solid #d6d8db;">
-                                            <strong>Otros ejemplos reconocidos:</strong><br>
-                                            Nombre largo: "International Business Machines" ➔ Nombre Corto: "IBM"<br>
-                                            Nombre Largo: "Advanced Robotics Engineering System" ➔ Nombre Corto: "ARES"<br>
-                                            Nombre Largo: "Technological Integration for Automated Navigation" ➔ Nombre Corto: "TITAN"<br>
-                                            Nombre Largo: "Hydrogen-Based Renewable Operations System" ➔ Nombre Corto: "HYDROS"
-                                        </div>
+                                        ${instruccionesHtml}
                                     </div>
                                 </details>
                             </div>
@@ -337,164 +348,42 @@ const StudentRegistration = {
                                     <label for="reg-campus" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Campus *</label>
                                     <select id="reg-campus" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
                                         <option value="">Elige</option>
-                                        <option value="Ceiba">Ceiba</option>
-                                        <option value="Choloma">Choloma</option>
-                                        <option value="Cofradía">Cofradía</option>
-                                        <option value="Choluteca">Choluteca</option>
-                                        <option value="El Progreso">El Progreso</option>
-                                        <option value="Juticalpa">Juticalpa</option>
-                                        <option value="Roatan">Roatan</option>
-                                        <option value="San Pedro Sula">San Pedro Sula</option>
-                                        <option value="Siguatepeque">Siguatepeque</option>
-                                        <option value="Santa Barbara">Santa Barbara</option>
-                                        <option value="Tegucigalpa">Tegucigalpa</option>
-                                        <option value="Puerto Cortes">Puerto Cortes</option>
-                                        <option value="Villanueva">Villanueva</option>
+                                        ${campusOpts}
                                     </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-asignatura" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Asignatura *</label>
                                     <select id="reg-asignatura" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
                                         <option value="">Elige</option>
-                                        <option value="Automatización Industrial">1. Automatización Industrial</option>
-                                        <option value="Automatización de Sistemas de Producción">2. Automatización de Sistemas de Producción</option>
-                                        <option value="Automatización Industrial y Sistemas de Percepción">3. Automatización Industrial y Sistemas de Percepción</option>
-                                        <option value="Circuitos Eléctricos I">4. Circuitos Eléctricos I</option>
-                                        <option value="Circuitos Eléctricos II">5. Circuitos Eléctricos II</option>
-                                        <option value="Circuitos Integrados">6. Circuitos Integrados</option>
-                                        <option value="Control de Procesos I">7. Control de Procesos I</option>
-                                        <option value="Control de Procesos II">8. Control de Procesos II</option>
-                                        <option value="Diseño y Experimentación">9. Diseño y Experimentación</option>
-                                        <option value="Dispositivos Lógicos Programables">10. Dispositivos Lógicos Programables</option>
-                                        <option value="Dibujo Técnico I">11. Dibujo Técnico I</option>
-                                        <option value="Dibujo Técnico II">12. Dibujo Técnico II</option>
-                                        <option value="Electrónica Análoga I">13. Electrónica Análoga I</option>
-                                        <option value="Electrónica Análoga II">14. Electrónica Análoga II</option>
-                                        <option value="Electrónica Digital">15. Electrónica Digital</option>
-                                        <option value="Electromagnetismo">16. Electromagnetismo</option>
-                                        <option value="Electrónica de Potencia">17. Electrónica de Potencia</option>
-                                        <option value="Estática">18. Estática</option>
-                                        <option value="Física I">19. Física I</option>
-                                        <option value="Física II">20. Física II</option>
-                                        <option value="Introducción a la Ingeniería Electrónica">21. Introducción a la Ingeniería Electrónica</option>
-                                        <option value="Internet Industrial de las Cosas IOT">22. Internet Industrial de las Cosas IOT</option>
-                                        <option value="Ingeniería de Métodos I">23. Ingeniería de Métodos I</option>
-                                        <option value="Ingeniería de Métodos II">24. Ingeniería de Métodos II</option>
-                                        <option value="Investigación de Operaciones I">25. Investigación de Operaciones I</option>
-                                        <option value="Investigación de Operaciones II">26. Investigación de Operaciones II</option>
-                                        <option value="Microcontroladores">27. Microcontroladores</option>
-                                        <option value="Máquinas Eléctricas">28. Máquinas Eléctricas</option>
-                                        <option value="Metrología">29. Metrología</option>
-                                        <option value="Mecánica de Fluidos">30. Mecánica de Fluidos</option>
-                                        <option value="Ondas Electromagnéticas">31. Ondas Electromagnéticas</option>
-                                        <option value="Optimización de Sistemas Productivos">32. Optimización de Sistemas Productivos</option>
-                                        <option value="Preparación y Evaluación de Proyectos">33. Preparación y Evaluación de Proyectos</option>
-                                        <option value="Producción I">34. Producción I</option>
-                                        <option value="Producción II">35. Producción II</option>
-                                        <option value="Programación y Control de la Producción">36. Programación y Control de la Producción</option>
-                                        <option value="Planeación y Control de Proyectos">37. Planeación y Control de Proyectos</option>
-                                        <option value="Planeación y Control de la Calidad">38. Planeación y Control de la Calidad</option>
-                                        <option value="Presupuesto y Control">39. Presupuesto y Control</option>
-                                        <option value="Procesos de Fabricación I">40. Procesos de Fabricación I</option>
-                                        <option value="Procesos de Fabricación II">41. Procesos de Fabricación II</option>
-                                        <option value="Proyectos de Inversión">42. Proyectos de Inversión</option>
-                                        <option value="PLCs">43. PLCs</option>
-                                        <option value="Química General">44. Química General</option>
-                                        <option value="Robótica Industrial">45. Robótica Industrial</option>
-                                        <option value="Redes Industriales">46. Redes Industriales</option>
-                                        <option value="Resistencia de Materiales I">47. Resistencia de Materiales I</option>
-                                        <option value="Sistemas de Calidad Seis Sigma I">48. Sistemas de Calidad Seis Sigma I</option>
-                                        <option value="Sistemas de Calidad Seis Sigma II">49. Sistemas de Calidad Seis Sigma II</option>
-                                        <option value="Sistemas Hidráulicos y Neumáticos">50. Sistemas Hidráulicos y Neumáticos</option>
-                                        <option value="Sistemas Industriales Distribuidos">51. Sistemas Industriales Distribuidos</option>
-                                        <option value="Telefonía y Seguridad IP">52. Telefonía y Seguridad IP</option>
-                                        <option value="Transductores y Actuadores">53. Transductores y Actuadores</option>
-                                        <option value="Teoría de Control I">54. Teoría de Control I</option>
-                                        <option value="Teoría de Control II">55. Teoría de Control II</option>
-                                        <option value="Telecomunicaciones">56. Telecomunicaciones</option>
+                                        ${asigOpts}
                                     </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-carrera" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Carrera *</label>
                                     <select id="reg-carrera" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
                                         <option value="">Elige</option>
-                                        <option value="Ingeniería Electrónica">Ingeniería Electrónica</option>
-                                        <option value="Ingeniería Producción Industrial">Ingeniería Producción Industrial</option>
-                                        <option value="Ingeniería Mecatrónica">Ingeniería Mecatrónica</option>
-                                        <option value="Matemáticas">Matemáticas</option>
-                                        <option value="Ingeniería Computación">Ingeniería Computación</option>
+                                        ${carOpts}
                                     </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-catedratico" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Catedrático *</label>
                                     <select id="reg-catedratico" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
                                         <option value="">Elige</option>
-                                        <option value="Ada Lesbia Gallo González">Ada Lesbia Gallo González</option>
-                                        <option value="Alejandro Bosco Menocal Castillo">Alejandro Bosco Menocal Castillo</option>
-                                        <option value="Alicia Cárdenas Maldonado">Alicia Cárdenas Maldonado</option>
-                                        <option value="Carlos Antonio Ramírez Maldonado">Carlos Antonio Ramírez Maldonado</option>
-                                        <option value="Carlos Julio David Arita Castellanos">Carlos Julio David Arita Castellanos</option>
-                                        <option value="Carlos Bladimir">Carlos Bladimir</option>
-                                        <option value="David Ricardo Santos Erazo">David Ricardo Santos Erazo</option>
-                                        <option value="Dennis Amílcar Nolasco Martínez">Dennis Amílcar Nolasco Martínez</option>
-                                        <option value="Edgar Quinett Sanabria Peña">Edgar Quinett Sanabria Peña</option>
-                                        <option value="Eduin Alexis Figueroa Torres">Eduin Alexis Figueroa Torres</option>
-                                        <option value="Emilio José Estévez Pleitez">Emilio José Estévez Pleitez</option>
-                                        <option value="Enoc Murillo Henríquez">Enoc Murillo Henríquez</option>
-                                        <option value="Erick Eduardo Escobar Orellana">Erick Eduardo Escobar Orellana</option>
-                                        <option value="Fredy Omar Hernández Torres">Fredy Omar Hernández Torres</option>
-                                        <option value="Gloria Carolina Ardón Montero">Gloria Carolina Ardón Montero</option>
-                                        <option value="Gustavo Geovany López Membreño">Gustavo Geovany López Membreño</option>
-                                        <option value="Janania Clariza Viana Sevilla">Janania Clariza Viana Sevilla</option>
-                                        <option value="Jonathan Medardo Paz Salgado">Jonathan Medardo Paz Salgado</option>
-                                        <option value="Jorge Alberto Vargas">Jorge Alberto Vargas</option>
-                                        <option value="Jorge Luis Diaz Ayestas">Jorge Luis Diaz Ayestas</option>
-                                        <option value="José Armando Hernández Gabrie">José Armando Hernández Gabrie</option>
-                                        <option value="Jose David Valerio Eguigurems">Jose David Valerio Eguigurems</option>
-                                        <option value="José Luis Bendaña Laínez">José Luis Bendaña Laínez</option>
-                                        <option value="José Ricardo Marín De Jesús">José Ricardo Marín De Jesús</option>
-                                        <option value="Juan José Cruz Orellana">Juan José Cruz Orellana</option>
-                                        <option value="Junior Armando Medina Agurcia">Junior Armando Medina Agurcia</option>
-                                        <option value="Karla Patricia Guardado Solorzano">Karla Patricia Guardado Solorzano</option>
-                                        <option value="Luis Edgardo Leiva Aguilar">Luis Edgardo Leiva Aguilar</option>
-                                        <option value="Laura">Laura</option>
-                                        <option value="Mirna Belisle Cardona">Mirna Belisle Cardona</option>
-                                        <option value="Nelson David Reyes Cárcamo">Nelson David Reyes Cárcamo</option>
-                                        <option value="Oscar Alfonzo Bedoya Ramírez">Oscar Alfonzo Bedoya Ramírez</option>
-                                        <option value="Oscar David Carbajal Zuniga">Oscar David Carbajal Zuniga</option>
-                                        <option value="Reynerio Edgardo Vásquez Becerra">Reynerio Edgardo Vásquez Becerra</option>
-                                        <option value="Rosa María Segura Enamorado">Rosa María Segura Enamorado</option>
-                                        <option value="Vilma Valladares Fajardo">Vilma Valladares Fajardo</option>
+                                        ${catedOpts}
                                     </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-periodo" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Periodo *</label>
                                     <select id="reg-periodo" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
                                         <option value="">Elige</option>
-                                        <option value="1er. Periodo">1er. Periodo</option>
-                                        <option value="2do. Periodo">2do. Periodo</option>
-                                        <option value="3er. Periodo">3er. Periodo</option>
-                                        <option value="4to. Periodo">4to. Periodo</option>
-                                        <option value="5to. Periodo">5to. Periodo</option>
-                                        <option value="6to. Periodo">6to. Periodo</option>
-                                        <option value="7mo. Periodo">7mo. Periodo</option>
-                                        <option value="8vo. Periodo">8vo. Periodo</option>
-                                        <option value="9no. Periodo">9no. Periodo</option>
-                                        <option value="10mo. Periodo">10mo. Periodo</option>
-                                        <option value="11mo. Periodo">11mo. Periodo</option>
-                                        <option value="12mo. Periodo">12mo. Periodo</option>
-                                        <option value="13vo. Periodo">13vo. Periodo</option>
+                                        ${perOpts}
                                     </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-categoria" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Categoría *</label>
                                     <select id="reg-categoria" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white;">
                                         <option value="">Elige</option>
-                                        <option value="Junior">1.- Junior</option>
-                                        <option value="Avanzado">2.- Avanzado</option>
-                                        <option value="Emprendimiento">3.- Emprendimiento.</option>
-                                        <option value="Demostrativo">4.- Demostrativo.</option>
-                                        <option value="Investigacion">5.- Investigacion.</option>
+                                        ${catOpts}
                                     </select>
                                 </div>
                             </div>
