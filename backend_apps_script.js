@@ -24,6 +24,18 @@ function doPost(e) {
   }
 }
 
+// ------------------------------------
+// Función para autorizar envíos de correo
+// ------------------------------------
+function authorizeEmail() {
+  // Ejecuta esta función UNA SOLA VEZ desde el editor de Apps Script 
+  // dándole al botón "Ejecutar" para que Google te pida los permisos de Gmail.
+  var correo = Session.getActiveUser().getEmail();
+  if (!correo) correo = "jorge.vargas@uth.hn";
+  GmailApp.sendEmail(correo, "Prueba de Autorización", "Si recibes esto, los permisos de correo están configurados correctamente.");
+  Logger.log("Permisos autorizados y correo de prueba enviado a: " + correo);
+}
+
 function doGet(e) {
   var output = ContentService.createTextOutput();
   output.setMimeType(ContentService.MimeType.JSON);
