@@ -152,7 +152,7 @@ body {
 
 /* Login View (Solid Green Theme) */
 .dark-login {
-    background-color: #76DB7D;
+    background-color: #D9EAD3; /* Verde claro tipo Google Sheets */
     height: 100vh;
     box-sizing: border-box;
     overflow: hidden;
