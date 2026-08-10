@@ -166,12 +166,17 @@ const StudentRegistration = {
                 typeClass = 'stand-monofasico';
             }
             
+            let idProyecto = standInfo.id_proyecto || `PRJ-${i.toString().padStart(3, '0')}`;
+            let nombreCorto = standInfo.nombre_corto || `Nombre Corto`;
+
             html += `
                 <div class="stand-box ${statusClass} ${typeClass}" data-stand="${i}" 
-                     style="grid-row: ${pos.row}; grid-column: ${pos.col};"
+                     style="grid-row: ${pos.row}; grid-column: ${pos.col}; flex-direction: column; padding: 2px; text-align: center;"
                      ${isOccupied ? '' : `onclick="StudentRegistration.selectStand(${i})"`} 
                      title="Stand ${i} - ${isOccupied ? 'Ocupado' : 'Disponible'}">
-                    ${i}
+                    <span style="font-size: 12px; font-weight: 900; line-height: 1;">${i}</span>
+                    <span style="font-size: 8.5px; font-weight: bold; margin-top: 2px;">${idProyecto}</span>
+                    <span style="font-size: 7px; line-height: 1.1; margin-top: 1px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; width: 100%; word-break: break-word;">${nombreCorto}</span>
                 </div>
             `;
         }
