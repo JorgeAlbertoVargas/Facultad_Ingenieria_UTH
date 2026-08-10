@@ -151,8 +151,8 @@ const StudentRegistration = {
         
         for (let i = 1; i <= 77; i++) {
             let standInfo = this.stands.find(s => s.number === i) || { number: i, status: 'libre' };
-            // FORZAR LIBERACIÓN PARA PRUEBAS (antiguos 76, 77 ahora son 75, 76)
-            if (i === 75 || i === 76) standInfo = { number: i, status: 'libre' };
+            // FORZAR LIBERACIÓN PARA PRUEBAS (antiguos 76, 77 ahora son 75, 76. Sumamos 63 y 64)
+            if (i === 75 || i === 76 || i === 63 || i === 64) standInfo = { number: i, status: 'libre' };
 
             const isOccupied = standInfo.status !== 'libre';
             const statusClass = isOccupied ? 'stand-occupied' : 'stand-free';
@@ -177,7 +177,7 @@ const StudentRegistration = {
         }
         
         // Agregar etiquetas
-        html += `<div class="map-label" style="grid-row: 5; grid-column: 1;">Baños</div>`;
+        html += `<div class="map-label" style="grid-row: 4 / 6; grid-column: 1; align-self: center;">Baños</div>`;
         html += `<div class="map-label" style="grid-row: 5; grid-column: 17;">Escenario</div>`;
         html += `<div class="map-label label-red" style="grid-row: 1; grid-column: 2; align-self: start; white-space: nowrap;">Entrada<br>Posterior</div>`;
         html += `<div class="map-label label-red" style="grid-row: 8; grid-column: 2; align-self: end; white-space: nowrap;">Entrada<br>Frontal</div>`;
