@@ -6,8 +6,11 @@ const StudentRegistration = {
     stands: [],
     selectedStand: null,
     config: null,
+    mapOnly: false,
 
-    async init() {
+    async init(mapOnly = false) {
+        this.mapOnly = mapOnly;
+        this.selectedStand = null;
         // Generar 8 caracteres aleatorios para el ID base
         this.randomChars = this.generateRandomString(8);
         try {
@@ -382,6 +385,27 @@ const StudentRegistration = {
     render() {
         const container = document.getElementById('student-registration-view');
         
+        if (this.mapOnly) {
+            container.innerHTML = `
+                <div style="background-color: #EDF3EA; min-height: 100vh; padding: 30px 15px;">
+                    <div style="max-width: 1600px; width: 96%; margin: 0 auto;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <button class="btn btn-text" onclick="UI.navigate('login-view')" style="background-color: white; border-radius: 20px; padding: 6px 16px; box-shadow: var(--shadow-sm); font-size: 13px;">
+                                <i class="fas fa-arrow-left"></i> Volver al Inicio
+                            </button>
+                        </div>
+                        <div class="card" style="padding: 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; background: white;">
+                            <h3 style="margin-top:0; color: #202124; font-size: 22px; font-weight: 700; margin-bottom: 12px;">Mapa de Stands Disponibles</h3>
+                            <div id="interactive-map-container" style="margin-bottom: 10px;">
+                                <!-- El mapa se renderiza aquí -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
         const today = new Date().toISOString().split('T')[0];
 
         const tituloPrincipal = (this.config && this.config.Titulo && this.config.Titulo.length > 0) 
