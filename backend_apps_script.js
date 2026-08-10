@@ -125,7 +125,9 @@ function getConfig() {
       if (usValues.length > 0) {
         for (var c = 0; c < usValues[0].length; c++) {
           var header = String(usValues[0][c]).toLowerCase().trim();
-          if (header === 'adminicion' || header === 'admision') {
+          // Quitar acentos para la comparacion
+          var normalizedHeader = header.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          if (normalizedHeader === 'adminicion' || normalizedHeader === 'admision') {
             admIdx = c;
             break;
           }
@@ -1023,6 +1025,69 @@ function registerProject(data) {
     var headers = ["Fecha", "E_mail_Grupo", "ID_Proyecto", "Nombre_Largo_Proyecto", "Nombre_Corto_Proyecto", "No_Factura", "Funcionalidad_Proyecto", "Campus", "Alimentacion_Electrica", "Dimensiones_Stand", "Asignatura", "Carrera", "Periodo", "Categoria_Ingresada", "Catedratico", "Comprobante_Pago", "Fotografia_Grupal", "Video_Proyecto", "Articulo_Cientifico", "Terna_Asignada"];
     sheet.appendRow(headers);
     sheet.getRange("A1:T1").setFontWeight("bold").setBackground("#f3f4f6");
+  }
+
+  // VALIDACIÓN DE DUPLICIDAD Y STAND
+  var values = sheet.getDataRange().getValues();
+  if (values.length > 1) {
+    for (var i = 1; i < values.length; i++) {
+      var rowEmail = String(values[i][1]).trim().toLowerCase();
+      var rowNombreLargo = String(values[i][3]).trim().toLowerCase();
+      var rowNombreCorto = String(values[i][4]).trim().toLowerCase();
+      
+      var newEmail = String(data.E_mail_Grupo || "").trim().toLowerCase();
+      var newNombreLargo = String(data.Nombre_Largo_Proyecto || "").trim().toLowerCase();
+      var newNombreCorto = String(data.Nombre_Corto_Proyecto || "").trim().toLowerCase();
+      
+      if (newEmail !== "" && rowEmail === newEmail) {
+        return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Ya existe un proyecto registrado con este correo electrónico (" + newEmail + ")." })).setMimeType(ContentService.MimeType.JSON);
+      }
+      if (newNombreLargo !== "" && rowNombreLargo === newNombreLargo) {
+        return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Ya existe un proyecto registrado con el mismo Nombre Largo." })).setMimeType(ContentService.MimeType.JSON);
+      }
+      if (newNombreCorto !== "" && rowNombreCorto === newNombreCorto) {
+        return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Ya existe un proyecto registrado con el mismo Nombre Corto." })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+  }
+
+  if (data.Stand_Seleccionado) {
+    var sheetMapa = ss.getSheetByName("Distribucion_Proyectos");
+    if (sheetMapa) {
+      var valuesMapa = sheetMapa.getDataRange().getValues();
+      var standIsFree = false;
+      var standFound = false;
+      for (var r = 0; r < valuesMapa.length; r++) {
+        for (var c = 0; c < valuesMapa[r].length; c++) {
+          var cellVal = String(valuesMapa[r][c]).trim().toLowerCase();
+          if (cellVal.indexOf("stan") !== -1 || cellVal.indexOf("stab") !== -1) {
+            var numStand = null;
+            var targetRow = null;
+            if (/\d+/.test(cellVal)) {
+              var matchStand = cellVal.match(/\d+/);
+              numStand = parseInt(matchStand[0], 10);
+              targetRow = r + 1;
+            } else if (r + 1 < valuesMapa.length && /\d+/.test(String(valuesMapa[r+1][c]))) {
+              var matchStand = String(valuesMapa[r+1][c]).match(/\d+/);
+              numStand = parseInt(matchStand[0], 10);
+              targetRow = r + 2;
+            }
+            if (numStand === parseInt(data.Stand_Seleccionado, 10) && targetRow !== null && targetRow < valuesMapa.length) {
+              standFound = true;
+              var content = String(valuesMapa[targetRow][c]).trim().toLowerCase();
+              if (content === "" || content.indexOf("libre") !== -1 || content.indexOf("sin asignar") !== -1) {
+                standIsFree = true;
+              }
+              break;
+            }
+          }
+        }
+        if (standFound) break;
+      }
+      if (standFound && !standIsFree) {
+         return ContentService.createTextOutput(JSON.stringify({ success: false, error: "El Stand " + data.Stand_Seleccionado + " acaba de ser ocupado por otro proyecto. Por favor, selecciona otro stand en el mapa." })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
   }
 
   // Guardar archivos en Drive
