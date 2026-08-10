@@ -4,7 +4,16 @@
 const Auth = {
     user: null,
 
-    init() {
+    async init() {
+        try {
+            const configResp = await API.get('getConfig');
+            if (configResp.success && configResp.adminicion) {
+                this.disableLogin();
+            }
+        } catch (e) {
+            console.error('Error fetching config in Auth:', e);
+        }
+
         const storedUser = localStorage.getItem('uefes_user');
         if (storedUser) {
             this.user = JSON.parse(storedUser);
@@ -13,6 +22,39 @@ const Auth = {
             UI.navigate('login-view');
         }
         this.bindEvents();
+    },
+
+    disableLogin() {
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        
+        if(loginForm) {
+            const inputs = loginForm.querySelectorAll('input, button[type="submit"]');
+            inputs.forEach(el => {
+                el.disabled = true;
+                el.style.opacity = '0.5';
+                el.style.cursor = 'not-allowed';
+            });
+            const link = document.getElementById('link-to-register');
+            if(link) {
+                link.style.pointerEvents = 'none';
+                link.style.opacity = '0.5';
+            }
+        }
+        
+        if(registerForm) {
+            const inputs = registerForm.querySelectorAll('input, button[type="submit"]');
+            inputs.forEach(el => {
+                el.disabled = true;
+                el.style.opacity = '0.5';
+                el.style.cursor = 'not-allowed';
+            });
+            const link = document.getElementById('link-to-login');
+            if(link) {
+                link.style.pointerEvents = 'none';
+                link.style.opacity = '0.5';
+            }
+        }
     },
 
     bindEvents() {

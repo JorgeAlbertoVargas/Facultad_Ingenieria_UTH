@@ -116,8 +116,33 @@ function getConfig() {
         }
       }
     }
+    // Adicional: Leer columna Adminicion de hoja Usuarios
+    var sheetUsuarios = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Usuarios');
+    var isAdmissionsOpen = false;
+    if (sheetUsuarios) {
+      var usValues = sheetUsuarios.getDataRange().getValues();
+      var admIdx = -1;
+      if (usValues.length > 0) {
+        for (var c = 0; c < usValues[0].length; c++) {
+          var header = String(usValues[0][c]).toLowerCase().trim();
+          if (header === 'adminicion' || header === 'admision') {
+            admIdx = c;
+            break;
+          }
+        }
+        if (admIdx !== -1) {
+          for (var r = 1; r < usValues.length; r++) {
+            var val = String(usValues[r][admIdx]).trim().toUpperCase();
+            if (val === 'TRUE' || val === 'VERDADERO') {
+              isAdmissionsOpen = true;
+              break;
+            }
+          }
+        }
+      }
+    }
     
-    return ContentService.createTextOutput(JSON.stringify({ success: true, config: config })).setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({ success: true, config: config, adminicion: isAdmissionsOpen })).setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({ success: false, error: error.toString() })).setMimeType(ContentService.MimeType.JSON);
   }

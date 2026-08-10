@@ -7,7 +7,8 @@ const App = {
 
         // Enlaces públicos
         document.getElementById('btn-public-map').addEventListener('click', () => {
-            MapView.load();
+            StudentRegistration.init();
+            UI.navigate('student-registration-view');
         });
     },
 
