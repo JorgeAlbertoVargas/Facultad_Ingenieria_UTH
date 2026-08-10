@@ -152,14 +152,15 @@ body {
 
 /* Login View (Solid Green Theme) */
 .dark-login {
-    background-color: #4caf50; /* Verde de recuadros del mapa */
-    min-height: 100vh;
+    background-color: #76DB7D;
+    height: 100vh;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .view.active.dark-login {
     display: flex;
-    align-items: flex-start;
-    padding-top: 8vh;
+    align-items: center;
     justify-content: center;
 }
 
