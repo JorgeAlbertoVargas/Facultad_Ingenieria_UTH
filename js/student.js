@@ -129,13 +129,16 @@ const StudentRegistration = {
         else if (i >= 51 && i <= 60) { row = 8; col = 2 + (i - 50); }
         else if (i >= 61 && i <= 63) { row = i - 60; col = 1; }
         else if (i >= 64 && i <= 66) { row = (i - 64) + 6; col = 1; }
-        else if (i === 67) { return { row: -1, col: -1 }; }
-        else if (i === 68) { row = 1; col = 14; }
-        else if (i === 69) { row = 1; col = 15; }
-        else if (i === 70) { row = 8; col = 14; }
-        else if (i === 71) { row = 8; col = 15; }
-        else if (i >= 72 && i <= 75) { row = i - 71; col = 17; }
-        else if (i >= 76 && i <= 78) { row = (i - 76) + 6; col = 17; }
+        // Antiguo 68 y 69 ahora son 67 y 68
+        else if (i === 67) { row = 1; col = 14; }
+        else if (i === 68) { row = 1; col = 15; }
+        // Antiguo 70 y 71 ahora son 69 y 70
+        else if (i === 69) { row = 8; col = 14; }
+        else if (i === 70) { row = 8; col = 15; }
+        // Antiguo 72-75 ahora son 71-74
+        else if (i >= 71 && i <= 74) { row = i - 70; col = 17; }
+        // Antiguo 76-78 ahora son 75-77
+        else if (i >= 75 && i <= 77) { row = (i - 75) + 6; col = 17; }
 
         return { row, col };
     },
@@ -146,12 +149,10 @@ const StudentRegistration = {
 
         let html = '<div class="stands-map-wrapper"><div class="stands-grid-custom">';
         
-        for (let i = 1; i <= 78; i++) {
-            if (i === 67) continue;
-
+        for (let i = 1; i <= 77; i++) {
             let standInfo = this.stands.find(s => s.number === i) || { number: i, status: 'libre' };
-            // FORZAR LIBERACIÓN PARA PRUEBAS
-            if (i === 76 || i === 77) standInfo = { number: i, status: 'libre' };
+            // FORZAR LIBERACIÓN PARA PRUEBAS (antiguos 76, 77 ahora son 75, 76)
+            if (i === 75 || i === 76) standInfo = { number: i, status: 'libre' };
 
             const isOccupied = standInfo.status !== 'libre';
             const statusClass = isOccupied ? 'stand-occupied' : 'stand-free';
