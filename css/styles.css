@@ -152,7 +152,7 @@ body {
 
 /* Login View (Solid Green Theme) */
 .dark-login {
-    background-color: #389B37; /* Verde Boletin UTH */
+    background-color: #4caf50; /* Verde de recuadros del mapa */
     min-height: 100vh;
 }
 
@@ -176,7 +176,7 @@ body {
     background-color: #1e293b;
     width: 100%;
     max-width: 400px;
-    padding: 40px;
+    padding: 25px; /* Reduced from 40px to fit without scroll */
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     text-align: center;
