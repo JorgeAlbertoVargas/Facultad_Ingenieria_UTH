@@ -150,31 +150,16 @@ body {
     min-height: 18px;
 }
 
-/* Login View (Light Theme with Watermark) */
+/* Login View (Solid Green Theme) */
 .dark-login {
-    background-color: #EDF3EA; /* Light green background like student page */
-    position: relative;
-    height: 100vh;
-}
-
-.dark-login::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: url('https://www.uth.hn/wp-content/uploads/2026/01/logo-40-aniversario.png');
-    background-size: 80%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    opacity: 0.15; /* Efecto marca de agua */
-    z-index: 0;
+    background-color: var(--primary); /* Verde UTH */
+    min-height: 100vh;
 }
 
 .view.active.dark-login {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
 }
 
 .dark-login .login-container {
