@@ -49,6 +49,37 @@ const StudentRegistration = {
         }
     },
 
+    validateCategoria() {
+        const categoriaSelect = document.getElementById('reg-categoria');
+        const periodoSelect = document.getElementById('reg-periodo');
+        
+        if (!categoriaSelect || !periodoSelect) return true;
+
+        const categoria = categoriaSelect.value.toLowerCase();
+        const periodo = periodoSelect.value;
+        
+        if (!categoria || !periodo) return true;
+
+        const match = periodo.match(/(\d+)/);
+        if (!match) return true;
+        const periodoNum = parseInt(match[1], 10);
+
+        if (categoria.includes('junior')) {
+            if (periodoNum > 7) {
+                UI.showToast("La categoría Junior requiere estar entre el 1er y 7mo Periodo.", "warning");
+                categoriaSelect.value = '';
+                return false;
+            }
+        } else if (categoria.includes('avanzado')) {
+            if (periodoNum < 8) {
+                UI.showToast("La categoría Avanzado requiere estar entre el 8vo y 13vo Periodo.", "warning");
+                categoriaSelect.value = '';
+                return false;
+            }
+        }
+        return true;
+    },
+
     async loadStands() {
         try {
             const mapContainer = document.getElementById('interactive-map-container');
@@ -529,14 +560,14 @@ const StudentRegistration = {
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-periodo" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Periodo *</label>
-                                    <select id="reg-periodo" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
+                                    <select id="reg-periodo" required onchange="StudentRegistration.validateCategoria()" style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
                                         <option value="">Elige</option>
                                         ${perOpts}
                                     </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="reg-categoria" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Categoría *</label>
-                                    <select id="reg-categoria" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
+                                    <select id="reg-categoria" required onchange="StudentRegistration.validateCategoria()" style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
                                         <option value="">Elige</option>
                                         ${catOpts}
                                     </select>
@@ -616,6 +647,10 @@ const StudentRegistration = {
         
         if (!this.selectedStand) {
             UI.showToast("Debes seleccionar un stand en el mapa antes de continuar.", "error");
+            return;
+        }
+
+        if (!this.validateCategoria()) {
             return;
         }
 
