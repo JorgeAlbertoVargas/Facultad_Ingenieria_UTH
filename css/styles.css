@@ -152,13 +152,14 @@ body {
 
 /* Login View (Solid Green Theme) */
 .dark-login {
-    background-color: var(--primary); /* Verde UTH */
+    background-color: #389B37; /* Verde Boletin UTH */
     min-height: 100vh;
 }
 
 .view.active.dark-login {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    padding-top: 8vh;
     justify-content: center;
 }
 
