@@ -182,8 +182,8 @@ const StudentRegistration = {
         }
         
         // Agregar etiquetas
-        html += `<div class="map-label" style="grid-row: 4 / 6; grid-column: 1; align-self: center;">Baños</div>`;
-        html += `<div class="map-label" style="grid-row: 5; grid-column: 17;">Escenario</div>`;
+        html += `<div class="map-label" style="grid-row: 4 / 6; grid-column: 1; align-self: center; font-size: 20px; font-weight: bold; color: #1b5e20;">Baños</div>`;
+        html += `<div class="map-label" style="grid-row: 4 / 6; grid-column: 17; align-self: center; font-size: 20px; font-weight: bold; color: #1b5e20;">Escenario</div>`;
         html += `<div class="map-label label-red" style="grid-row: 1; grid-column: 2; align-self: start; white-space: nowrap;">Entrada<br>Posterior</div>`;
         html += `<div class="map-label label-red" style="grid-row: 8; grid-column: 2; align-self: end; white-space: nowrap;">Entrada<br>Frontal</div>`;
 
