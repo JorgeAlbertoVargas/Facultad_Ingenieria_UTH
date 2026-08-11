@@ -303,6 +303,7 @@ const StudentRegistration = {
                 font-size: 26px;
                 letter-spacing: 2px;
                 text-align: center;
+                white-space: nowrap;
             }
             .map-horizontal-label {
                 position: absolute;
