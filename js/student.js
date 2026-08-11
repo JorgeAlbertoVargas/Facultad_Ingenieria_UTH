@@ -187,9 +187,9 @@ const StudentRegistration = {
         html += `<div class="map-label label-red" style="grid-row: 1; grid-column: 2; align-self: start; white-space: nowrap;">Entrada<br>Posterior</div>`;
         html += `<div class="map-label label-red" style="grid-row: 8; grid-column: 2; align-self: end; white-space: nowrap;">Entrada<br>Frontal</div>`;
 
-        html += `<div class="map-vertical-label" style="left: -55px; top: 50%; transform: translateY(-50%) rotate(180deg);">220 Volts. Trifásico.</div>`;
-        html += `<div class="map-vertical-label" style="right: -60px; top: 50%; transform: translateY(-50%);">220 Volts. Monofásico.</div>`;
-        html += `<div class="map-horizontal-label" style="top: -25px; left: 50%; transform: translateX(-50%);">110 Volts. Monofásico.</div>`;
+        html += `<div class="map-vertical-label" style="left: -65px; top: 50%; transform: translateY(-50%) rotate(180deg);">220 Volts. Trifásico.</div>`;
+        html += `<div class="map-vertical-label" style="right: -70px; top: 50%; transform: translateY(-50%);">220 Volts. Monofásico.</div>`;
+        html += `<div class="map-horizontal-label" style="top: -35px; left: 50%; transform: translateX(-50%);">110 Volts. Monofásico.</div>`;
 
         html += '</div></div>';
         
@@ -197,7 +197,7 @@ const StudentRegistration = {
         <style>
             .stands-map-wrapper {
                 overflow-x: hidden;
-                padding: 20px 60px;
+                padding: 45px 80px;
                 width: 100%;
             }
             .stands-grid-custom {
