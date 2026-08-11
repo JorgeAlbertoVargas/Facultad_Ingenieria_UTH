@@ -290,12 +290,12 @@ const StudentRegistration = {
                 color: #c62828;
             }
             .stand-monofasico {
-                border-color: #bcaaa4;
-                border-top-color: #5d4037;
+                border-color: #ffe082;
+                border-top-color: #fbc02d;
             }
             .stand-monofasico.stand-free {
-                background-color: #ffe0b2;
-                color: #e65100;
+                background-color: #fff9c4;
+                color: #f57f17;
             }
             .stand-free:hover {
                 transform: scale(1.1);
@@ -582,8 +582,8 @@ const StudentRegistration = {
                                     <span>Verde: <strong>110 Volts. Monofásico</strong></span>
                                 </div>
                                 <div style="display: flex; align-items: center; font-size: 13px; color: #3c4043;">
-                                    <div style="width: 16px; height: 16px; border-radius: 4px; background-color: #ffe0b2; border: 1px solid #bcaaa4; border-top: 4px solid #5d4037; margin-right: 8px;"></div>
-                                    <span>Naranja: <strong>220 Volts. Monofásico</strong></span>
+                                    <div style="width: 16px; height: 16px; border-radius: 4px; background-color: #fff9c4; border: 1px solid #ffe082; border-top: 4px solid #fbc02d; margin-right: 8px;"></div>
+                                    <span>Amarillo: <strong>220 Volts. Monofásico</strong></span>
                                 </div>
                                 <div style="display: flex; align-items: center; font-size: 13px; color: #3c4043;">
                                     <div style="width: 16px; height: 16px; border-radius: 4px; background-color: #ffebee; border: 1px solid #ef9a9a; border-top: 4px solid #d32f2f; margin-right: 8px;"></div>
