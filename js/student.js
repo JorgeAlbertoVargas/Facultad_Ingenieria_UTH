@@ -210,6 +210,33 @@ const StudentRegistration = {
                 margin: 0 auto;
                 position: relative;
             }
+            .form-grid-3 {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+            .form-grid-3.gap-15 {
+                gap: 15px;
+            }
+            .form-grid-3.margin-30 {
+                margin-bottom: 30px;
+            }
+            @media (max-width: 768px) {
+                .stands-grid-custom {
+                    min-width: 800px !important;
+                }
+                .stands-map-wrapper {
+                    overflow-x: auto !important;
+                    padding: 20px 30px !important;
+                }
+                .map-vertical-label, .map-horizontal-label {
+                    font-size: 16px !important;
+                }
+                .form-grid-3 {
+                    grid-template-columns: 1fr !important;
+                    gap: 15px !important;
+                }
+            }
             .stand-box {
                 display: flex;
                 align-items: center;
