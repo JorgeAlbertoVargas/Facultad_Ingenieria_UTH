@@ -196,17 +196,17 @@ const StudentRegistration = {
         html += `
         <style>
             .stands-map-wrapper {
-                overflow-x: auto;
-                padding: 30px 60px;
+                overflow-x: hidden;
+                padding: 20px 60px;
+                width: 100%;
             }
             .stands-grid-custom {
                 display: grid;
-                grid-template-columns: 1fr 0.6fr repeat(10, 1fr) 0.8fr repeat(2, 1fr) 0.8fr 1fr;
-                grid-template-rows: repeat(8, minmax(43px, 1fr));
-                gap: 5px;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 0.6fr) repeat(10, minmax(0, 1fr)) minmax(0, 0.8fr) repeat(2, minmax(0, 1fr)) minmax(0, 0.8fr) minmax(0, 1fr);
+                grid-template-rows: repeat(8, 1fr);
+                gap: 4px;
                 background: white;
-                min-width: 100%;
-                width: fit-content;
+                width: 100%;
                 margin: 0 auto;
                 position: relative;
             }
