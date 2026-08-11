@@ -205,8 +205,8 @@ const StudentRegistration = {
                 grid-template-rows: repeat(8, minmax(43px, 1fr));
                 gap: 5px;
                 background: white;
-                min-width: 835px;
-                width: 100%;
+                min-width: 100%;
+                width: fit-content;
                 margin: 0 auto;
                 position: relative;
             }
