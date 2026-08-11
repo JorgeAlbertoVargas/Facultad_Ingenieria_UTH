@@ -575,7 +575,21 @@ const StudentRegistration = {
                         <!-- Tarjeta 1: Mapa -->
                         <div class="card" style="padding: 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; background: white;">
                             <h3 style="margin-top:0; color: #202124; font-size: 22px; font-weight: 700; margin-bottom: 12px;">1. Ubicación en el Mapa (Check-in)</h3>
-                            <p style="color: #5f6368; font-size: 14px; margin-bottom: 16px; line-height: 1.5;">Selecciona un stand disponible (en verde) para tu proyecto. El ID de tu proyecto se generará automáticamente basado en esta selección.</p>
+                            <p style="color: #5f6368; font-size: 14px; margin-bottom: 12px; line-height: 1.5;">Selecciona un stand disponible para tu proyecto. El ID de tu proyecto se generará automáticamente basado en esta selección. <strong>Los colores indican el tipo de energía disponible:</strong></p>
+                            <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                                <div style="display: flex; align-items: center; font-size: 13px; color: #3c4043;">
+                                    <div style="width: 16px; height: 16px; border-radius: 4px; background-color: #e8f5e9; border: 1px solid #81c784; border-top: 4px solid #2e7d32; margin-right: 8px;"></div>
+                                    <span>Verde: <strong>110 Volts. Monofásico</strong></span>
+                                </div>
+                                <div style="display: flex; align-items: center; font-size: 13px; color: #3c4043;">
+                                    <div style="width: 16px; height: 16px; border-radius: 4px; background-color: #ffe0b2; border: 1px solid #bcaaa4; border-top: 4px solid #5d4037; margin-right: 8px;"></div>
+                                    <span>Naranja: <strong>220 Volts. Monofásico</strong></span>
+                                </div>
+                                <div style="display: flex; align-items: center; font-size: 13px; color: #3c4043;">
+                                    <div style="width: 16px; height: 16px; border-radius: 4px; background-color: #ffebee; border: 1px solid #ef9a9a; border-top: 4px solid #d32f2f; margin-right: 8px;"></div>
+                                    <span>Rojo: <strong>220 Volts. Trifásico</strong></span>
+                                </div>
+                            </div>
                             
                             <div id="interactive-map-container" style="margin-bottom: 10px;">
                                 <!-- El mapa se renderiza aquí -->
