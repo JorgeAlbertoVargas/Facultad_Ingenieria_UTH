@@ -187,9 +187,9 @@ const StudentRegistration = {
         html += `<div class="map-label label-red" style="grid-row: 1; grid-column: 2; align-self: start; white-space: nowrap;">Entrada<br>Posterior</div>`;
         html += `<div class="map-label label-red" style="grid-row: 8; grid-column: 2; align-self: end; white-space: nowrap;">Entrada<br>Frontal</div>`;
 
-        html += `<div class="map-vertical-label" style="left: -65px; top: 50%; transform: translateY(-50%) rotate(180deg);">220 Volts. Trifásico.</div>`;
-        html += `<div class="map-vertical-label" style="right: -70px; top: 50%; transform: translateY(-50%);">220 Volts. Monofásico.</div>`;
-        html += `<div class="map-horizontal-label" style="top: -35px; left: 50%; transform: translateX(-50%);">110 Volts. Monofásico.</div>`;
+        html += `<div class="map-vertical-label label-left">220 Volts. Trifásico.</div>`;
+        html += `<div class="map-vertical-label label-right">220 Volts. Monofásico.</div>`;
+        html += `<div class="map-horizontal-label label-top">110 Volts. Monofásico.</div>`;
 
         html += '</div></div>';
         
@@ -221,16 +221,40 @@ const StudentRegistration = {
             .form-grid-3.margin-30 {
                 margin-bottom: 30px;
             }
+            .label-left {
+                left: -65px;
+                top: 50%;
+                transform: translateY(-50%) rotate(180deg);
+            }
+            .label-right {
+                right: -70px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            .label-top {
+                top: -35px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
             @media (max-width: 768px) {
                 .stands-grid-custom {
                     min-width: 800px !important;
                 }
                 .stands-map-wrapper {
                     overflow-x: auto !important;
-                    padding: 20px 30px !important;
+                    padding: 30px 45px !important;
+                }
+                .label-left {
+                    left: -40px !important;
+                }
+                .label-right {
+                    right: -45px !important;
+                }
+                .label-top {
+                    top: -25px !important;
                 }
                 .map-vertical-label, .map-horizontal-label {
-                    font-size: 16px !important;
+                    font-size: 14px !important;
                 }
                 .form-grid-3 {
                     grid-template-columns: 1fr !important;
