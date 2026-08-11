@@ -535,7 +535,7 @@ const StudentRegistration = {
                         <div class="card" style="padding: 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; background: white;">
                             <h3 style="color: #202124; font-size: 22px; font-weight: 700; margin-bottom: 20px; margin-top: 0;">2. Datos Generales</h3>
                             
-                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px;">
+                            <div class="form-grid-3 margin-30">
                                 <div class="input-group">
                                     <label for="reg-fecha" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Fecha</label>
                                     <input type="date" id="reg-fecha" value="${today}" required readonly style="background-color: #f1f3f4; border: 0; border-bottom: 1px solid #80868b; border-radius: 4px 4px 0 0; padding: 12px 14px; width: 100%; box-sizing: border-box;">
@@ -563,7 +563,7 @@ const StudentRegistration = {
                             </div>
                             
                             <h4 style="color: #202124; font-size: 18px; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 8px;">Clasificación Académica</h4>
-                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                            <div class="form-grid-3 gap-15">
                                 <div class="input-group">
                                     <label for="reg-campus" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">Campus *</label>
                                     <select id="reg-campus" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
@@ -612,7 +612,7 @@ const StudentRegistration = {
                         <!-- Tarjeta 3: Logística -->
                         <div class="card" style="padding: 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; background: white;">
                             <h3 style="margin-top:0; color: #202124; font-size: 22px; font-weight: 700; margin-bottom: 20px;">3. Logística</h3>
-                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                            <div class="form-grid-3">
                                 <div class="input-group">
                                     <label for="reg-alimentacion" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">¿Qué tipo de alimentación eléctrica requiere su proyecto? *</label>
                                     <select id="reg-alimentacion" required style="border: 1px solid #dadce0; border-radius: 4px; padding: 12px; background: white; width: 100%; box-sizing: border-box;">
@@ -635,7 +635,7 @@ const StudentRegistration = {
                             <h3 style="margin-top:0; color: #202124; font-size: 22px; font-weight: 700; margin-bottom: 12px;">4. Archivos y Documentación</h3>
                             <p style="color: #5f6368; font-size: 13px; margin-bottom: 24px; line-height: 1.5;">Nota: Solo se permite 1 documento por campo. Extensiones permitidas: PDF, DOC, DOCX, PNG.</p>
                             
-                            <div class="registration-form-grid">
+                            <div class="form-grid-3">
                                 <div class="input-group">
                                     <label for="reg-factura" style="font-size: 14px; color: #202124; margin-bottom: 8px; display: block;">No. Factura / Recibo *</label>
                                     <input type="text" id="reg-factura" pattern="\\d{3}-\\d{3}-\\d{2}-\\d{8}" title="El formato debe ser 000-000-00-00000000" required placeholder="000-000-00-00000000" style="border: 0; border-bottom: 1px solid #80868b; border-radius: 0; padding: 8px 0; background: transparent; outline: none; width: 100%; box-sizing: border-box;">
